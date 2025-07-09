@@ -29,11 +29,11 @@ const Badge = () => {
     const total = carrinho.reduce((sum, item) => sum + item.preco, 0);
 
     return (
-        <div className="border p-5">
+        <div className="p-5">
             <button onClick={() => setSidebarOpen(true)} className="relative p-2 rounded-full hover:bg-gray-200">
                 <ShoppingCart size={30}/>
                 {carrinho.length > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center transform translate-x-2 -translate-y-2">
+                    <span className="absolute top-0 right-0 bg-teal-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center transform translate-x-2 -translate-y-2">
                         {carrinho.length}
                     </span>
                 )}
