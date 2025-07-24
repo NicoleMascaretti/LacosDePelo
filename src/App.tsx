@@ -8,16 +8,18 @@
 // import { ShoppingCart } from "lucide-react"
 // import Badge from "./components/ui/ShoppingCartWidget";
 
-import CardCategoria from "./components/ui/CardCategoria";
-import img1 from "../public/Cachorro1.jpg"
+// import ShoppingCartWidget from "./components/ui/ShoppingCartWidget";
+import DropdownCategoria from "./components/ui/DropdownCategoria";
+import { CategoryProvider } from "./contexts/CategoryContext";
+
 
 const App = () => {
     return (
-        <div className="flex gap-20 mt-5 ms-1 me-1">
-            <CardCategoria img={img1} icon={"🥘"} titulo={"Ração e alimentação"} sub={"Rações premium e snaks"}/>
-            <CardCategoria img={img1} icon={"🎾"} titulo={"Brinquedos"} sub={"Diversão garantida"}/>
-            <CardCategoria img={img1} icon={"🛁"} titulo={"Higiêne e beleza"} sub={"Cuidados essenciais"}/>
-        </div>
+        <CategoryProvider>
+            <div className="">
+                <DropdownCategoria />
+            </div>
+        </CategoryProvider>
     );
 }
 

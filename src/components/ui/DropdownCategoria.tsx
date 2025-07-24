@@ -1,12 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-
-const categorias = [
-    { id: 1, nome: "Ração e alimentos" },
-    { id: 2, nome: "Brinquedos" },
-    { id: 3, nome: "Higiene e beleza" },
-    { id: 4, nome: "Acessórios" },
-    { id: 5, nome: "Medicamentos" },
-];
+import { useCategory } from "../../contexts/CategoryContext";
 
 const racao = [
     { id: 1, nome: "Ração Seca" },
@@ -44,12 +37,26 @@ const medicamentos = [
     { id: 4, nome: "Antipulgas e carrapatos"}
 ]
 
+const categoriasPadrao = [
+    { id: 1, nome: "Ração e alimentos" },
+    { id: 2, nome: "Brinquedos" },
+    { id: 3, nome: "Higiene e beleza" },
+    { id: 4, nome: "Acessórios" },
+    { id: 5, nome: "Medicamentos" },
+];
+
 const DropdownCategoria = () => {
     const [open, setOpen] = useState(false);
     const [submenuOpen, setSubmenuOpen] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const { categorias, setCategorias } = useCategory();
+
     useEffect(() => {
+        // Preenche o contexto se estiver vazio
+        if (categorias.length === 0) {
+            setCategorias(categoriasPadrao);
+        }
         function handleClickOutside(event:MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setOpen(false);
@@ -58,7 +65,7 @@ const DropdownCategoria = () => {
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [categorias, setCategorias]);
 
     return (
         <div className="relative inline-block" ref={dropdownRef}>
