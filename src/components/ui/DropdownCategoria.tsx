@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useCategory } from "../../contexts/CategoryContext";
+import { useCategories } from "../../hooks/useCategories";
 
 const racao = [
     { id: 1, nome: "Ração Seca" },
@@ -52,6 +53,9 @@ const DropdownCategoria = () => {
 
     const { categorias, setCategorias } = useCategory();
 
+    // Busca categorias da Shopify e popula o contexto automaticamente
+    const { loading, error } = useCategories();
+
     useEffect(() => {
         // Preenche o contexto se estiver vazio
         if (categorias.length === 0) {
@@ -69,6 +73,8 @@ const DropdownCategoria = () => {
 
     return (
         <div className="relative inline-block" ref={dropdownRef}>
+            {loading && <div className="text-gray-500 px-4 py-2">Carregando categorias...</div>}
+            {error && <div className="text-red-500 px-4 py-2">Erro: {error}</div>}
             <a onClick={() => setOpen((prev) => !prev)} onMouseEnter={() => setOpen(true)} className="text-gray-700 hover:text-teal-600 hover:cursor-pointer transition-colors">
                 Categorias
             </a>
