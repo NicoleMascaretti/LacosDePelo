@@ -1,4 +1,3 @@
-// components/FavoriteList.tsx
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext"; //necessario um arquivo para realizar os fetches no backend
 import type { ProductType } from "../../types/ProductType";
