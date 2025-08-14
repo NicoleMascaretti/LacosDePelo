@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext"; //necessario um arquivo para realizar os fetches no backend
-import type { ProductType } from "../../types/ProductType";
+import type { ProductType } from "../types/ProductType";
 
 export default function FavoriteList() {
   const { isAuthenticated, userId } = useAuth();
