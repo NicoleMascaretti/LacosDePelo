@@ -1,6 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import type { ReactNode } from "react";
-
 
 export interface Product {
   id: number;
@@ -10,34 +9,39 @@ export interface Product {
 
 interface CartContextType {
   carrinho: Product[];
-  addCarrinho: (produto: Product) => void;
-  removeCarrinho: (id: number) => void;
+  addToCart: (produto: Product) => void;
+  removeFromCart: (id: number) => void;
+  getCartTotal: () => number;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+// Exportando o contexto para ser usado no hook
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [carrinho, setCarrinho] = useState<Product[]>([]);
 
-  const addCarrinho = (produto: Product) => {
+  const addToCart = (produto: Product) => {
     setCarrinho((prev) => [...prev, produto]);
   };
 
-  const removeCarrinho = (id: number) => {
+  const removeFromCart = (id: number) => {
     setCarrinho((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const getCartTotal = () => {
+    return carrinho.reduce((total, item) => total + item.preco, 0);
+  };
+
+  const value = useMemo(() => ({
+    carrinho,
+    addToCart,
+    removeFromCart,
+    getCartTotal
+  }), [carrinho]);
+
   return (
-    <CartContext.Provider value={{ carrinho, addCarrinho, removeCarrinho }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = (): CartContextType => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart deve ser usado dentro do CartProvider");
-  }
-  return context;
 };
