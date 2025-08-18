@@ -1,15 +1,10 @@
 import { createContext, useContext, useState, useMemo } from "react";
 import type { ReactNode } from "react";
-
-export interface Product {
-  id: number;
-  nome: string;
-  preco: number;
-}
+import type { ProductType } from "../types/ProductType";
 
 interface CartContextType {
-  carrinho: Product[];
-  addToCart: (produto: Product) => void;
+  carrinho: ProductType[];
+  addToCart: (produto: ProductType) => void;
   removeFromCart: (id: number) => void;
   getCartTotal: () => number;
 }
@@ -18,9 +13,9 @@ interface CartContextType {
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [carrinho, setCarrinho] = useState<Product[]>([]);
+  const [carrinho, setCarrinho] = useState<ProductType[]>([]);
 
-  const addToCart = (produto: Product) => {
+  const addToCart = (produto: ProductType) => {
     setCarrinho((prev) => [...prev, produto]);
   };
 
@@ -29,7 +24,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getCartTotal = () => {
-    return carrinho.reduce((total, item) => total + item.preco, 0);
+    return carrinho.reduce((total, item) => total + item.price, 0);
   };
 
   const value = useMemo(() => ({
