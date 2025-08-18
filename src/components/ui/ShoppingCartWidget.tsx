@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { ShoppingCart, X } from "lucide-react";
-import { useCart } from "../../contexts/CartContext";
+import { useCart } from "../../hooks/useCart";
 
 const ShoppingCartWidget = () => {
-  const { carrinho, removeCarrinho } = useCart(); // o useCart é pra gnt usar nos cards de produto dps
+  const { carrinho, removeFromCart } = useCart(); // o useCart é pra gnt usar nos cards de produto dps
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const total = carrinho.reduce((sum, item) => sum + item.preco, 0);
+  const total = carrinho.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="p-5">
@@ -45,12 +45,12 @@ const ShoppingCartWidget = () => {
           {carrinho.map((item) => (
             <div key={item.id} className="flex justify-between items-center mb-2">
               <div>
-                <span className="block font-medium">{item.nome}</span>
-                <span className="text-sm text-gray-500">R$ {item.preco.toFixed(2)}</span>
+                <span className="block font-medium">{item.name}</span>
+                <span className="text-sm text-gray-500">R$ {item.price.toFixed(2)}</span>
               </div>
               <button
                 className="text-red-500 hover:text-red-700"
-                onClick={() => removeCarrinho(item.id)}
+                onClick={() => removeFromCart(item.id)}
               >
                 Remover
               </button>
