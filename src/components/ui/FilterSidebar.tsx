@@ -1,6 +1,8 @@
-import { Search, Filter, Grid, List, Star, Heart, ShoppingCart } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import SearchInput from "../ui/SearchInput";
 import { useState } from 'react';
+
+const [selectedCategory, setSelectedCategory] = useState('Todos');
 const categories = [
   'Todos',
   'Ração e Alimentação',
@@ -48,8 +50,8 @@ export const FilterSidebar = () => {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
-                    ? 'bg-teal-100 text-teal-800 font-medium'
-                    : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-teal-100 text-teal-800 font-medium'
+                  : 'text-gray-600 hover:bg-gray-100'
                   }`}
               >
                 {category}
