@@ -1,78 +1,73 @@
-import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../context/AuthContext"; //necessario um arquivo para realizar os fetches no backend
-import type { ProductType } from "../types/ProductType";
+"use client";
 
-export default function FavoriteList() {
-  const { isAuthenticated, userId } = useAuth();
+import type { ReactNode } from 'react';
+import React, { 
+  createContext, 
+  useState, 
+  useEffect,
+  useCallback
+} from 'react';
+import type { ProductType } from '../types/ProductType'; 
+
+// 1. A interface continua a mesma
+export interface FavoritesContextData {
+  favorites: ProductType[];
+  addToFavorites: (product: ProductType) => void;
+  removeFromFavorites: (productId: number) => void;
+  isFavorite: (productId: number) => boolean;
+  clearAllFavorites: () => void;
+}
+
+// 2. Exportamos o Contexto para que o hook possa acessá-lo de outro arquivo
+export const FavoritesContext = createContext<FavoritesContextData | undefined>(undefined);
+
+// 3. O Provider continua o mesmo
+export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [favorites, setFavorites] = useState<ProductType[]>([]);
-  const [isOpen, setIsOpen] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
 
+  // ... (toda a lógica do provider continua exatamente a mesma)
   useEffect(() => {
-    const localFavs = JSON.parse(localStorage.getItem("favorites") || "[]");
-
-    if (isAuthenticated) {
-      fetchFavoritesFromBackend(userId).then((backendFavs) => {
-        // Merge únicos (sem duplicar por id)
-        const merged = [
-          ...backendFavs,
-          ...localFavs.filter(
-            (local) => !backendFavs.find((b) => b.id === local.id)
-          ),
-        ];
-        setFavorites(merged);
-        localStorage.setItem("favorites", JSON.stringify(merged));
-      });
-    } else {
-      setFavorites(localFavs);
-    }
-  }, [isAuthenticated, userId]);
-
-  function removeFavorite(id: string) {
-    const updated = favorites.filter((p) => p.id !== id);
-    setFavorites(updated);
-    localStorage.setItem("favorites", JSON.stringify(updated));
-  }
-
-  function clearAll() {
-    setFavorites([]);
-    localStorage.removeItem("favorites");
-  }
-
-  // Fecha ao clicar fora
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
+    try {
+      const storedFavorites = localStorage.getItem('app-favorites');
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
       }
+    } catch (error) {
+      console.error("Falha ao carregar favorites do localStorage", error);
+      setFavorites([]);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    localStorage.setItem('app-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const addToFavorites = useCallback((product: ProductType) => {
+    setFavorites(prevFavorites => {
+      if (!prevFavorites.some(item => item.id === product.id)) {
+        return [...prevFavorites, product];
+      }
+      return prevFavorites;
+    });
+  }, []);
+
+  const removeFromFavorites = useCallback((productId: number) => {
+    setFavorites(prevFavorites => prevFavorites.filter(item => item.id !== productId));
+  }, []);
+
+  const clearAllFavorites = useCallback(() => {
+    setFavorites([]);
+  }, []);
+  
+  const isFavorite = useCallback((productId: number) => {
+    return favorites.some(item => item.id === productId);
+  }, [favorites]);
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute top-16 right-4 w-80 bg-white border p-4 shadow-xl rounded-xl z-50"
-    >
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-bold">Favoritos</h2>
-        <button onClick={clearAll} className="text-sm text-red-500">Limpar tudo</button>
-      </div>
-      <ul>
-        {favorites.map((p) => (
-          <li key={p.id} className="flex justify-between items-center border-b py-2">
-            <span>{p.name}</span>
-            <div className="flex gap-2">
-              <button className="text-blue-500 text-sm">Ver</button>
-              <button onClick={() => removeFavorite(p.id)} className="text-red-500 text-sm">Remover</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {favorites.length === 0 && <p className="text-gray-500 text-sm mt-4">Nenhum favorito ainda.</p>}
-    </div>
+    <FavoritesContext.Provider value={{ favorites, addToFavorites, removeFromFavorites, clearAllFavorites, isFavorite }}>
+      {children}
+    </FavoritesContext.Provider>
   );
-}
+};
+
+// 4. O hook 'useFavorites' foi REMOVIDO deste arquivo.
