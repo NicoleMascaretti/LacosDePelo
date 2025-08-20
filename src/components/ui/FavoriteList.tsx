@@ -6,8 +6,8 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+} from "./Sheet";
+import { Button } from "./Button";
 import { useFavorites } from "../../hooks/useFavorites";
 import type { ProductType } from '../../types/ProductType';
 
