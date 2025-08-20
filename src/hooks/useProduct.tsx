@@ -33,3 +33,4 @@ export function useProducts({ tag }: UseProductsProps) {
 
   return { products, loading, error };
 }
+

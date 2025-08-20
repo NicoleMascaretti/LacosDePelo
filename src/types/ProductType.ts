@@ -1,4 +1,4 @@
-export interface ProductType {
+/* export interface ProductType {
     id: number;
     name: string;
     price: number;
@@ -9,4 +9,17 @@ export interface ProductType {
     badge: string | null;
     category: string;
     inStock: boolean;
+} */
+
+export interface ProductType {
+    id: number;
+    name: string;
+    price: number;
+    originalPrice?: number; 
+    category: string;
+    rating: number;
+    reviews: number;
+    image: string;
+    inStock: boolean;
+    badge?: string;
 }
