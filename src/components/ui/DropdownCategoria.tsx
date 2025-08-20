@@ -74,7 +74,8 @@ const DropdownCategoria = () => {
     return (
         <div className="relative inline-block" ref={dropdownRef}>
             {loading && <div className="text-gray-500 px-4 py-2">Carregando categorias...</div>}
-            {error && <div className="text-red-500 px-4 py-2">Erro: {error}</div>}
+            {/* Tem ver isso daqui depois com a API. Esse erro aparece no front do usuário na Navbar*/}
+            {/* {error && <div className="text-red-500 px-4 py-2">Erro: {error}</div>} */}
             <a onClick={() => setOpen((prev) => !prev)} onMouseEnter={() => setOpen(true)} className="text-gray-700 hover:text-teal-600 hover:cursor-pointer transition-colors">
                 Categorias
             </a>
