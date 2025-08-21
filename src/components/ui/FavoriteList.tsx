@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, X, ShoppingCart, Trash2 } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -21,7 +21,7 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-md">
+      <SheetContent className="w-full sm:max-w-md bg-white">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-red-500 fill-current" />

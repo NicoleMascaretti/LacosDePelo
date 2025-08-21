@@ -8,7 +8,7 @@ import ShoppingCartWidget from "./components/ui/ShoppingCartWidget";
 // Providers
 import { CategoryProvider } from "./contexts/CategoryContext";
 import { CartProvider } from "./contexts/CartContext";
-
+import { FavoritesProvider } from './contexts/FavoriteListContext';
 
 // Pages
 import Home from "./pages/Home";
@@ -21,21 +21,23 @@ import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
-    <CartProvider>
-      <CategoryProvider>
-        <BrowserRouter>
+    <FavoritesProvider>
+      <CartProvider>
+        <CategoryProvider>
+          <BrowserRouter>
 
 
-          {/* Rotas */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/produtos" element={<Produtos />} />
-            <Route path="/sobre" element={<Sobre />} />
-            <Route path="/contato" element={<Contato />} />
-          </Routes>
-        </BrowserRouter>
-      </CategoryProvider>
-    </CartProvider>
+            {/* Rotas */}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/produtos" element={<Produtos />} />
+              <Route path="/sobre" element={<Sobre />} />
+              <Route path="/contato" element={<Contato />} />
+            </Routes>
+          </BrowserRouter>
+        </CategoryProvider>
+      </CartProvider>
+    </FavoritesProvider>
   );
 };
 
