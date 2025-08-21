@@ -6,6 +6,7 @@ import SearchInput from "./ui/SearchInput";
 import ShoppingCartWidget from "./ui/ShoppingCartWidget";
 import UserMenu from "./ui/UserMenu";
 import TopBarInfo from "./ui/TopBarInfo";
+import FavoriteList from "./ui/FavoriteList";
 
 const Navbar = () => {
   const [search, setSearch] = useState("");
@@ -46,9 +47,9 @@ const Navbar = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
           {/* Favoritos futuramente */}
-          {/* <FavoriteList /> */}
-          <ShoppingCartWidget />
+          {/* <FavoriteList />  */}
           <UserMenu />
+          <ShoppingCartWidget />
         </div>
       </div>
     </header>
