@@ -1,4 +1,4 @@
-import logo from '../../../public/logo.png'
+// import logo from '../../../public/logo.png'
 
 interface LogoProps {
     className?: string;
@@ -7,7 +7,7 @@ interface LogoProps {
 export default function Logo ({className = ""}: LogoProps) {
     return(
             <img
-                src={logo} 
+                src="/logo.png"
                 alt="logo"
                 className={`object-contain ${className}`}
             />

@@ -1,7 +1,10 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import ButtonsHome from "../components/ui/ButtonsHome";
-import ProductCard from "../components/ui/ProductCard"; 
+import ProductCard from "../components/ui/ProductCard";
+import Footer from "../components/ui/Footer"; 
+import HeroBannerpt2 from "../components/HeroBannerpt2";
+import CardCategoria from "../components/ui/CardCategoria";
 import type { ProductType } from "../types/ProductType";
 
 // 👇 produtos mockados (pode mover para um arquivo separado se preferir)
@@ -104,14 +107,33 @@ const Home = () => {
         </div>
       </main>
 
+      {/* Cards de categorias */}
+      <section className="container mx-auto py-16">
+       <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+          Explore Nossas Categorias
+        </h2>
+        <p className="text-center text-gray-600 mb-12 text-2xl">
+          Encontre tudo que seu pet precisa, dividido em categorias para facilitar sua busca
+        </p>
+      </section>
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-10">
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🥘"} titulo={"Rações e Alimentação"} sub={"Rações premium e snacks"} />
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎾"} titulo={"Brinquedos"} sub={"Brinquedos interativos e seguros"} />
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🛁"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎀"} titulo={"Acessórios"} sub={"Acessórios estilosos e funcionais"} />
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"💊"} titulo={"Medicamentos"} sub={"Medicamentos e suplementos para pets"} />
+          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🏠"} titulo={"Casinhas e Transporte"} sub={"Casinhas confortáveis e transporte"} />
+        </div>
+      </div>
       {/* Produtos em Destaque */}
       <section className="container mx-auto py-16">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
-        <p className="text-center text-gray-600 mb-12">
+        <p className="text-center text-gray-600 mb-12 text-2xl">
           Os produtos mais amados pelos nossos clientes, com qualidade garantida
-          e preços especiais
+          <br />e preços especiais
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {mockProducts.map((p) => (
@@ -125,6 +147,12 @@ const Home = () => {
           </button>
         </div>
       </section>
+
+      {/* HeroBanner2 */}
+      <HeroBannerpt2 />
+      {/* Footer (já pronto) */}
+      <Footer />
+
     </div>
   );
 };
