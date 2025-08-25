@@ -78,9 +78,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         {/* Botão Adicionar */}
         <button
           onClick={() => addToCart(product)}
-          className="flex p-2 w-full rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold transition-colors"
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group"
         >
-          <ShoppingCart className="h-5 w-5 mr-2" />
+          <ShoppingCart className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
           Adicionar ao Carrinho
         </button>
       </div>

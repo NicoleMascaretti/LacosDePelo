@@ -162,8 +162,8 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mt-10">
-          <button className="px-6 py-3 bg-teal-600 text-white rounded-xl shadow hover:bg-teal-700 transition">
+        <div className="text-center mt-12">
+          <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
             Ver Todos os Produtos
           </button>
         </div>

@@ -13,7 +13,7 @@ const ShoppingCartWidget = () => {
       {/* Botão carrinho */}
       <button
         onClick={() => setSidebarOpen(true)}
-        className="relative p-2 rounded-full hover:bg-gray-100"
+        className="relative p-2 rounded-full text-gray-600 hover:bg-gray-100"
       >
         <ShoppingCart size={24} />
         {carrinho.length > 0 && (
