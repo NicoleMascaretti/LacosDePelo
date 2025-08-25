@@ -150,7 +150,7 @@ const Home = () => {
         </div>
       </div>
       {/* Produtos em Destaque */}
-      <section className="container max-w-7xl px-4 mx-auto py-32">
+      <section className="container max-w-7xl px-4 mx-auto mt-24 mb-12 ">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
