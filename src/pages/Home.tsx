@@ -129,11 +129,11 @@ const Home = () => {
 
 
       {/* Cards de categorias */}
-      <section className="container mx-auto py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+      <section className="container mx-auto ">
+        <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Explore Nossas Categorias
         </h2>
-        <p className="text-center text-gray-600 mb-12 text-2xl">
+        <p className="text-center text-gray-600 text-xl">
           Encontre tudo que seu pet precisa, dividido em categorias para facilitar sua busca
         </p>
       </section>
@@ -148,11 +148,11 @@ const Home = () => {
         </div>
       </div>
       {/* Produtos em Destaque */}
-      <section className="container max-w-7xl px-4 mx-auto py-16">
+      <section className="container max-w-7xl px-4 mx-auto py-32">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
-        <p className="text-center text-gray-600 mb-12 text-2xl">
+        <p className="text-center text-gray-600 mb-12 text-xl">
           Os produtos mais amados pelos nossos clientes, com qualidade garantida
           <br />e preços especiais
         </p>
