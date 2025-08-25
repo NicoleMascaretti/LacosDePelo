@@ -85,9 +85,8 @@ const HeroBannerpt2 = () => {
               src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=600&q=80"
               alt="Cachorro feliz"
               className="rounded-2xl shadow-2xl w-full"
-            />
-            
-            <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg">
+            />            
+{/*             <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg">
               <div className="flex items-center space-x-4">
                 <div className="bg-teal-100 p-3 rounded-full">
                   <Heart className="h-8 w-8 text-teal-600 fill-current" />
@@ -97,7 +96,7 @@ const HeroBannerpt2 = () => {
                   <div className="text-gray-600">Pets Felizes</div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
