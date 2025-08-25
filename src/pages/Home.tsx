@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import ButtonsHome from "../components/ui/ButtonsHome";
 import ProductCard from "../components/ui/ProductCard";
-import Footer from "../components/ui/Footer"; 
+import Footer from "../components/ui/Footer";
 import HeroBannerpt2 from "../components/HeroBannerpt2";
 import CardCategoria from "../components/ui/CardCategoria";
 import type { ProductType } from "../types/ProductType";
@@ -65,51 +65,61 @@ const Home = () => {
 
       {/* Hero (já pronto) */}
       <main className="container mx-auto py-8">
-        <div className="mt-5 flex gap-5">
-          <div className="mt-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Coluna do texto */}
+          <div className="space-y-8">
             <h1 className="text-4xl lg:text-6xl leading-tight text-gray-900 font-bold">
               Carinho e estilo para <br /> o seu{" "}
               <span className="text-teal-600">pet</span> em cada <br /> produto
             </h1>
 
-            <p className="text-xl text-gray-600 leading-relaxed mt-5">
-              Na Laços de Pelo, oferecemos produtos de qualidade com o <br />{" "}
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Na Laços de Pelo, oferecemos produtos de qualidade com o <br />
               carinho e atenção que seu melhor amigo merece. Beleza e bem-estar
               em cada detalhe.
             </p>
 
-            <div className="mt-10">
+            <div>
               <ButtonsHome />
             </div>
 
-            <div className="flex justify-around text-center pt-8 mt-5">
-              <div className="w-1/3">
-                <p className="text-3xl font-bold text-teal-600">5k+</p>
-                <p className="text-md text-gray-500">Produtos</p>
+            <div className="grid grid-cols-3 gap-8 pt-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-teal-600">5k+</div>
+                <div className="text-gray-600">Produtos</div>
               </div>
-              <div className="w-1/3">
-                <p className="text-3xl font-bold text-orange-500">24h</p>
-                <p className="text-md text-gray-500">Entrega</p>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-orange-500">24h</div>
+                <div className="text-gray-600">Entrega</div>
               </div>
-              <div className="w-1/3">
-                <p className="text-3xl font-bold text-teal-600">100%</p>
-                <p className="text-md text-gray-500">Garantia</p>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-teal-600">100%</div>
+                <div className="text-gray-600">Garantia</div>
               </div>
             </div>
           </div>
-          <div>
-            <img
-              className="rounded-xl shadow-2xl w-full h-full"
-              src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
-              alt="Imagem de exemplo"
-            />
+
+          {/* Coluna da imagem */}
+          <div className="relative">
+            <div className="relative z-10">
+              <img
+                src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
+                alt="Imagem de exemplo"
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+
+            {/* Elementos decorativos */}
+            <div className="absolute -top-4 -right-4 w-72 h-72 bg-teal-200 rounded-full blur-3xl opacity-30 -z-10"></div>
+            <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -z-10"></div>
           </div>
         </div>
       </main>
 
+
       {/* Cards de categorias */}
       <section className="container mx-auto py-16">
-       <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
           Explore Nossas Categorias
         </h2>
         <p className="text-center text-gray-600 mb-12 text-2xl">
