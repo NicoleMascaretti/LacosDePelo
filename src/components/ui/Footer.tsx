@@ -1,4 +1,5 @@
 import React from 'react';
+import Logo from "../ui/Logo";
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer(){
@@ -9,13 +10,9 @@ export default function Footer(){
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img 
-                src="/lovable-uploads/622c5e12-a72b-4f54-b165-d35b8f7325b6.png" 
-                alt="Laços de Pelo" 
-                className="h-8 w-auto brightness-0 invert"
-              />
+              <Logo className="h-12 w-auto" />
             </div>
-            <p className="text-gray-400 leading-relaxed">
+            <p className="text-gray-400 leading-relaxed mr-12">
               Sua loja online especializada em produtos para pets. 
               Carinho, qualidade e os melhores preços para criar laços especiais com seu melhor amigo.
             </p>
@@ -82,7 +79,7 @@ export default function Footer(){
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2024 Laços de Pelo. Todos os direitos reservados.
+              © 2025 Laços de Pelo. Todos os direitos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors">
