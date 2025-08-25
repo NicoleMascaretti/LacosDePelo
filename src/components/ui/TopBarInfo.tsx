@@ -9,16 +9,16 @@ export default function TopBarInfo() {
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-1">
               <Phone size={16} className="text-green-600" />
-              <span>(11) 99999-9999</span>
+              <span>(11) 99598-4383</span>
             </div>
 
             <div className="flex items-center gap-1">
               <Mail size={16} />
-              <span>contato@lacosdepelo.com</span>
+              <span>lacosdepelo.atendimento@gmail.com</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 flex-wrap">
+{/*           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-1">
               <span>Frete Grátis acima de R$ 100</span>
             </div>
@@ -27,7 +27,7 @@ export default function TopBarInfo() {
               <Truck size={16} />
               <span>Entrega em 24h</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

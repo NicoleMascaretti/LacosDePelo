@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from "../ui/Logo";
+import LogoInvertida from "../ui/LogoInvertida";
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer(){
@@ -10,13 +10,13 @@ export default function Footer(){
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Logo className="h-12 w-auto" />
+              <LogoInvertida className="h-12 w-auto  brightness-0 invert" />
             </div>
             <p className="text-gray-400 leading-relaxed mr-12">
               Sua loja online especializada em produtos para pets. 
               Carinho, qualidade e os melhores preços para criar laços especiais com seu melhor amigo.
             </p>
-            <div className="flex space-x-4">
+{/*             <div className="flex space-x-4">
               <a href="#" className="bg-gray-800 hover:bg-teal-600 p-2 rounded-full transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
@@ -26,7 +26,7 @@ export default function Footer(){
               <a href="#" className="bg-gray-800 hover:bg-teal-600 p-2 rounded-full transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-            </div>
+            </div> */}
           </div>
 
           {/* Quick Links */}
@@ -36,8 +36,8 @@ export default function Footer(){
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Início</a>
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Produtos</a>
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Categorias</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Promoções</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Blog</a>
+              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Sobre</a>
+              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Contato</a>
             </div>
           </div>
 
@@ -59,15 +59,15 @@ export default function Footer(){
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-400">(11) 99999-9999</span>
+                <span className="text-gray-400">(11) 99598-4383</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-400">contato@lacosdepelo.com</span>
+                <span className="text-gray-400">lacosdepelo.atendimento@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-400">São Paulo, SP</span>
+                <span className="text-gray-400">São Paulo, São Caetano do Sul</span>
               </div>
             </div>
           </div>
