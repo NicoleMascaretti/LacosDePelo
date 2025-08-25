@@ -44,14 +44,15 @@ const Navbar = () => {
           </div>
 
           {/* Área da direita */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-4">
             {/* Busca */}
             <SearchInput
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
 
-
+            {/* Ícones da navbar */}
+            <div className="flex items-center">
             {/* Favoritos */}
             <button
               className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -65,6 +66,7 @@ const Navbar = () => {
 
             {/* Usuário */}
             <UserMenu />
+            </div>
           </div>
         </div>
       </header>
