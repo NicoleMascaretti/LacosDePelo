@@ -12,7 +12,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group ${
+      className={`bg-white rounded-xl shadow-lg hover:shadow-lg transition-all duration-300 overflow-hidden group ${
         viewMode === 'list' ? 'flex' : ''
       }`}
     >

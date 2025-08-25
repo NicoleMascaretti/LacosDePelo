@@ -149,14 +149,14 @@ const Home = () => {
       </div>
       {/* Produtos em Destaque */}
       <section className="container max-w-7xl px-4 mx-auto py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+        <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
         <p className="text-center text-gray-600 mb-12 text-2xl">
           Os produtos mais amados pelos nossos clientes, com qualidade garantida
           <br />e preços especiais
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
           {mockProducts.map((p) => (
             <ProductCard key={p.id} product={p} viewMode="grid" />
           ))}
