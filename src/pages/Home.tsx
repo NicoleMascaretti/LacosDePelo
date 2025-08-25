@@ -64,87 +64,89 @@ const Home = () => {
       {/* Navbar fixo */}
       <Navbar />
 
-      {/* Hero (já pronto) */}
-      <section className="bg-gradient-to-br from-teal-50 to-orange-50 py-16 lg:py-24">
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Carinho e estilo para seu
-                  <span className="text-teal-600"> pet </span>
-                  em cada produto
-                </h1>
+      {/* Hero*/}
+      <div className="bg-gradient-to-br from-teal-50 to-orange-50">
+        <section className="py-16 lg:py-24">
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                    Carinho e estilo para seu
+                    <span className="text-teal-600"> pet </span>
+                    em cada produto
+                  </h1>
 
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Na Laços de Pelo, oferecemos produtos de qualidade com o carinho
-                  e atenção que seu melhor amigo merece. Beleza e bem-estar em cada detalhe.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
-                  Ver Produtos
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
-                  Conheça Nossa História
-                </button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-8 pt-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-teal-600">5k+</div>
-                  <div className="text-gray-600">Produtos</div>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    Na Laços de Pelo, oferecemos produtos de qualidade com o carinho
+                    e atenção que seu melhor amigo merece. Beleza e bem-estar em cada detalhe.
+                  </p>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-orange-500">24h</div>
-                  <div className="text-gray-600">Entrega</div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
+                    Ver Produtos
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+
+                  <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
+                    Conheça Nossa História
+                  </button>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-emerald-600">100%</div>
-                  <div className="text-gray-600">Garantia</div>
+
+                <div className="grid grid-cols-3 gap-8 pt-8">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-teal-600">5k+</div>
+                    <div className="text-gray-600">Produtos</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-orange-500">24h</div>
+                    <div className="text-gray-600">Entrega</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-emerald-600">100%</div>
+                    <div className="text-gray-600">Garantia</div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="relative">
-              <div className="relative z-10">
-                <img
-                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
-                  alt="Cachorro e gato felizes"
-                  className="rounded-2xl shadow-2xl w-full"
-                />
+              <div className="relative">
+                <div className="relative z-10">
+                  <img
+                    src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
+                    alt="Cachorro e gato felizes"
+                    className="rounded-2xl shadow-2xl w-full"
+                  />
+                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-72 h-72 bg-teal-200 rounded-full blur-3xl opacity-30 -z-10"></div>
+                <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -z-10"></div>
               </div>
-
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-72 h-72 bg-teal-200 rounded-full blur-3xl opacity-30 -z-10"></div>
-              <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -z-10"></div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
 
 
-      {/* Cards de categorias */}
-      <section className="container mx-auto ">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
-          Explore Nossas Categorias
-        </h2>
-        <p className="text-center text-gray-600 text-xl">
-          Encontre tudo que seu pet precisa, dividido em categorias para facilitar sua busca
-        </p>
-      </section>
-      <div className="container max-w-7xl px-4 mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-10">
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🥘"} titulo={"Rações e Alimentação"} sub={"Rações premium e snacks"} />
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎾"} titulo={"Brinquedos"} sub={"Brinquedos interativos e seguros"} />
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🛁"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎀"} titulo={"Acessórios"} sub={"Acessórios estilosos e funcionais"} />
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"💊"} titulo={"Medicamentos"} sub={"Medicamentos e suplementos para pets"} />
-          <CardCategoria img={"https://picsum.photos/400/300"} icon={"🏠"} titulo={"Casinhas e Transporte"} sub={"Casinhas confortáveis e transporte"} />
+        {/* Cards de categorias */}
+        <section className="container mx-auto ">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
+            Explore Nossas Categorias
+          </h2>
+          <p className="text-center text-gray-600 text-xl">
+            Encontre tudo que seu pet precisa, dividido em categorias para facilitar sua busca
+          </p>
+        </section>
+        <div className="container max-w-7xl px-4 mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-10">
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🥘"} titulo={"Rações e Alimentação"} sub={"Rações premium e snacks"} />
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎾"} titulo={"Brinquedos"} sub={"Brinquedos interativos e seguros"} />
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🛁"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎀"} titulo={"Acessórios"} sub={"Acessórios estilosos e funcionais"} />
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"💊"} titulo={"Medicamentos"} sub={"Medicamentos e suplementos para pets"} />
+            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🏠"} titulo={"Casinhas e Transporte"} sub={"Casinhas confortáveis e transporte"} />
+          </div>
         </div>
       </div>
       {/* Produtos em Destaque */}
