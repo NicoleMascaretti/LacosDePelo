@@ -64,57 +64,48 @@ const Home = () => {
       <Navbar />
 
       {/* Hero (já pronto) */}
-      <main className="container mx-auto py-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Coluna do texto */}
-          <div className="space-y-8">
-            <h1 className="text-4xl lg:text-6xl leading-tight text-gray-900 font-bold">
-              Carinho e estilo para <br /> o seu{" "}
-              <span className="text-teal-600">pet</span> em cada <br /> produto
-            </h1>
+      <main className="bg-gradient-to-r from-teal-50 to-orange-50 py-16 lg:py-24">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Coluna de texto */}
+            <div className="space-y-8">
+              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Carinho e estilo para seu
+                <span className="text-teal-600"> pet </span>
+                em cada produto
+              </h1>
 
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Na Laços de Pelo, oferecemos produtos de qualidade com o <br />
-              carinho e atenção que seu melhor amigo merece. Beleza e bem-estar
-              em cada detalhe.
-            </p>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Na Laços de Pelo, oferecemos produtos de qualidade com o carinho
+                e atenção que seu melhor amigo merece. Beleza e bem-estar em cada detalhe.
+              </p>
 
-            <div>
-              <ButtonsHome />
-            </div>
-
-            <div className="grid grid-cols-3 gap-8 pt-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal-600">5k+</div>
-                <div className="text-gray-600">Produtos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">24h</div>
-                <div className="text-gray-600">Entrega</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-teal-600">100%</div>
-                <div className="text-gray-600">Garantia</div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
+                  Ver Produtos
+                </button>
+                <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
+                  Conheça Nossa História
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Coluna da imagem */}
-          <div className="relative">
-            <div className="relative z-10">
-              <img
-                src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
-                alt="Imagem de exemplo"
-                className="rounded-2xl shadow-2xl w-full"
-              />
+            {/* Coluna da imagem */}
+            <div className="relative">
+              <div className="relative z-10">
+                <img
+                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
+                  alt="Imagem de exemplo"
+                  className="rounded-2xl shadow-2xl w-full"
+                />
+              </div>
+              <div className="absolute -top-4 -right-4 w-72 h-72 bg-teal-200 rounded-full blur-3xl opacity-30 -z-10"></div>
+              <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -z-10"></div>
             </div>
-
-            {/* Elementos decorativos */}
-            <div className="absolute -top-4 -right-4 w-72 h-72 bg-teal-200 rounded-full blur-3xl opacity-30 -z-10"></div>
-            <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-orange-200 rounded-full blur-3xl opacity-30 -z-10"></div>
           </div>
         </div>
       </main>
+
 
 
       {/* Cards de categorias */}
