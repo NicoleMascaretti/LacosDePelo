@@ -1,4 +1,3 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import { ArrowRight } from 'lucide-react';
 import ButtonsHome from "../components/ui/ButtonsHome";
@@ -84,10 +83,13 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
-                    Ver Produtos
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  <a href="/produtos">
+                    <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
+                      Ver Produtos
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </a>
+
 
                   <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
                     Conheça Nossa História
@@ -162,7 +164,7 @@ const Home = () => {
           {mockProducts.map((p) => (
             <div key={p.id} className="flex justify-center">
               <div className="w-full" style={{ maxWidth: 280, minWidth: 220 }}>
-          <ProductCard product={p} viewMode="grid" />
+                <ProductCard product={p} viewMode="grid" />
               </div>
             </div>
           ))}
@@ -170,7 +172,7 @@ const Home = () => {
 
         <div className="text-center mt-12">
           <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
-            Ver Todos os Produtos
+            <a href="/produtos">Ver Todos os Produtos</a>
           </button>
         </div>
       </section>
