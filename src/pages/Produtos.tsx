@@ -265,7 +265,7 @@ const Produtos = () => {
                   variant={viewMode === 'grid' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('grid')}
-                  className={viewMode === 'grid' ? 'bg-black text-white hover:bg-black/90' : ''}
+                  className={viewMode === 'grid' ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}
                 >
                   <Grid className="h-4 w-4" />
                 </Button>
@@ -274,7 +274,7 @@ const Produtos = () => {
                   variant={viewMode === 'list' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className={viewMode === 'list' ? 'bg-black text-white hover:bg-black/90' : ''}
+                  className={viewMode === 'list' ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}
                 >
                   <List className="h-4 w-4" />
                 </Button>
