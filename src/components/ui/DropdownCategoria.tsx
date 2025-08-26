@@ -36,7 +36,7 @@ const medicamentos = [
     { id: 1, nome: "Vermífugos" },
     { id: 2, nome: "Anti-inflamatórios" },
     { id: 3, nome: "Antibitóticos" },
-    { id: 4, nome: "Antipulgas e carrapatos"}
+    { id: 4, nome: "Antipulgas e carrapatos" }
 ]
 
 const categoriasPadrao = [
@@ -72,7 +72,7 @@ const DropdownCategoria = () => {
         if (categorias.length === 0) {
             setCategorias(categoriasPadrao);
         }
-        function handleClickOutside(event:MouseEvent) {
+        function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setOpen(false);
                 setSubmenuOpen(null);
@@ -87,11 +87,11 @@ const DropdownCategoria = () => {
             {loading && <div className="text-gray-500 px-4 py-2">Carregando categorias...</div>}
             {/* Tem ver isso daqui depois com a API. Esse erro aparece no front do usuário na Navbar*/}
             {/* {error && <div className="text-red-500 px-4 py-2">Erro: {error}</div>} */}
-            
+
             {/* Botão principal com a seta animada */}
             <a onClick={() => setOpen((prev) => !prev)} onMouseEnter={() => setOpen(true)} className="flex items-center gap-1 text-gray-700 hover:text-teal-600 hover:cursor-pointer transition-colors">
                 Categorias
-                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${open ? 'rotate-180' : ''} mt-0.5`} />
             </a>
 
             {/* Dropdown menu */}
@@ -150,43 +150,43 @@ const DropdownCategoria = () => {
                                     )}
                                     {/* ... (restante dos submenus permanece igual) ... */}
 
-                                     {cat.nome === "Higiene e beleza" && submenuOpen === cat.nome && (
+                                    {cat.nome === "Higiene e beleza" && submenuOpen === cat.nome && (
                                         <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
                                             onMouseEnter={() => setSubmenuOpen(cat.nome)}
                                             onMouseLeave={() => setSubmenuOpen(null)}>
-                                                <ul>
-                                                    {higiene.map((item) => (
-                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                            {item.nome}
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                            <ul>
+                                                {higiene.map((item) => (
+                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                        {item.nome}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     )}
                                     {cat.nome === "Acessórios" && submenuOpen === cat.nome && (
                                         <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
                                             onMouseEnter={() => setSubmenuOpen(cat.nome)}
                                             onMouseLeave={() => setSubmenuOpen(null)}>
-                                                <ul>
-                                                    {acessorios.map((item) => (
-                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                            {item.nome}
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                            <ul>
+                                                {acessorios.map((item) => (
+                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                        {item.nome}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     )}
                                     {cat.nome === "Medicamentos" && submenuOpen === cat.nome && (
                                         <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
                                             onMouseEnter={() => setSubmenuOpen(cat.nome)}
                                             onMouseLeave={() => setSubmenuOpen(null)}>
-                                                <ul>
-                                                    {medicamentos.map((item) => (
-                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                            {item.nome}
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                            <ul>
+                                                {medicamentos.map((item) => (
+                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                        {item.nome}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     )}
                                 </li>
