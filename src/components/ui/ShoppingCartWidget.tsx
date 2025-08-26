@@ -33,18 +33,30 @@ const ShoppingCartWidget = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 right-0 w-full sm:w-1/3 h-full bg-white shadow-lg p-6 transition-transform duration-500 z-50 ${
+        className={`fixed top-0 right-0 w-full sm:w-1/3 h-full bg-white shadow-lg p-5 transition-transform duration-500 z-50 ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+
+          <div className="flex flex-col space-y-2 text-center sm:text-left">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <ShoppingBag /> Carrinho de Compras ({carrinho.length} itens)</h2>
+            <p className="text-sm text-muted-foreground text-gray-500">
+              Revise seus produtos antes de finalizar a compra
+            </p>
+          </div>
+
+        {/* <div className="flex items-center justify-between mb-6">
+          <ShoppingBag />
           <h2 className="text-lg font-semibold">Carrinho de Compras ({carrinho.length} itens)</h2>
           <button onClick={() => setSidebarOpen(false)}>
             <X size={24} />
           </button>
         </div>
-
+        <div>
+          <p>Revise seus produtos antes de finalizar a compra</p>
+        </div> */}
         {/* Conteúdo */}
         <div className="flex flex-col h-[calc(100%-3rem)]">
           {carrinho.length === 0 ? (
@@ -55,6 +67,7 @@ const ShoppingCartWidget = () => {
                 Adicione alguns produtos para começar suas compras
               </p>
             </div>
+            
           ) : (
             <div className="flex-1 overflow-y-auto">
               {carrinho.map((item) => (
@@ -86,6 +99,9 @@ const ShoppingCartWidget = () => {
             </div>
           )}
         </div>
+        <button className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary" onClick={() => setSidebarOpen(false)}>
+          <X size={18} />
+        </button>
       </aside>
     </div>
   );
