@@ -190,7 +190,7 @@ const Produtos = () => {
       <Navbar />
       {/* Page Header */}
       <div className="bg-gradient-to-r from-teal-600 to-orange-400 py-16">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
             Nossos Produtos
           </h1>
@@ -200,7 +200,7 @@ const Produtos = () => {
         </div>
       </div>
 
-      <div className="container max-w-7xl px-4 mx-auto py-8">
+      <div className="container max-w-7xl mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <div className="lg:w-64 space-y-6">

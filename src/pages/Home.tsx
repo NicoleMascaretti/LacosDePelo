@@ -66,7 +66,7 @@ const Home = () => {
       {/* Hero*/}
       <div className="bg-gradient-to-br from-teal-50 to-orange-50">
         <section className="py-16 lg:py-24">
-          <div className="container max-w-7xl mx-auto px-4">
+          <div className="container max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
                 <div className="space-y-4">
@@ -142,7 +142,7 @@ const Home = () => {
             Encontre tudo que seu pet precisa, dividido em categorias para facilitar sua busca
           </p>
         </section>
-        <div className="container max-w-7xl px-4 mx-auto">
+        <div className="container max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
             <CardCategoria img={"public/racao.jpg"} titulo={"Rações e Alimentação"} sub={"Rações premium e Snacks para seu pet"} />
             <CardCategoria img={"public/brinquedos.jpg"} titulo={"Brinquedos"} sub={"Brinquedos diversos para cachorros e gatos"} />
@@ -154,7 +154,7 @@ const Home = () => {
         </div>
       </div>
       {/* Produtos em Destaque */}
-      <section className="container max-w-7xl px-4 mx-auto mt-24 mb-12 ">
+      <section className="container max-w-7xl mx-auto mt-24 mb-12 ">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
@@ -165,7 +165,7 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {mockProducts.map((p) => (
             <div key={p.id} className="flex justify-center">
-              <div className="w-full" style={{ maxWidth: 280, minWidth: 220 }}>
+              <div className="w-full" >
                 <ProductCard product={p} viewMode="grid" />
               </div>
             </div>

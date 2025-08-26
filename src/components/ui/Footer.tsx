@@ -5,7 +5,7 @@ import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react'
 export default function Footer() {
   return (
     <footer className="w-full bg-gray-900 text-white">
-      <div className="container max-w-7xl px-4 mx-auto py-12">
+      <div className="container max-w-7xl mx-auto py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Brand */}
           <div className="space-y-4">
@@ -75,7 +75,7 @@ export default function Footer() {
       </div>
       {/* Bottom Bar */}
       <div className="w-full border-t border-gray-800">
-        <div className="container max-w-7xl mx-auto px-4 py-6">
+        <div className="container max-w-7xl mx-auto py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
               © 2025 Laços de Pelo. Todos os direitos reservados.

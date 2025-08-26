@@ -77,7 +77,7 @@ const Contato = () => {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             Entre em <span className="text-orange-300">Contato</span>
           </h1>

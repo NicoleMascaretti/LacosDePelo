@@ -2,7 +2,7 @@ import { Phone, Mail, Truck } from "lucide-react";
 
 export default function TopBarInfo() {
   return (
-    <div className="container mx-auto px-4 max-w-7xl">
+    <div className="container mx-auto max-w-7xl">
       <div className="w-full bg-white text-sm text-gray-700 border-b max-sm:hidden">
         <div className="mx-auto flex justify-between items-center flex-wrap gap-2 py-2">
 

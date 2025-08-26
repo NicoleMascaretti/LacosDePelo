@@ -21,7 +21,7 @@ const Navbar = () => {
         <TopBarInfo />
 
         {/* Navbar principal */}
-        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-4">
+        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3">
           {/* Logo + Links */}
           <div className="flex items-center gap-8">
             <Logo className="h-12 w-auto" />
