@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
 import ProductCard from "../components/ui/ProductCard";
-import { Search, Filter, Grid, List, Star, Heart, ShoppingCart } from 'lucide-react';
+import { Search, Filter, Grid, List } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/Pagination';
