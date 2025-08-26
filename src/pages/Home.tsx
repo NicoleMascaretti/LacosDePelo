@@ -140,12 +140,12 @@ const Home = () => {
         </section>
         <div className="container max-w-7xl px-4 mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🥘"} titulo={"Rações e Alimentação"} sub={"Rações premium e snacks"} />
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎾"} titulo={"Brinquedos"} sub={"Brinquedos interativos e seguros"} />
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🛁"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎀"} titulo={"Acessórios"} sub={"Acessórios estilosos e funcionais"} />
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"💊"} titulo={"Medicamentos"} sub={"Medicamentos e suplementos para pets"} />
-            <CardCategoria img={"https://picsum.photos/400/300"} icon={"🏠"} titulo={"Casinhas e Transporte"} sub={"Casinhas confortáveis e transporte"} />
+            <CardCategoria img={"public/racao.jpg"} titulo={"Rações e Alimentação"} sub={"Rações premium e Snacks para seu pet"} />
+            <CardCategoria img={"public/brinquedos.jpg"} titulo={"Brinquedos"} sub={"Brinquedos diversos para cachorros e gatos"} />
+            <CardCategoria img={"public/banho.avif"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
+            <CardCategoria img={"public/acessorios.jpg"} titulo={"Acessórios"} sub={"Acessórios estilosos e funcionais"} />
+            <CardCategoria img={"public/medicamentos.avif"} titulo={"Medicamentos"} sub={"Medicamentos e suplementos para pets"} />
+            <CardCategoria img={"public/casinhas.jpg"} titulo={"Casinhas e Transporte"} sub={"Casinhas confortáveis e transporte"} />
           </div>
         </div>
       </div>

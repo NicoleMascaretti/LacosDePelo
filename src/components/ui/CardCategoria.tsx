@@ -1,6 +1,6 @@
 import photo from "../../../public/Cachorro1.jpg"
 
-const CardCategoria = ({img, icon, titulo, sub}) => {
+const CardCategoria = ({img, titulo, sub}) => {
     return (
         <div className="w-full bg-white rounded-xl shadow-lg overflow-hidden font-sans cursor-pointer hover:-translate-y-2 transform-gpu duration-100">
             <div className="aspect-w-4 aspect-h-3 sm:aspect-w-16 sm:aspect-h-9">
@@ -13,7 +13,6 @@ const CardCategoria = ({img, icon, titulo, sub}) => {
 
             <div className="p-4 sm:p-6">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl sm:text-3xl">{icon}</span>
                     <h2 className="font-bold text-base sm:text-lg">{titulo}</h2>
                 </div>
                 <div>
