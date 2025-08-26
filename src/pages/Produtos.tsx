@@ -176,7 +176,14 @@ const Produtos = () => {
     }, 500); // 0.5s para simular loading
   }, []);
 
-  if (loading) return <p className="p-4">Carregando produtos...</p>;
+  // if (loading) return <div><p className="p-4">Carregando produtos...</p></div>;
+  if (loading) return(
+    <div>
+      <div className="animate">
+        <div className="loader">asdas</div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">

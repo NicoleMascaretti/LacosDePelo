@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShoppingCart, X, Package } from "lucide-react";
+import { ShoppingCart, X, ShoppingBag } from "lucide-react";
 import { useCart } from "../../hooks/useCart";
 
 const ShoppingCartWidget = () => {
@@ -26,14 +26,14 @@ const ShoppingCartWidget = () => {
       {/* Fundo escuro */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-80 z-40"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 right-0 w-full sm:w-1/3 h-full bg-white shadow-lg p-6 transition-transform z-50 ${
+        className={`fixed top-0 right-0 w-full sm:w-1/3 h-full bg-white shadow-lg p-6 transition-transform duration-500 z-50 ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -48,10 +48,10 @@ const ShoppingCartWidget = () => {
         {/* Conteúdo */}
         <div className="flex flex-col h-[calc(100%-3rem)]">
           {carrinho.length === 0 ? (
-            <div className="flex flex-col flex-1 items-center justify-center text-center text-gray-600">
-              <Package size={48} className="mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium">Seu carrinho está vazio</h3>
-              <p className="text-sm text-gray-500 mt-1">
+            <div className="flex flex-col flex-1 items-center justify-center text-center text-gray-600 mb-96">
+              <ShoppingBag size={64} className="mb- text-gray-400" />
+              <h3 className="text-lg font-semibold text-foreground text-black">Seu carrinho está vazio</h3>
+              <p className="text-md text-gray-500 mt-1">
                 Adicione alguns produtos para começar suas compras
               </p>
             </div>
