@@ -35,16 +35,16 @@ const HeroBannerpt2 = () => {
                 Por que escolher a
                 <span className="text-teal-600"> Laços de Pelo</span>?
               </h2>
-              
+
               <p className="text-xl text-gray-600 leading-relaxed">
-                Somos uma empresa especializada em produtos para pets, combinando carinho e qualidade 
-                em cada produto. Nossa seleção cuidadosa une produtos próprios de alta qualidade 
+                Somos uma empresa especializada em produtos para pets, combinando carinho e qualidade
+                em cada produto. Nossa seleção cuidadosa une produtos próprios de alta qualidade
                 com parcerias confiáveis através de dropshipping.
               </p>
-              
+
               <p className="text-gray-600 leading-relaxed">
-                Nossa missão é criar laços especiais entre você e seu pet através de produtos 
-                que unem funcionalidade, beleza e bem-estar, sempre com a conveniência da 
+                Nossa missão é criar laços especiais entre você e seu pet através de produtos
+                que unem funcionalidade, beleza e bem-estar, sempre com a conveniência da
                 compra online e preços justos.
               </p>
             </div>
@@ -74,9 +74,11 @@ const HeroBannerpt2 = () => {
               <p className="text-gray-600 mb-3">
                 Nossa equipe está sempre pronta para ajudar você a escolher o melhor para seu pet.
               </p>
-              <button className="bg-white text-teal-600 px-6 py-2 rounded-full font-semibold hover:bg-teal-50 transition-colors">
-                Falar Conosco
-              </button>
+              <a href="/contato">
+                <button className="bg-white text-teal-600 px-6 py-2 rounded-full font-semibold hover:bg-teal-50 transition-colors">
+                  Falar Conosco
+                </button>
+              </a>
             </div>
           </div>
 
@@ -85,8 +87,8 @@ const HeroBannerpt2 = () => {
               src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=600&q=80"
               alt="Cachorro feliz"
               className="rounded-2xl shadow-2xl w-full"
-            />            
-{/*             <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg">
+            />
+            {/*             <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg">
               <div className="flex items-center space-x-4">
                 <div className="bg-teal-100 p-3 rounded-full">
                   <Heart className="h-8 w-8 text-teal-600 fill-current" />

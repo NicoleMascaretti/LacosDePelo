@@ -90,10 +90,12 @@ const Home = () => {
                     </button>
                   </a>
 
+                  <a href="/sobre">
+                    <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
+                      Conheça Nossa História
+                    </button>
+                  </a>
 
-                  <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
-                    Conheça Nossa História
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-3 gap-8 pt-8">
