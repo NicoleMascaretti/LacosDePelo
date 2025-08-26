@@ -139,7 +139,7 @@ const Home = () => {
           </p>
         </section>
         <div className="container max-w-7xl px-4 mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
             <CardCategoria img={"https://picsum.photos/400/300"} icon={"🥘"} titulo={"Rações e Alimentação"} sub={"Rações premium e snacks"} />
             <CardCategoria img={"https://picsum.photos/400/300"} icon={"🎾"} titulo={"Brinquedos"} sub={"Brinquedos interativos e seguros"} />
             <CardCategoria img={"https://picsum.photos/400/300"} icon={"🛁"} titulo={"Higiene e Beleza"} sub={"Produtos para banho e cuidados pessoais"} />
@@ -158,9 +158,13 @@ const Home = () => {
           Os produtos mais amados pelos nossos clientes, com qualidade garantida
           <br />e preços especiais
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {mockProducts.map((p) => (
-            <ProductCard key={p.id} product={p} viewMode="grid" />
+            <div key={p.id} className="flex justify-center">
+              <div className="w-full" style={{ maxWidth: 280, minWidth: 220 }}>
+          <ProductCard product={p} viewMode="grid" />
+              </div>
+            </div>
           ))}
         </div>
 
