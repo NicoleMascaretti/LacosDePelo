@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShoppingCart, X, Package, ShoppingBag } from "lucide-react";
+import { ShoppingCart, X, ShoppingBag } from "lucide-react";
 import { useCart } from "../../hooks/useCart";
 
 const ShoppingCartWidget = () => {
