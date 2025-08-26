@@ -130,6 +130,14 @@ export default function Produtos() {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Resolver depois isso daqui
+  //  useEffect(() => {
+  //   fetchProducts()
+  //     .then(setProducts)
+  //     .catch(() => alert("Erro ao carregar produtos"))
+  //     .finally(() => setLoading(false));
+  // }, []);
+
   useEffect(() => {
     // Simula carregamento de produtos mockados
     setTimeout(() => {
