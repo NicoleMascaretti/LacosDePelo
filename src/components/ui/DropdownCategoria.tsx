@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useCategory } from "../../contexts/CategoryContext";
 import { useCategories } from "../../hooks/useCategories";
+import { ChevronDown, ChevronRight } from 'lucide-react'; // Importe o ChevronRight também
 
 const racao = [
     { id: 1, nome: "Ração Seca" },
@@ -46,6 +47,16 @@ const categoriasPadrao = [
     { id: 5, nome: "Medicamentos" },
 ];
 
+// Lista para identificar facilmente quais categorias têm submenu
+const categoriasComSubmenu = [
+    "Ração e alimentos",
+    "Brinquedos",
+    "Higiene e beleza",
+    "Acessórios",
+    "Medicamentos",
+];
+
+
 const DropdownCategoria = () => {
     const [open, setOpen] = useState(false);
     const [submenuOpen, setSubmenuOpen] = useState<string | null>(null);
@@ -76,99 +87,111 @@ const DropdownCategoria = () => {
             {loading && <div className="text-gray-500 px-4 py-2">Carregando categorias...</div>}
             {/* Tem ver isso daqui depois com a API. Esse erro aparece no front do usuário na Navbar*/}
             {/* {error && <div className="text-red-500 px-4 py-2">Erro: {error}</div>} */}
-            <a onClick={() => setOpen((prev) => !prev)} onMouseEnter={() => setOpen(true)} className="text-gray-700 hover:text-teal-600 hover:cursor-pointer transition-colors">
+            
+            {/* Botão principal com a seta animada */}
+            <a onClick={() => setOpen((prev) => !prev)} onMouseEnter={() => setOpen(true)} className="flex items-center gap-1 text-gray-700 hover:text-teal-600 hover:cursor-pointer transition-colors">
                 Categorias
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
             </a>
 
             {/* Dropdown menu */}
             {open && (
                 <div onMouseLeave={() => { setOpen(false); setSubmenuOpen(null); }} className="absolute left-0 mt-2 w-64 bg-white border rounded shadow-lg z-50">
                     <ul className="py-2">
-                        {categorias.map((cat) => (
-                            <li
-                                key={cat.id}
-                                className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer relative"
-                                onMouseEnter={() => {
-                                    if (cat.nome === "Ração e alimentos" || cat.nome === "Brinquedos" || cat.nome === "Higiene e beleza" || cat.nome === "Acessórios" || cat.nome === "Medicamentos") setSubmenuOpen(cat.nome);
-                                }}
-                                onMouseLeave={() => {
-                                    if (cat.nome === "Ração e alimentos" || cat.nome === "Brinquedos" || cat.nome == "Higiene e beleza" || cat.nome === "Acessórios" || cat.nome === "Medicamentos") setSubmenuOpen(null);
-                                }}
-                            >
-                                {cat.nome}
-                                {/* Submenu para 'Ração e alimentos' */}
-                                {cat.nome === "Ração e alimentos" && submenuOpen === cat.nome && (
-                                    <div
-                                        className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
-                                        onMouseEnter={() => setSubmenuOpen(cat.nome)}
-                                        onMouseLeave={() => setSubmenuOpen(null)}
-                                    >
-                                        <ul className="py-2">
-                                            {racao.map((item) => (
-                                                <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                    {item.nome}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                                {/* Submenu para brinquedos */}
-                                {cat.nome === "Brinquedos" && submenuOpen === cat.nome && (
-                                    <div
-                                        className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
-                                        onMouseEnter={() => setSubmenuOpen(cat.nome)}
-                                        onMouseLeave={() => setSubmenuOpen(null)}
-                                    >
-                                        <ul className="py-2">
-                                            {brinquedos.map((item) => (
-                                                <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                    {item.nome}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                                {cat.nome === "Higiene e beleza" && submenuOpen === cat.nome && (
-                                    <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
-                                        onMouseEnter={() => setSubmenuOpen(cat.nome)}
-                                        onMouseLeave={() => setSubmenuOpen(null)}>
-                                            <ul>
-                                                {higiene.map((item) => (
+                        {categorias.map((cat) => {
+                            const hasSubmenu = categoriasComSubmenu.includes(cat.nome);
+
+                            return (
+                                <li
+                                    key={cat.id}
+                                    className="flex justify-between items-center px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer relative"
+                                    onMouseEnter={() => {
+                                        if (hasSubmenu) setSubmenuOpen(cat.nome);
+                                    }}
+                                    onMouseLeave={() => {
+                                        if (hasSubmenu) setSubmenuOpen(null);
+                                    }}
+                                >
+                                    {cat.nome}
+                                    {/* Adiciona a seta para a direita se houver submenu */}
+                                    {hasSubmenu && <ChevronRight className="h-4 w-4" />}
+
+                                    {/* Submenu para 'Ração e alimentos' */}
+                                    {cat.nome === "Ração e alimentos" && submenuOpen === cat.nome && (
+                                        <div
+                                            className="absolute left-full top-0 -mt-0.5 w-56 bg-white border rounded shadow-lg z-50 text-black"
+                                            onMouseEnter={() => setSubmenuOpen(cat.nome)}
+                                            onMouseLeave={() => setSubmenuOpen(null)}
+                                        >
+                                            <ul className="py-2">
+                                                {racao.map((item) => (
                                                     <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
                                             </ul>
-                                    </div>
-                                )}
-                                {cat.nome === "Acessórios" && submenuOpen === cat.nome && (
-                                    <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
-                                        onMouseEnter={() => setSubmenuOpen(cat.nome)}
-                                        onMouseLeave={() => setSubmenuOpen(null)}>
-                                            <ul>
-                                                {acessorios.map((item) => (
+                                        </div>
+                                    )}
+                                    {/* Submenu para brinquedos */}
+                                    {cat.nome === "Brinquedos" && submenuOpen === cat.nome && (
+                                        <div
+                                            className="absolute left-full top-0 -mt-0.5 w-56 bg-white border rounded shadow-lg z-50 text-black"
+                                            onMouseEnter={() => setSubmenuOpen(cat.nome)}
+                                            onMouseLeave={() => setSubmenuOpen(null)}
+                                        >
+                                            <ul className="py-2">
+                                                {brinquedos.map((item) => (
                                                     <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
                                             </ul>
-                                    </div>
-                                )}
-                                {cat.nome === "Medicamentos" && submenuOpen === cat.nome && (
-                                    <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
-                                        onMouseEnter={() => setSubmenuOpen(cat.nome)}
-                                        onMouseLeave={() => setSubmenuOpen(null)}>
-                                            <ul>
-                                                {medicamentos.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
-                                                        {item.nome}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
+                                        </div>
+                                    )}
+                                    {/* ... (restante dos submenus permanece igual) ... */}
+
+                                     {cat.nome === "Higiene e beleza" && submenuOpen === cat.nome && (
+                                        <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
+                                            onMouseEnter={() => setSubmenuOpen(cat.nome)}
+                                            onMouseLeave={() => setSubmenuOpen(null)}>
+                                                <ul>
+                                                    {higiene.map((item) => (
+                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                            {item.nome}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                        </div>
+                                    )}
+                                    {cat.nome === "Acessórios" && submenuOpen === cat.nome && (
+                                        <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
+                                            onMouseEnter={() => setSubmenuOpen(cat.nome)}
+                                            onMouseLeave={() => setSubmenuOpen(null)}>
+                                                <ul>
+                                                    {acessorios.map((item) => (
+                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                            {item.nome}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                        </div>
+                                    )}
+                                    {cat.nome === "Medicamentos" && submenuOpen === cat.nome && (
+                                        <div className="absolute left-full top-0 mt-0 w-56 bg-white border rounded shadow-lg z-50 text-black"
+                                            onMouseEnter={() => setSubmenuOpen(cat.nome)}
+                                            onMouseLeave={() => setSubmenuOpen(null)}>
+                                                <ul>
+                                                    {medicamentos.map((item) => (
+                                                        <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                            {item.nome}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                        </div>
+                                    )}
+                                </li>
+                            )
+                        })}
                     </ul>
                 </div>
             )}
