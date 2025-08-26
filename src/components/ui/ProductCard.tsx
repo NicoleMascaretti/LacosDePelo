@@ -12,7 +12,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-lg hover:shadow-lg transition-all duration-300 overflow-hidden group ${
+      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group ${
         viewMode === 'list' ? 'flex' : ''
       }`}
     >
@@ -25,6 +25,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             viewMode === 'list' ? 'w-48 h-full' : 'w-full h-48'
           }`}
         />
+
         {/* Badge */}
         {product.badge && (
           <span className={`absolute top-3 left-3 px-2 py-1 text-xs font-bold rounded-full text-white ${
@@ -37,14 +38,35 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             {product.badge}
           </span>
         )}
+
+        {/* Esgotado */}
+        {!product.inStock && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              Esgotado
+            </span>
+          </div>
+        )}
+
+        {/* Favorito */}
+        <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white">
+          <Heart className="h-4 w-4 text-gray-600 hover:text-red-500 transition-colors" />
+        </button>
       </div>
 
       {/* Informações */}
       <div className={`p-6 ${viewMode === 'list' ? 'flex-1' : ''}`}>
+        {/* Categoria */}
+        <div className="mb-2">
+          <span className="text-xs text-teal-600 font-medium">{product.category}</span>
+        </div>
+
+        {/* Nome */}
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
           {product.name}
         </h3>
 
+        {/* Avaliação */}
         <div className="flex items-center mb-3">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
@@ -78,10 +100,11 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         {/* Botão Adicionar */}
         <button
           onClick={() => addToCart(product)}
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group"
+          disabled={!product.inStock}
+          className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group"
         >
           <ShoppingCart className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
-          Adicionar ao Carrinho
+          {product.inStock ? 'Adicionar ao Carrinho' : 'Produto Esgotado'}
         </button>
       </div>
     </div>
