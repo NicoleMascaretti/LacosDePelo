@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 // import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
 import ProductCard from "../components/ui/ProductCard";
@@ -11,9 +12,9 @@ import Footer from '../components/ui/Footer';
 
 const categories = [
   'Todos',
-  'Ração e Alimentação',
+  'Rações', // "Ração e Alimentação" -> "Rações"
   'Brinquedos',
-  'Higiene e Beleza',
+  'Higiene', // "Higiene e Beleza" -> "Higiene"
   'Acessórios',
   'Medicamentos',
   'Casinhas e Transporte'
@@ -142,6 +143,16 @@ const mockProducts: ProductType[] = [
   }
 ];
 
+const slugify = (text: string) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/&/g, 'e')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+};
+
 const Produtos = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,6 +161,7 @@ const Produtos = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
@@ -168,6 +180,18 @@ const Produtos = () => {
   //     .finally(() => setLoading(false));
   // }, []);
 
+  // Efeito para ler a URL e definir a categoria
+  useEffect(() => {
+    const categorySlugFromUrl = searchParams.get('categoria');
+    if (categorySlugFromUrl) {
+      // Encontra o nome original da categoria com base no slug da URL
+      const categoryName = categories.find(c => slugify(c) === categorySlugFromUrl);
+      if (categoryName) {
+        setSelectedCategory(categoryName);
+      }
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     // Simula carregamento de produtos mockados
     setTimeout(() => {
@@ -175,6 +199,20 @@ const Produtos = () => {
       setLoading(false);
     }, 500); // 0.5s para simular loading
   }, []);
+
+  // Função para atualizar a categoria e a URL
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Resetar a página ao mudar de categoria
+    if (category === 'Todos') {
+      // Remove o parâmetro da URL
+      searchParams.delete('categoria');
+    } else {
+      // Adiciona ou atualiza o parâmetro na URL
+      searchParams.set('categoria', slugify(category));
+    }
+    setSearchParams(searchParams);
+  };
 
   // if (loading) return <div><p className="p-4">Carregando produtos...</p></div>;
   if (loading) return (
@@ -236,7 +274,7 @@ const Produtos = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => handleCategoryChange(category)}
                       className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
                         ? 'bg-teal-100 text-teal-800 font-medium'
                         : 'text-gray-600 hover:bg-gray-100'

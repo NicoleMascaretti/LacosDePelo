@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCategory } from "../../contexts/CategoryContext";
 import { useCategories } from "../../hooks/useCategories";
 import { ChevronDown, ChevronRight } from 'lucide-react'; // Importe o ChevronRight também
@@ -40,28 +41,38 @@ const medicamentos = [
 ]
 
 const categoriasPadrao = [
-    { id: 1, nome: "Ração e alimentos" },
+    { id: 1, nome: "Rações" },
     { id: 2, nome: "Brinquedos" },
-    { id: 3, nome: "Higiene e beleza" },
+    { id: 3, nome: "Higiene" },
     { id: 4, nome: "Acessórios" },
     { id: 5, nome: "Medicamentos" },
 ];
 
 // Lista para identificar facilmente quais categorias têm submenu
 const categoriasComSubmenu = [
-    "Ração e alimentos",
+    "Rações",
     "Brinquedos",
-    "Higiene e beleza",
+    "Higiene",
     "Acessórios",
     "Medicamentos",
 ];
 
+// funcao para fazer a url
+const slugify = (text: string) => {
+    return text
+        .toString()
+        .toLowerCase()
+        .replace(/\s+/g, '-')           // Substitui espaços por -
+        .replace(/&/g, 'e')             // Substitui & por 'e'
+        .replace(/[^\w\-]+/g, '')       // Remove caracteres inválidos
+        .replace(/\-\-+/g, '-');        // Substitui múltiplos - por um único -
+};
 
 const DropdownCategoria = () => {
     const [open, setOpen] = useState(false);
     const [submenuOpen, setSubmenuOpen] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
+    const navigate = useNavigate(); // 3. Inicializar o hook
     const { categorias, setCategorias } = useCategory();
 
     // Busca categorias da Shopify e popula o contexto automaticamente
@@ -81,6 +92,13 @@ const DropdownCategoria = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [categorias, setCategorias]);
+
+    const handleCategoryClick = (categoryName: string) => {
+        const categorySlug = slugify(categoryName);
+        navigate(`/produtos?categoria=${categorySlug}`);
+        setOpen(false); // Fecha o dropdown após o clique
+        setSubmenuOpen(null);
+    };
 
     return (
         <div className="relative inline-block" ref={dropdownRef}>
@@ -105,6 +123,7 @@ const DropdownCategoria = () => {
                                 <li
                                     key={cat.id}
                                     className="flex justify-between items-center px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer relative"
+                                    onClick={() => handleCategoryClick(cat.nome)}
                                     onMouseEnter={() => {
                                         if (hasSubmenu) setSubmenuOpen(cat.nome);
                                     }}
@@ -125,7 +144,7 @@ const DropdownCategoria = () => {
                                         >
                                             <ul className="py-2">
                                                 {racao.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                    <li key={item.id} onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.nome); }} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
@@ -141,7 +160,7 @@ const DropdownCategoria = () => {
                                         >
                                             <ul className="py-2">
                                                 {brinquedos.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                    <li key={item.id} onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.nome); }} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
@@ -156,7 +175,7 @@ const DropdownCategoria = () => {
                                             onMouseLeave={() => setSubmenuOpen(null)}>
                                             <ul>
                                                 {higiene.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                    <li key={item.id} onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.nome); }} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
@@ -169,7 +188,7 @@ const DropdownCategoria = () => {
                                             onMouseLeave={() => setSubmenuOpen(null)}>
                                             <ul>
                                                 {acessorios.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                    <li key={item.id} onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.nome); }} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
@@ -182,7 +201,7 @@ const DropdownCategoria = () => {
                                             onMouseLeave={() => setSubmenuOpen(null)}>
                                             <ul>
                                                 {medicamentos.map((item) => (
-                                                    <li key={item.id} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
+                                                    <li key={item.id} onClick={(e) => { e.stopPropagation(); handleCategoryClick(item.nome); }} className="px-4 py-2 hover:bg-teal-400 hover:text-white cursor-pointer">
                                                         {item.nome}
                                                     </li>
                                                 ))}
