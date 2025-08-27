@@ -29,14 +29,14 @@ const ShoppingCartWidget = () => {
           className="fixed inset-0 bg-black bg-opacity-80 z-40"
           onClick={() => setSidebarOpen(false)}
         ></div>
-      )}
+            )}
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 right-0 w-full sm:w-1/3 h-full bg-white shadow-lg p-5 transition-transform duration-500 z-50 ${
+            {/* Sidebar */}
+            <aside
+        className={`fixed top-0 right-0 w-full sm:w-[23%] h-full bg-white shadow-lg p-5 transition-transform duration-500 z-50 ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
-      >
+            >
         {/* Header */}
 
           <div className="flex flex-col space-y-2 text-center sm:text-left">
