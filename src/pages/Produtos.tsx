@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
 import ProductCard from "../components/ui/ProductCard";
-import { Search, Filter, Grid, List } from 'lucide-react';
+import { Search, Filter, Grid, List, PawPrint } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/Pagination';
@@ -167,20 +167,24 @@ const Produtos = () => {
   //     .catch(() => alert("Erro ao carregar produtos"))
   //     .finally(() => setLoading(false));
   // }, []);
-
+  
+  // esse pedaço é só pra simular carregamento
   useEffect(() => {
-    // Simula carregamento de produtos mockados
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setLoading(false);
-    }, 500); // 0.5s para simular loading
+    setProducts(mockProducts);
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   // if (loading) return <div><p className="p-4">Carregando produtos...</p></div>;
   if (loading) return (
-    <div>
-      <div className="animate">
-        <div className="loader">asdas</div>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin text-teal-500">
+          <PawPrint size={80} />
+        </div>
+        <p className="text-xl font-semibold text-gray-700 animate-pulse">
+          Carregando...
+        </p>
       </div>
     </div>
   );
