@@ -1,11 +1,13 @@
 import Navbar from "../components/Navbar";
 import { ArrowRight } from 'lucide-react';
-import ButtonsHome from "../components/ui/ButtonsHome";
 import ProductCard from "../components/ui/ProductCard";
 import Footer from "../components/ui/Footer";
 import HeroBannerpt2 from "../components/HeroBannerpt2";
 import CardCategoria from "../components/ui/CardCategoria";
 import type { ProductType } from "../types/ProductType";
+import { PawPrint } from 'lucide-react'
+import { useState, useEffect } from "react";
+
 
 // 👇 produtos mockados (pode mover para um arquivo separado se preferir)
 const mockProducts: ProductType[] = [
@@ -58,6 +60,28 @@ const mockProducts: ProductType[] = [
 ];
 
 const Home = () => {
+  const [loading, setLoading] = useState(true);
+
+  // esse pedaço é só pra simular carregamento
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin text-teal-500">
+            <PawPrint size={80} />
+          </div>
+          <p className="text-xl font-semibold text-gray-700 animate-pulse">
+            Carregando...
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
       {/* Navbar fixo */}

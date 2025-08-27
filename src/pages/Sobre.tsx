@@ -1,38 +1,58 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
 import HeroBannerpt2 from '../components/HeroBannerpt2';
-import { Shield, Heart, Truck, Award, Users, Star } from 'lucide-react';
+import { Shield, Heart, Truck, Award, Users, Star, PawPrint } from 'lucide-react';
+import { useState, useEffect } from "react";
 
 const Sobre = () => {
+const [loading, setLoading] = useState(true);
+
+  // esse pedaço é só pra simular carregamento
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const stats = [
-    { icon: Users, value: '50.000+', label: 'Clientes Satisfeitos' },
-    { icon: Star, value: '4.9', label: 'Avaliação Média' },
-    { icon: Truck, value: '1.000+', label: 'Entregas por Mês' },
-    { icon: Heart, value: '3', label: 'Anos de Experiência' }
+    { icon: Users, label: 'Priorizamos sua Satisfação' },
+    { icon: Star, label: 'Produtos de Qualidade' },
+    { icon: Truck, label: 'Entrega Rápida' },
+    { icon: Heart, label: 'Comunicação Clara e Empática ' }
   ];
 
   const values = [
     {
       icon: Heart,
-      title: 'Amor pelos Animais',
       description: 'Cada produto é escolhido pensando no bem-estar e felicidade dos pets.'
     },
     {
       icon: Shield,
-      title: 'Qualidade Garantida',
       description: 'Trabalhamos apenas com marcas confiáveis e produtos testados.'
     },
     {
       icon: Award,
-      title: 'Excelência no Atendimento',
       description: 'Nossa equipe está sempre pronta para ajudar você e seu pet.'
     },
     {
       icon: Truck,
-      title: 'Entrega Rápida',
       description: 'Logística eficiente para que seu pet não fique sem seus produtos favoritos.'
     }
   ];
+
+    if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin text-teal-500">
+            <PawPrint size={80} />
+          </div>
+          <p className="text-xl font-semibold text-gray-700 animate-pulse">
+            Carregando...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,11 +62,11 @@ const Sobre = () => {
       <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-20">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-            Sobre a <span className="text-orange-300">Laços de Pelo</span>
+            Sobre a <span className="text-gradient-to-r from-teal-600 to-orange-400">Laços de Pelo</span>
           </h1>
           <p className="text-xl lg:text-2xl text-teal-100 max-w-3xl mx-auto leading-relaxed">
-            Criamos laços especiais entre você e seu melhor amigo através de produtos de qualidade, 
-            carinho e dedicação há mais de 3 anos no mercado pet.
+            Criamos laços especiais entre você e seu melhor amigo através de produtos de qualidade, com todo o 
+            carinho e dedicação que seu pet merece.
           </p>
         </div>
       </section>
@@ -60,8 +80,8 @@ const Sobre = () => {
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <stat.icon className="h-8 w-8 text-teal-600" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-3xl font-bold text-gray-900 mb-2"></div>
+                <h3 className="text-black-600">{stat.label}</h3>
               </div>
             ))}
           </div>
@@ -89,9 +109,6 @@ const Sobre = () => {
                 <div className="bg-teal-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                   <value.icon className="h-6 w-6 text-teal-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  {value.title}
-                </h3>
                 <p className="text-gray-600">
                   {value.description}
                 </p>
@@ -134,12 +151,6 @@ const Sobre = () => {
                 alt="Gato descansando"
                 className="rounded-2xl shadow-2xl w-full"
               />
-              <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-lg">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-teal-600">100%</div>
-                  <div className="text-gray-600 text-sm">Satisfação</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
