@@ -1,6 +1,8 @@
 import type { ProductType } from "../../types/ProductType"
 import { Star, Heart, ShoppingCart } from 'lucide-react';
 import { useCart } from "../../hooks/useCart";
+import { useFavorites } from '../../hooks/useFavorites'
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: ProductType;
@@ -9,6 +11,20 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, viewMode }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const isProductFavorite = isFavorite(product.id);
+
+  const handleFavoriteToggle = () => {
+    if (isProductFavorite) {
+      removeFromFavorites(product.id);
+      toast.error(`${product.name} removido dos favoritos.`);
+    } else {
+      addToFavorites(product);
+      toast.success(`${product.name} adicionado aos favoritos!`);
+    }
+  };
+
+
 
   return (
     <div
@@ -49,9 +65,13 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         )}
 
         {/* Favorito */}
-        <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white">
-          <Heart className="h-4 w-4 text-gray-600 hover:text-red-500 transition-colors" />
+        <button onClick={handleFavoriteToggle} className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white">
+          <Heart className={`h-4 w-4 hover:text-red-500 transition-colors ${
+            isProductFavorite 
+            ? 'text-red-500 fill-current' 
+            : 'text-gray-600'}`} />
         </button>
+        
       </div>
 
       {/* Informações */}

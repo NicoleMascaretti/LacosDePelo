@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useFavorites } from "../hooks/useFavorites";
 import Logo from "./ui/Logo";
 import NavLink from "./ui/Navlink";
 import DropdownCategoria from "./ui/DropdownCategoria";
@@ -13,7 +14,7 @@ import FavoriteList from "./ui/FavoriteList";
 const Navbar = () => {
   const [search, setSearch] = useState("");
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
-
+  const { favorites } = useFavorites();
   return (
     <>
       <header className="w-full shadow-sm sticky top-0 z-50 bg-white">
@@ -59,6 +60,11 @@ const Navbar = () => {
               onClick={() => setIsFavoritesOpen(true)}
             >
               <Heart className="h-6 w-6 text-gray-600" />
+              {favorites.length > 0 && (
+                <span className="absolute top-0 right-0 block h-5 w-5 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center ring-2 ring-white">
+                  {favorites.length}
+                </span>
+              )}
             </button>
 
             {/* Carrinho */}

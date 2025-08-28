@@ -53,7 +53,7 @@ const mockProducts: ProductType[] = [
     category: "Acessórios",
     rating: 4.2,
     reviews: 8,
-    image: "https://place-puppy.com/302x302",
+    image: "https://admin.cnnbrasil.com.br/wp-content/uploads/sites/12/2025/06/54578249068_e292fd3497_o.jpg?w=1200&h=900&crop=0",
     inStock: true,
     badge: "Oferta",
   },
