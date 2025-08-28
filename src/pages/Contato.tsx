@@ -111,7 +111,7 @@ const Contato = () => {
 
       {/* Contact Info Cards */}
       <section className="py-16 bg-white">
-        <div className="container max-w-7xl mx-auto">
+        <div className="container max-w-8xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {contactInfo.map((info, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl text-center hover:shadow-lg transition-shadow">

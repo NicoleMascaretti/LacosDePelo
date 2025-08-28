@@ -59,7 +59,7 @@ const [loading, setLoading] = useState(true);
       <Navbar />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-20">
+      <section className="bg-gradient-to-r from-teal-600 to-green-700 text-white py-20">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             Sobre a <span className="text-gradient-to-r from-teal-600 to-orange-400">Laços de Pelo</span>

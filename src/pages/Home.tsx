@@ -5,11 +5,9 @@ import Footer from "../components/ui/Footer";
 import HeroBannerpt2 from "../components/HeroBannerpt2";
 import CardCategoria from "../components/ui/CardCategoria";
 import type { ProductType } from "../types/ProductType";
-import { PawPrint } from 'lucide-react'
-import { useState, useEffect } from "react";
+import LoadingScreen from '../components/ui/Loading';
+import { useLoading } from '../hooks/useLoading';
 
-
-// 👇 produtos mockados (pode mover para um arquivo separado se preferir)
 const mockProducts: ProductType[] = [
   {
     id: 1,
@@ -58,33 +56,37 @@ const mockProducts: ProductType[] = [
     badge: "Secreto",
   },
 ];
+const fetchProductsFromAPI = async (): Promise<ProductType[]> => {
+  console.log("Buscando produtos da API real...");
+  const response = await fetch('https://sua-api-real.com/products');
 
+  if (!response.ok) {
+    throw new Error('Falha ao buscar os produtos do servidor.');
+  }
+
+  // Converte a resposta para JSON
+  const data: ProductType[] = await response.json();
+
+  console.log("Produtos recebidos da API!");
+  return data;
+};
 const Home = () => {
-  const [loading, setLoading] = useState(true);
-
-  // esse pedaço é só pra simular carregamento
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: products, loading, error } = useLoading<ProductType[]>(fetchProductsFromAPI);
 
   if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin text-teal-500">
-            <PawPrint size={80} />
-          </div>
-          <p className="text-xl font-semibold text-gray-700 animate-pulse">
-            Carregando...
-          </p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen text-red-500 text-xl">
+        <p>Erro ao carregar a página: {error.message}</p>
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
-      {/* Navbar fixo */}
       <Navbar />
 
       {/* Hero*/}
@@ -187,7 +189,7 @@ const Home = () => {
           <br />e preços especiais
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {mockProducts.map((p) => (
+          {products?.map((p) => (
             <div key={p.id} className="flex justify-center">
               <div className="w-full" >
                 <ProductCard product={p} viewMode="grid" />
