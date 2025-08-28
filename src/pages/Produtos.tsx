@@ -12,9 +12,9 @@ import Footer from '../components/ui/Footer';
 
 const categories = [
   'Todos',
-  'Rações', // "Ração e Alimentação" -> "Rações"
+  'Rações e Alimentação', // "Ração e Alimentação" -> "Rações"
   'Brinquedos',
-  'Higiene', // "Higiene e Beleza" -> "Higiene"
+  'Higiene e Beleza', // "Higiene e Beleza" -> "Higiene"
   'Acessórios',
   'Medicamentos',
   'Casinhas e Transporte'
@@ -26,7 +26,7 @@ const mockProducts: ProductType[] = [
     name: "Ração Premium para Cães",
     price: 129.9,
     originalPrice: 159.9,
-    category: "Rações",
+    category: "Rações e Alimentação",
     rating: 4.5,
     reviews: 23,
     image: "https://place-puppy.com/300x300",
@@ -62,7 +62,7 @@ const mockProducts: ProductType[] = [
     name: "Shampoo Suave para Pets",
     price: 19.9,
     originalPrice: 25.9,
-    category: "Higiene",
+    category: "Higiene e Beleza",
     rating: 4.7,
     reviews: 15,
     image: "https://place-puppy.com/303x303",
@@ -74,7 +74,7 @@ const mockProducts: ProductType[] = [
     name: "Tapete Higiênico",
     price: 59.9,
     originalPrice: 69.9,
-    category: "Higiene",
+    category: "Higiene e Beleza",
     rating: 4.3,
     reviews: 10,
     image: "https://place-puppy.com/304x304",
@@ -86,7 +86,7 @@ const mockProducts: ProductType[] = [
     name: "Ração Sênior para Gatos",
     price: 99.9,
     originalPrice: 119.9,
-    category: "Rações",
+    category: "Rações e Alimentação",
     rating: 4.6,
     reviews: 18,
     image: "https://place-puppy.com/305x305",
@@ -134,7 +134,7 @@ const mockProducts: ProductType[] = [
     name: "Fralda Descartável para Pets",
     price: 44.9,
     originalPrice: 54.9,
-    category: "Higiene",
+    category: "Higiene e Beleza",
     rating: 4.0,
     reviews: 5,
     image: "https://place-puppy.com/309x309",

@@ -41,18 +41,18 @@ const medicamentos = [
 ]
 
 const categoriasPadrao = [
-    { id: 1, nome: "Rações" },
+    { id: 1, nome: "Rações e Alimentação" },
     { id: 2, nome: "Brinquedos" },
-    { id: 3, nome: "Higiene" },
+    { id: 3, nome: "Higiene e Beleza" },
     { id: 4, nome: "Acessórios" },
     { id: 5, nome: "Medicamentos" },
 ];
 
 // Lista para identificar facilmente quais categorias têm submenu
 const categoriasComSubmenu = [
-    "Rações",
+    "Rações e Alimentação",
     "Brinquedos",
-    "Higiene",
+    "Higiene e Beleza",
     "Acessórios",
     "Medicamentos",
 ];

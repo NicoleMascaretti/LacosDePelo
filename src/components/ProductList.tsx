@@ -27,7 +27,7 @@ const mockProducts: ProductType[] = [
     name: "Ração Premium para Cães",
     price: 129.9,
     originalPrice: 159.9, // essa informação é opcional por conta do jeito que está no product type
-    category: "Rações",
+    category: "Rações e Alimentação",
     rating: 4.5,
     reviews: 23,
     image: "https://place-puppy.com/300x300",
