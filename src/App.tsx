@@ -29,8 +29,8 @@ const App = () => {
 
             {/* Rotas */}
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/produtos" element={<Produtos />} />
+              {/* <Route path="/" element={<Home />} /> */}
+              <Route path="/" element={<Produtos />} />
               <Route path="/sobre" element={<Sobre />} />
               <Route path="/contato" element={<Contato />} />
               
