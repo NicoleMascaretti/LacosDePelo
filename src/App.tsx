@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { Toaster } from 'sonner';
 // Componentes
 import ProductList from "./components/ProductList";
 import ShoppingCartWidget from "./components/ui/ShoppingCartWidget";
@@ -25,7 +25,7 @@ const App = () => {
       <CartProvider>
         <CategoryProvider>
           <BrowserRouter>
-
+          <Toaster richColors position="top-right" />
 
             {/* Rotas */}
             <Routes>

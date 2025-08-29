@@ -8,6 +8,8 @@ import {
   SheetTitle,
 } from "./Sheet";
 import { Button } from "./Button";
+import { toast } from 'sonner';
+import { useCart } from '../../hooks/useCart';
 import { useFavorites } from "../../hooks/useFavorites";
 import type { ProductType } from '../../types/ProductType';
 
@@ -18,6 +20,20 @@ interface FavoriteListProps {
 
 const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
   const { favorites, removeFromFavorites, clearAllFavorites } = useFavorites();
+  const { addToCart } = useCart();
+  // Função para adicionar um único item ao carrinho
+  const handleAddToCart = (product: ProductType) => {
+    addToCart(product); // Lógica do seu context do carrinho
+    toast.success(`${product.name} adicionado ao carrinho!`);
+  };
+  // Função para adicionar todos os favoritos ao carrinho
+  const handleAddAllToCart = () => {
+    if (favorites.length === 0) return;
+
+    favorites.forEach(product => addToCart(product));
+    toast.success(`${favorites.length} produto(s) adicionado(s) ao carrinho!`);
+    onClose(); // Fecha a barra lateral para uma melhor UX
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -76,6 +92,7 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
                     <Button
                       size="sm"
                       className="bg-teal-600 hover:bg-teal-700 text-white"
+                      onClick={() => handleAddToCart(product)}
                     >
                       <ShoppingCart className="h-4 w-4" />
                     </Button>
@@ -99,6 +116,7 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
           <div className="mt-6 space-y-3">
             <Button 
               className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+              onClick={handleAddAllToCart}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Adicionar Todos ao Carrinho

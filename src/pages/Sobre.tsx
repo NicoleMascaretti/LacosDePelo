@@ -73,7 +73,7 @@ const [loading, setLoading] = useState(true);
 
       {/* Stats Section */}
       <section className="py-16 bg-white">
-        <div className="container max-w-7xl mx-auto">
+        <div className="container px-4 mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
@@ -93,7 +93,7 @@ const [loading, setLoading] = useState(true);
 
       {/* Values Section */}
       <section className="py-16 bg-gray-50">
-        <div className="container max-w-7xl mx-auto">
+        <div className="container px-4 mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Nossos Valores
@@ -120,7 +120,7 @@ const [loading, setLoading] = useState(true);
 
       {/* Mission Section */}
       <section className="py-16 bg-white">
-        <div className="container max-w-7xl mx-auto">
+        <div className="container px-4 mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
