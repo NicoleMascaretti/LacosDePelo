@@ -1,21 +1,14 @@
 import React, { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react'
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  category: string;
-}
+import type { ReactNode } from 'react';
+import type { ProductType } from '../types/ProductType';
 
-interface CartItem extends Product {
+interface CartItem extends ProductType {
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: ProductType) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
@@ -40,7 +33,7 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductType) => {
     setItems(prev => {
       const existingItem = prev.find(item => item.id === product.id);
       if (existingItem) {

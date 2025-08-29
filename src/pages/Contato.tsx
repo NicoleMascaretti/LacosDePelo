@@ -31,7 +31,7 @@ const Contato = () => {
     return () => clearTimeout(timer);
   }, []);
 
-   const form = useForm<ContactFormData>({
+  const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: '',
@@ -51,7 +51,7 @@ const Contato = () => {
     form.reset();
   };
 
-   const contactInfo = [
+  const contactInfo = [
     {
       icon: Phone,
       title: 'Telefone',
@@ -96,7 +96,7 @@ const Contato = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-20">
         <div className="container mx-auto text-center">
@@ -164,7 +164,7 @@ const Contato = () => {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="phone"
@@ -215,7 +215,7 @@ const Contato = () => {
                       <FormItem>
                         <FormLabel>Mensagem</FormLabel>
                         <FormControl>
-                          <Textarea 
+                          <Textarea
                             placeholder="Conte-nos mais sobre sua necessidade..."
                             className="min-h-[120px]"
                             {...field}
@@ -226,8 +226,8 @@ const Contato = () => {
                     )}
                   />
 
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
                   >
                     <Send className="h-5 w-5 mr-2" />
@@ -267,10 +267,16 @@ const Contato = () => {
                 <p className="mb-6 text-green-100">
                   Precisa de ajuda urgente? Fale conosco pelo WhatsApp e receba atendimento imediato!
                 </p>
-                <Button className="bg-white text-green-600 hover:bg-gray-100 font-semibold">
+                <a
+                  href="https://wa.me/5511995984383?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // Classes para fazer o link se parecer com o botão
+                  className="inline-flex items-center justify-center rounded-md px-6 py-3 bg-white text-green-600 hover:bg-gray-100 font-semibold transition-colors"
+                >
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Falar no WhatsApp
-                </Button>
+                </a>
               </div>
 
               {/* FAQ Quick Links */}

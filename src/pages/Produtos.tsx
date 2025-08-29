@@ -3,12 +3,16 @@ import { useSearchParams } from "react-router-dom";
 // import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
 import ProductCard from "../components/ui/ProductCard";
-import { Search, Filter, Grid, List, PawPrint } from 'lucide-react';
+import { Search, Filter, Grid, List } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/Pagination';
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
+
+import { useLoading } from '../hooks/useLoading';
+import { fetchProducts } from '../services/mockApi'; 
+import Loading from '../components/ui/Loading';
 
 const categories = [
   'Todos',
@@ -20,128 +24,6 @@ const categories = [
   'Casinhas e Transporte'
 ];
 
-const mockProducts: ProductType[] = [
-  {
-    id: 1,
-    name: "Ração Premium para Cães",
-    price: 129.9,
-    originalPrice: 159.9,
-    category: "Rações e Alimentação",
-    rating: 4.5,
-    reviews: 23,
-    image: "https://place-puppy.com/300x300",
-    inStock: true,
-    badge: "Mais Vendido",
-  },
-  {
-    id: 2,
-    name: "Brinquedo Mordedor",
-    price: 39.9,
-    originalPrice: 49.9,
-    category: "Brinquedos",
-    rating: 4.8,
-    reviews: 12,
-    image: "https://place-puppy.com/301x301",
-    inStock: true,
-    badge: "Novo",
-  },
-  {
-    id: 3,
-    name: "Coleira Ajustável",
-    price: 24.9,
-    originalPrice: 29.9,
-    category: "Acessórios",
-    rating: 4.2,
-    reviews: 8,
-    image: "https://admin.cnnbrasil.com.br/wp-content/uploads/sites/12/2025/06/54578249068_e292fd3497_o.jpg?w=1200&h=900&crop=0",
-    inStock: true,
-    badge: "Oferta",
-  },
-  {
-    id: 4,
-    name: "Shampoo Suave para Pets",
-    price: 19.9,
-    originalPrice: 25.9,
-    category: "Higiene e Beleza",
-    rating: 4.7,
-    reviews: 15,
-    image: "https://place-puppy.com/303x303",
-    inStock: true,
-    badge: "Mais Vendido",
-  },
-  {
-    id: 5,
-    name: "Tapete Higiênico",
-    price: 59.9,
-    originalPrice: 69.9,
-    category: "Higiene e Beleza",
-    rating: 4.3,
-    reviews: 10,
-    image: "https://place-puppy.com/304x304",
-    inStock: true,
-    badge: "Oferta",
-  },
-  {
-    id: 6,
-    name: "Ração Sênior para Gatos",
-    price: 99.9,
-    originalPrice: 119.9,
-    category: "Rações e Alimentação",
-    rating: 4.6,
-    reviews: 18,
-    image: "https://place-puppy.com/305x305",
-    inStock: true,
-    badge: "Mais Vendido",
-  },
-  {
-    id: 7,
-    name: "Arranhador para Gatos",
-    price: 89.9,
-    originalPrice: 109.9,
-    category: "Brinquedos",
-    rating: 4.9,
-    reviews: 22,
-    image: "https://place-puppy.com/306x306",
-    inStock: true,
-    badge: "Novo",
-  },
-  {
-    id: 8,
-    name: "Comedouro Antiformiga",
-    price: 34.9,
-    originalPrice: 44.9,
-    category: "Acessórios",
-    rating: 4.1,
-    reviews: 6,
-    image: "https://place-puppy.com/307x307",
-    inStock: true,
-    badge: "Oferta",
-  },
-  {
-    id: 9,
-    name: "Vermífugo Oral",
-    price: 49.9,
-    originalPrice: 59.9,
-    category: "Medicamentos",
-    rating: 4.4,
-    reviews: 9,
-    image: "https://place-puppy.com/308x308",
-    inStock: true,
-    badge: "Mais Vendido",
-  },
-  {
-    id: 10,
-    name: "Fralda Descartável para Pets",
-    price: 44.9,
-    originalPrice: 54.9,
-    category: "Higiene e Beleza",
-    rating: 4.0,
-    reviews: 5,
-    image: "https://place-puppy.com/309x309",
-    inStock: true,
-    badge: "Novo",
-  }
-];
 
 const slugify = (text: string) => {
   return text
@@ -154,8 +36,7 @@ const slugify = (text: string) => {
 };
 
 const Produtos = () => {
-  const [products, setProducts] = useState<ProductType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
@@ -163,7 +44,7 @@ const Produtos = () => {
   const productsPerPage = 6;
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = (products || []).filter(product => {
     const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -172,13 +53,6 @@ const Produtos = () => {
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
-  // Resolver depois isso daqui
-  //  useEffect(() => {
-  //   fetchProducts()
-  //     .then(setProducts)
-  //     .catch(() => alert("Erro ao carregar produtos"))
-  //     .finally(() => setLoading(false));
-  // }, []);
 
   // Efeito para ler a URL e definir a categoria
   useEffect(() => {
@@ -191,12 +65,6 @@ const Produtos = () => {
       }
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    setProducts(mockProducts);
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Função para atualizar a categoria e a URL
   const handleCategoryChange = (category: string) => {
@@ -213,18 +81,14 @@ const Produtos = () => {
   };
 
   // if (loading) return <div><p className="p-4">Carregando produtos...</p></div>;
-  if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="animate-spin text-teal-500">
-          <PawPrint size={80} />
-        </div>
-        <p className="text-xl font-semibold text-gray-700 animate-pulse">
-          Carregando...
-        </p>
-      </div>
-    </div>
-  );
+  if (loading) {
+    return <Loading/>;
+  }
+  
+  if (error) {
+    return <div className="text-center p-8 text-red-500">Erro ao carregar produtos: {error.message}</div>;
+  }
+  
 
   return (
     <div className="min-h-screen bg-gray-50">

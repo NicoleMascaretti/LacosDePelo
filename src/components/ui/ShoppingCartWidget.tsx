@@ -103,7 +103,7 @@ const ShoppingCartWidget: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
             
             <div className="space-y-2">
-              <Button className="w-full" size="lg">
+              <Button className="w-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors" size="lg">
                 Finalizar Compra
               </Button>
               <Button

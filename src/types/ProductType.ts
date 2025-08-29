@@ -12,14 +12,19 @@
 } */
 
 export interface ProductType {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number; 
-    category: string;
-    rating: number;
-    reviews: number;
-    image: string;
-    inStock: boolean;
-    badge?: string;
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number | null;
+  category: string;
+  rating: number;
+  reviews: number;
+  image: string;
+  inStock: boolean;
+  badge?: string | null;
+
+  // Campos adicionais para a página de detalhes
+  description?: string;
+  features?: string[];
+  specifications?: { [key: string]: string };
 }

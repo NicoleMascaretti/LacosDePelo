@@ -15,6 +15,7 @@ import Home from "./pages/Home";
 import Produtos from "./pages/Produtos";
 import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
+import Product from "./pages/Product";
 
 // Componentes fixos
 import Navbar from "./components/Navbar";
@@ -29,11 +30,12 @@ const App = () => {
 
             {/* Rotas */}
             <Routes>
-              {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/" element={<Produtos />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/produtos" element={<Produtos />} />
               <Route path="/sobre" element={<Sobre />} />
               <Route path="/contato" element={<Contato />} />
-              
+              <Route path="/produto/:id" element={<Product />} />
+
             </Routes>
           </BrowserRouter>
         </CategoryProvider>

@@ -35,7 +35,6 @@ export default function Footer() {
             <div className="space-y-2">
               <a href="/" className="block text-gray-400 hover:text-teal-400 transition-colors">Início</a>
               <a href="/produtos" className="block text-gray-400 hover:text-teal-400 transition-colors">Produtos</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Categorias</a>
               <a href="/sobre" className="block text-gray-400 hover:text-teal-400 transition-colors">Sobre</a>
               <a href="/contato" className="block text-gray-400 hover:text-teal-400 transition-colors">Contato</a>
             </div>
@@ -45,7 +44,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-semibold">Categorias</h3>
             <div className="space-y-2">
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Ração & Alimentação</a>
+              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Rações & Alimentação</a>
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Brinquedos</a>
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Higiene & Beleza</a>
               <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Acessórios</a>

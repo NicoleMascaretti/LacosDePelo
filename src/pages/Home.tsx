@@ -4,58 +4,11 @@ import ProductCard from "../components/ui/ProductCard";
 import Footer from "../components/ui/Footer";
 import HeroBannerpt2 from "../components/HeroBannerpt2";
 import CardCategoria from "../components/ui/CardCategoria";
+import { fetchProducts } from "../services/mockApi";
 import type { ProductType } from "../types/ProductType";
-import LoadingScreen from '../components/ui/Loading';
 import { useLoading } from '../hooks/useLoading';
+import Loading from '../components/ui/Loading';
 
-const mockProducts: ProductType[] = [
-  {
-    id: 1,
-    name: "Ração Premium para Cães",
-    price: 129.9,
-    originalPrice: 159.9,
-    category: "Rações e Alimentação",
-    rating: 4.5,
-    reviews: 23,
-    image: "https://place-puppy.com/300x300",
-    inStock: true,
-    badge: "Mais Vendido",
-  },
-  {
-    id: 2,
-    name: "Brinquedo Mordedor",
-    price: 39.9,
-    originalPrice: 49.9,
-    category: "Brinquedos",
-    rating: 4,
-    reviews: 12,
-    image: "https://placekitten.com/300/300",
-    inStock: true,
-    badge: "Promoção",
-  },
-  {
-    id: 3,
-    name: "Coleira Estilosa",
-    price: 59.9,
-    category: "Acessórios",
-    rating: 5,
-    reviews: 8,
-    image: "https://placebear.com/300/300",
-    inStock: true,
-    badge: "Novo",
-  },
-  {
-    id: 4,
-    name: "Shampoo Hipoalergênico",
-    price: 32.9,
-    category: "Higiene e Beleza",
-    rating: 4.8,
-    reviews: 15,
-    image: "https://placebeard.it/300x300",
-    inStock: true,
-    badge: "Secreto",
-  },
-];
 // const fetchProductsFromAPI = async (): Promise<ProductType[]> => {
 //   console.log("Buscando produtos da API real...");
 //   const response = await fetch('https://sua-api-real.com/products');
@@ -71,19 +24,19 @@ const mockProducts: ProductType[] = [
 //   return data;
 // };
 const Home = () => {
-  // const { data: products, loading, error } = useLoading<ProductType[]>(fetchProductsFromAPI);
+  const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
 
-  // if (loading) {
-  //   return <LoadingScreen />;
-  // }
+  if (loading) {
+    return <Loading/>;
+  }
 
-  // // if (error) {
-  // //   return (
-  // //     <div className="flex items-center justify-center min-h-screen text-red-500 text-xl">
-  // //       <p>Erro ao carregar a página: {error.message}</p>
-  // //     </div>
-  // //   );
-  // // }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500 text-xl">
+        <p>Erro ao carregar a página: {error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
@@ -189,7 +142,7 @@ const Home = () => {
           <br />e preços especiais
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {mockProducts?.map((p) => (
+          {products?.slice(0, 4).map((p) => (
             <div key={p.id} className="flex justify-center">
               <div className="w-full" >
                 <ProductCard product={p} viewMode="grid" />
