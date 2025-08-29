@@ -70,12 +70,12 @@ const Contato = () => {
       info: 'São Caetano do Sul',
       description: 'Entrega em toda região'
     },
-    {
-      icon: Clock,
-      title: 'Horário de Funcionamento',
-      info: 'Segunda a Sexta: 8h às 18h',
-      description: 'Sábado: 9h às 15h'
-    }
+    // {
+    //   icon: Clock,
+    //   title: 'Horário de Funcionamento',
+    //   info: 'Segunda a Sexta: 8h às 18h',
+    //   description: 'Sábado: 9h às 15h'
+    // }
   ];
 
   if (loading) {
@@ -111,8 +111,8 @@ const Contato = () => {
 
       {/* Contact Info Cards */}
       <section className="py-16 bg-white">
-        <div className="container max-w-8xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="container px-4 mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {contactInfo.map((info, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -121,7 +121,7 @@ const Contato = () => {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {info.title}
                 </h3>
-                <p className="text-lg font-medium text-gray-800 mb-1">
+                <p className="text-lg text-gray-800 mb-1">
                   {info.info}
                 </p>
                 <p className="text-gray-600 text-sm">
@@ -135,7 +135,7 @@ const Contato = () => {
 
       {/* Contact Form and Map */}
       <section className="py-16 bg-gray-50">
-        <div className="container max-w-7xl mx-auto">
+        <div className="container px-4 mx-auto">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-white p-8 rounded-2xl shadow-lg h-fit">

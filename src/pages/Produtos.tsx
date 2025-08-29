@@ -241,7 +241,7 @@ const Produtos = () => {
         </div>
       </div>
 
-      <div className="container max-w-7xl mx-auto py-8">
+      <div className="container px-4 mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <div className="lg:w-64 space-y-6">

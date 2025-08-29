@@ -27,7 +27,7 @@ const HeroBannerpt2 = () => {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container max-w-7xl mx-auto">
+      <div className="container px-4 mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
