@@ -31,6 +31,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     e.stopPropagation(); // Impede a navegação
     e.preventDefault();  // Impede a navegação
     addToCart(product);
+    toast.success(`${product.name} adicionado ao carrinho!`);
   };
 
   return (
