@@ -27,7 +27,7 @@ const Home = () => {
   const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -152,9 +152,11 @@ const Home = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
-            <a href="/produtos">Ver Todos os Produtos</a>
-          </button>
+          <a href="/produtos">
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
+              Ver Todos os Produtos
+            </button>
+          </a>
         </div>
       </section>
 
