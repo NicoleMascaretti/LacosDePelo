@@ -112,7 +112,7 @@ const Home = () => {
           </p>
         </section>
         <div className="container px-4 mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
             <CardCategoria
               img={"public/racao.jpg"}
               titulo={"Rações e Alimentação"}
