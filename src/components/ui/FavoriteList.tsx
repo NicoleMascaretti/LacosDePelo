@@ -37,7 +37,7 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-full sm:max-w-md bg-white">
+      <SheetContent side="right" className="w-full sm:max-w-lg bg-white">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-red-500 fill-current" />

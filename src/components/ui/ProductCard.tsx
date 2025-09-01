@@ -31,12 +31,13 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     e.stopPropagation(); // Impede a navegação
     e.preventDefault();  // Impede a navegação
     addToCart(product);
+    toast.success(`${product.name} adicionado ao carrinho!`);
   };
 
   return (
     <Link to={`/produto/${product.id}`} className="block ">
       <div
-        className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col ${viewMode === 'list' ? 'flex' : ''
+        className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col ${viewMode === 'list' ? 'grid grid-cols-2' : ''
           }`}
       >
         {/* Imagem */}
@@ -71,7 +72,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
 
           {/* Favorito */}
           <button onClick={handleFavoriteToggle} className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white">
-            <Heart className={`h-4 w-4 hover:text-red-500 transition-colors ${isProductFavorite
+            <Heart className={`h-5 w-5 hover:text-red-500 transition-colors ${isProductFavorite
               ? 'text-red-500 fill-current'
               : 'text-gray-600'}`} />
           </button>
