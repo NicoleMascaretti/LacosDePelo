@@ -1,0 +1,5 @@
+# Variáveis de ambiente para a API da Shopify
+# OBS: O prefixo vite é uma medida de segurança pra nao expor chaves secretas no backend
+
+VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN=""
+VITE_SHOPIFY_GRAPHQL_ENDPOINT=""
