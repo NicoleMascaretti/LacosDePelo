@@ -3,7 +3,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from '../hooks/useCart';
 import Logo from "./ui/Logo";
 import NavLink from "./ui/Navlink";
-import DropdownCategoria from "./ui/DropdownCategoria";
+import DropdownProdutos from "./ui/DropdownProdutos";
 import SearchInput from "./ui/SearchInput";
 import UserMenu from "./ui/UserMenu";
 import TopBarInfo from "./ui/TopBarInfo";
@@ -34,7 +34,7 @@ const Navbar = () => {
               <NavLink to="/" activeClassName="text-teal-600">
                 Início
               </NavLink>
-              <DropdownCategoria />
+              <DropdownProdutos />
               <NavLink to="/sobre" activeClassName="text-teal-600">
                 Sobre
               </NavLink>
