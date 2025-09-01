@@ -12,7 +12,8 @@
 } */
 
 export interface ProductType {
-  id: number;
+  id: string;
+  handle?: string;
   name: string;
   price: number;
   originalPrice?: number | null;
