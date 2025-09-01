@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from "../hooks/useCart";
 import Logo from "./ui/Logo";
@@ -11,7 +12,6 @@ import { Heart, ShoppingCart } from "lucide-react";
 import FavoriteList from "./ui/FavoriteList";
 import ShoppingCartWidget from "./ui/ShoppingCartWidget";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { getTotalItems } = useCart();
@@ -136,115 +136,85 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Menu lateral mobile com animação */}
+      {/* Menu mobile fullscreen com animação de slide */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black z-40"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-
-            {/* Drawer */}
-            <motion.aside
-              key="mobileMenu"
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 left-0 h-full w-80 max-w-[90vw] bg-white shadow-lg z-50 pt-[max(env(safe-area-inset-top),1rem)] pb-[max(env(safe-area-inset-bottom),1rem)] px-5 flex flex-col overflow-y-auto"
-            >
-              {/* Header do drawer (logo + fechar) */}
-              <div className="flex items-center justify-between mb-4">
-                <Logo className="h-9 w-auto" />
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-md hover:bg-gray-100"
-                  aria-label="Fechar menu"
+          <motion.aside
+            key="mobileMenu"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+            className="fixed inset-0 bg-white z-[60] flex flex-col px-6 py-6 overflow-y-auto"
+          >
+            {/* Header do menu */}
+            <div className="flex items-center justify-between mb-6">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Ir para Início"
+              >
+                <Logo className="h-10 w-auto" />
+              </Link>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 rounded-md hover:bg-gray-100"
+                aria-label="Fechar menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-              {/* Busca no mobile */}
-              <div className="mb-4">
-                <SearchInput className="flex md:hidden w-full" />
-              </div>
+            {/* Busca */}
+            <div className="mb-6">
+              <SearchInput className="w-full" />
+            </div>
 
-              {/* Navegação */}
-              <nav className="flex flex-col gap-4 text-gray-700 font-medium">
-                <NavLink
-                  to="/"
-                  activeClassName="text-teal-600"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Início
-                </NavLink>
-                <DropdownProdutos />
-                <NavLink
-                  to="/sobre"
-                  activeClassName="text-teal-600"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Sobre
-                </NavLink>
-                <NavLink
-                  to="/contato"
-                  activeClassName="text-teal-600"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Contato
-                </NavLink>
-              </nav>
-
-              {/* Ações */}
-              <div className="mt-6 border-t border-gray-200 pt-4">
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => {
-                      setIsFavoritesOpen(true);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="p-2 rounded-full hover:bg-gray-100"
-                    aria-label="Abrir favoritos"
-                  >
-                    <Heart className="h-6 w-6 text-gray-700" />
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setIsCartOpen(true);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="p-2 rounded-full hover:bg-gray-100"
-                    aria-label="Abrir carrinho"
-                  >
-                    <ShoppingCart className="h-6 w-6 text-gray-700" />
-                  </button>
-
-                  <UserMenu />
-                </div>
-              </div>
-            </motion.aside>
-          </>
+            {/* Navegação */}
+            <nav className="flex flex-col gap-6 text-lg font-medium text-gray-700">
+              <NavLink
+                to="/"
+                activeClassName="text-teal-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Início
+              </NavLink>
+              <NavLink
+                to="/produtos"
+                activeClassName="text-teal-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Produtos
+              </NavLink>
+              <NavLink
+                to="/sobre"
+                activeClassName="text-teal-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sobre
+              </NavLink>
+              <NavLink
+                to="/contato"
+                activeClassName="text-teal-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contato
+              </NavLink>
+            </nav>
+          </motion.aside>
         )}
       </AnimatePresence>
 
