@@ -35,9 +35,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
   };
 
   return (
-    <Link to={`/produto/${product.id}`} className="block ">
+    <Link to={`/produto/${product.id}`} className="">
       <div
-        className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col ${viewMode === 'list' ? 'grid grid-cols-2' : ''
+        className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group h-full ${viewMode === 'list' ? 'flex flex-row' : ''
           }`}
       >
         {/* Imagem */}
@@ -76,62 +76,69 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               ? 'text-red-500 fill-current'
               : 'text-gray-600'}`} />
           </button>
-
         </div>
 
         {/* Informações */}
-        <div className={`p-6 flex flex-col flex-grow ${viewMode === 'list' ? 'flex-1' : ''}`}>
-          <div className="flex-grow">
-            {/* Categoria */}
-            <div className="mb-2">
-              <span className="text-xs text-teal-600 font-medium">{product.category}</span>
-            </div>
+        <div className={`p-6 flex flex-col flex-grow ${viewMode === 'list' ? 'flex-1 flex-row gap-6' : ''}`}>
+          <div className={`flex-grow ${viewMode === 'list' ? 'flex flex-row gap-6' : ''}`}>
 
-            {/* Nome */}
-            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
-              {product.name}
-            </h3>
-
-            {/* Avaliação */}
-            <div className="flex items-center mb-3">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < Math.floor(product.rating)
-                      ? 'text-yellow-400 fill-current'
-                      : 'text-gray-300'
-                      }`}
-                  />
-                ))}
+            {/* LADO DA ESQUERDA */}
+            <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
+              {/* Categoria */}
+              <div className="mb-2">
+                <span className="text-xs text-teal-600 font-medium">{product.category}</span>
               </div>
-              <span className="text-sm text-gray-600 ml-2">
-                {product.rating} ({product.reviews})
-              </span>
+
+              {/* Nome */}
+              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
+                {product.name}
+              </h3>
+
+              {/* Avaliação */}
+              <div className="flex items-center mb-3">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < Math.floor(product.rating)
+                        ? 'text-yellow-400 fill-current'
+                        : 'text-gray-300'
+                        }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 ml-2">
+                  {product.rating} ({product.reviews})
+                </span>
+              </div>
             </div>
 
-            {/* Preço */}
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-2xl font-bold text-emerald-600">
-                R$ {product.price.toFixed(2)}
-              </span>
-              {product.originalPrice && (
-                <span className="text-sm text-gray-500 line-through">
-                  R$ {product.originalPrice.toFixed(2)}
+            {/* LADO DA DIREITA */}
+            <div className={`${viewMode === 'list' ? 'flex flex-col justify-between items-end' : ''}`}>
+              {/* Preço */}
+              <div className={`flex items-center mb-4 ${viewMode === 'list' ? 'flex-col items-end' : 'justify-between'}`}>
+                <span className="text-2xl font-bold text-emerald-600">
+                  R$ {product.price.toFixed(2)}
                 </span>
-              )}
+                {product.originalPrice && (
+                  <span className="text-sm text-gray-500 line-through">
+                    R$ {product.originalPrice.toFixed(2)}
+                  </span>
+                )}
+              </div>
+
+              {/* Botão Adicionar */}
+              <button
+                onClick={handleAddToCart}
+                disabled={!product.inStock}
+                className={`bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group ${viewMode === 'list' ? 'px-6 whitespace-nowrap' : 'w-full mt-auto'
+                  }`}
+              >
+                <ShoppingCart className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+                {product.inStock ? 'Adicionar ao Carrinho' : 'Produto Esgotado'}
+              </button>
             </div>
           </div>
-
-          {/* Botão Adicionar */}
-          <button
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-            className="w-full mt-auto bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group"
-          >
-            <ShoppingCart className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
-            {product.inStock ? 'Adicionar ao Carrinho' : 'Produto Esgotado'}
-          </button>
         </div>
       </div>
     </Link>

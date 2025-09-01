@@ -1,6 +1,15 @@
-import React from 'react';
+import { Link } from 'react-router-dom'; // 1. Importe o Link
 import LogoInvertida from "../ui/LogoInvertida";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
+
+// 2. Crie uma lista de categorias para facilitar a renderização
+const categories = [
+  { name: 'Rações & Alimentação', slug: 'racoes-e-alimentacao' },
+  { name: 'Brinquedos', slug: 'brinquedos' },
+  { name: 'Higiene & Beleza', slug: 'higiene-e-beleza' },
+  { name: 'Acessórios', slug: 'acessorios' },
+  { name: 'Medicamentos', slug: 'medicamentos' },
+];
 
 export default function Footer() {
   return (
@@ -16,27 +25,17 @@ export default function Footer() {
               Sua loja online especializada em produtos para pets.
               Carinho, qualidade e os melhores preços para criar laços especiais com seu melhor amigo.
             </p>
-            {/*             <div className="flex space-x-4">
-              <a href="#" className="bg-gray-800 hover:bg-teal-600 p-2 rounded-full transition-colors">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 hover:bg-teal-600 p-2 rounded-full transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="bg-gray-800 hover:bg-teal-600 p-2 rounded-full transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-            </div> */}
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-xl font-semibold">Links Rápidos</h3>
             <div className="space-y-2">
-              <a href="/" className="block text-gray-400 hover:text-teal-400 transition-colors">Início</a>
-              <a href="/produtos" className="block text-gray-400 hover:text-teal-400 transition-colors">Produtos</a>
-              <a href="/sobre" className="block text-gray-400 hover:text-teal-400 transition-colors">Sobre</a>
-              <a href="/contato" className="block text-gray-400 hover:text-teal-400 transition-colors">Contato</a>
+              {/* 3. Troque <a> por <Link> e href por to */}
+              <Link to="/" className="block text-gray-400 hover:text-teal-400 transition-colors">Início</Link>
+              <Link to="/produtos" className="block text-gray-400 hover:text-teal-400 transition-colors">Produtos</Link>
+              <Link to="/sobre" className="block text-gray-400 hover:text-teal-400 transition-colors">Sobre</Link>
+              <Link to="/contato" className="block text-gray-400 hover:text-teal-400 transition-colors">Contato</Link>
             </div>
           </div>
 
@@ -44,11 +43,16 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-semibold">Categorias</h3>
             <div className="space-y-2">
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Rações & Alimentação</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Brinquedos</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Higiene & Beleza</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Acessórios</a>
-              <a href="#" className="block text-gray-400 hover:text-teal-400 transition-colors">Medicamentos</a>
+              {/* 4. Use .map() para criar os links dinamicamente */}
+              {categories.map((category) => (
+                <Link
+                  key={category.slug}
+                  to={`/produtos?categoria=${category.slug}`}
+                  className="block text-gray-400 hover:text-teal-400 transition-colors"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -80,20 +84,19 @@ export default function Footer() {
               © 2025 Laços de Pelo. Todos os direitos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Política de Privacidade
-              </a>
-              <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              </Link>
+              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Termos de Uso
-              </a>
-              <a href="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              </Link>
+              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Trocas e Devoluções
-              </a>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-
     </footer>
   );
 };

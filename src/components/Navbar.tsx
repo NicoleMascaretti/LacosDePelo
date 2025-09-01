@@ -34,9 +34,6 @@ const Navbar = () => {
               <NavLink to="/" activeClassName="text-teal-600">
                 Início
               </NavLink>
-              <NavLink to="/produtos" activeClassName="text-teal-600">
-                Produtos
-              </NavLink>
               <DropdownCategoria />
               <NavLink to="/sobre" activeClassName="text-teal-600">
                 Sobre
