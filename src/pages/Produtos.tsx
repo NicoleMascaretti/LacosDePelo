@@ -12,8 +12,6 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
 
-import { useLoading } from '../hooks/useLoading';
-import { fetchProducts } from '../services/mockApi'; 
 import Loading from '../components/ui/Loading';
 
 // Tipos para a resposta da API
