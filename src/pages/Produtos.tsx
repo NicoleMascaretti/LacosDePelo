@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQuery, gql } from '@apollo/client';
+
 // import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
 import ProductCard from "../components/ui/ProductCard";
@@ -14,11 +16,53 @@ import { useLoading } from '../hooks/useLoading';
 import { fetchProducts } from '../services/mockApi'; 
 import Loading from '../components/ui/Loading';
 
+// Tipos para a resposta da API
+interface ShopifyProductNode {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  priceRange: { minVariantPrice: { amount: string; } };
+  images: { edges: { node: { url: string; altText: string | null; } }[]; };
+}
+
+interface GetProductsData {
+  products: { edges: { node: ShopifyProductNode; }[]; };
+}
+
+const GET_PRODUCTS_QUERY = gql`
+  query GetProducts {
+    products(first: 12) {
+      edges {
+        node {
+          id
+          handle
+          title
+          description
+          priceRange {
+            minVariantPrice {
+              amount
+            }
+          }
+          images(first: 1) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const categories = [
   'Todos',
-  'Rações e Alimentação', // "Ração e Alimentação" -> "Rações"
+  'Rações e Alimentação', 
   'Brinquedos',
-  'Higiene e Beleza', // "Higiene e Beleza" -> "Higiene"
+  'Higiene e Beleza', 
   'Acessórios',
   'Medicamentos',
   'Casinhas e Transporte'
@@ -36,13 +80,34 @@ const slugify = (text: string) => {
 };
 
 const Produtos = () => {
-  const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
+  // Usamos o hook 'useQuery' da apollo para buscar os dados
+  // Ele nos dá 'loading', 'error' e 'data' automaticamente.
+  const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
   const [searchParams, setSearchParams] = useSearchParams();
+
+  if (loading) return <Loading />;
+  if (error) return <p className="p-4 text-center text-red-500">Erro ao carregar produtos: {error.message}</p>;
+
+  // Transformamos os dados da Shopify para o nosso formato `ProductType`
+  // Isso garante que o resto do nosso app continue funcionando sem alterações.
+  const products: ProductType[] | undefined = data?.products.edges.map((edge: any) => ({
+    id: edge.node.id,
+    handle: edge.node.handle,
+    name: edge.node.title,
+    description: edge.node.description,
+    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
+    image: edge.node.images.edges[0]?.node.url || '', // Pega a primeira imagem
+    // Campos que não vêm da Shopify ainda, usamos valores padrão:
+    category: 'Shopify', 
+    rating: 4.5,
+    reviews: 0,
+    inStock: true, // Precisaríamos de uma query de inventário para isso
+  }));
 
   const filteredProducts = (products || []).filter(product => {
     const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
@@ -79,16 +144,6 @@ const Produtos = () => {
     }
     setSearchParams(searchParams);
   };
-
-  // if (loading) return <div><p className="p-4">Carregando produtos...</p></div>;
-  if (loading) {
-    return <Loading/>;
-  }
-  
-  if (error) {
-    return <div className="text-center p-8 text-red-500">Erro ao carregar produtos: {error.message}</div>;
-  }
-  
 
   return (
     <div className="min-h-screen bg-gray-50">

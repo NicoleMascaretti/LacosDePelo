@@ -19,7 +19,7 @@ const Product = () => {
 
   const getProduct = useCallback(() => {
     if (!id) throw new Error("ID do produto não encontrado");
-    return fetchProductById(parseInt(id));
+    return fetchProductById((id));
   }, [id]);
 
   const { data: product, loading, error } = useLoading<ProductType>(getProduct);

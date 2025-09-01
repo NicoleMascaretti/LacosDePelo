@@ -13,8 +13,8 @@ import type { ProductType } from '../types/ProductType';
 export interface FavoritesContextData {
   favorites: ProductType[];
   addToFavorites: (product: ProductType) => void;
-  removeFromFavorites: (productId: number) => void;
-  isFavorite: (productId: number) => boolean;
+  removeFromFavorites: (productId: string) => void;
+  isFavorite: (productId: string) => boolean;
   clearAllFavorites: () => void;
 }
 
@@ -51,7 +51,7 @@ export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children 
     });
   }, []);
 
-  const removeFromFavorites = useCallback((productId: number) => {
+  const removeFromFavorites = useCallback((productId: string) => {
     setFavorites(prevFavorites => prevFavorites.filter(item => item.id !== productId));
   }, []);
 
@@ -59,7 +59,7 @@ export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children 
     setFavorites([]);
   }, []);
   
-  const isFavorite = useCallback((productId: number) => {
+  const isFavorite = useCallback((productId: string) => {
     return favorites.some(item => item.id === productId);
   }, [favorites]);
 
