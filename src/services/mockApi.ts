@@ -3,7 +3,7 @@ import type { ProductType } from '../types/ProductType';
 // Nosso "banco de dados" falso com todos os detalhes.
 const mockProductDatabase: ProductType[] = [
   {
-    id: 1,
+    id: 'gid://shopify/Produto/1',
     name: 'Ração Premier Golden Cães Adultos 15kg',
     price: 89.90,
     originalPrice: 109.90,
@@ -18,7 +18,7 @@ const mockProductDatabase: ProductType[] = [
     specifications: { peso: '15kg', idade: 'Cães adultos (1-7 anos)', sabor: 'Frango e arroz' }
   },
   {
-    id: 2,
+    id: 'gid://shopify/Produto/2',
     name: 'Brinquedo Mordedor Resistente Kong',
     price: 24.90,
     originalPrice: 34.90,
@@ -33,7 +33,7 @@ const mockProductDatabase: ProductType[] = [
     specifications: { material: 'Borracha natural', tamanho: 'Médio (10cm)', cor: 'Vermelho' }
   },
   {
-    id: 3,
+    id: 'gid://shopify/Produto/3',
     name: 'Vermífugo para Cachorros da Drontal Plus',
     price: 24.90,
     originalPrice: null,
@@ -48,7 +48,7 @@ const mockProductDatabase: ProductType[] = [
     specifications: { material: 'Borracha natural', tamanho: 'Médio (10cm)', cor: 'Vermelho' }
   },
     {
-    id: 4,
+    id: 'gid://shopify/Produto/4',
     name: 'Antipulgas e Carrapatos Bravecto',
     price: 350.90,
     originalPrice: null,
@@ -67,7 +67,7 @@ const mockProductDatabase: ProductType[] = [
 
 //Simula a busca de UM produto pelo ID:
 
-export async function fetchProductById(id: number): Promise<ProductType> {
+export async function fetchProductById(id: string): Promise<ProductType> {
   console.log(`MOCK API: Buscando produto com ID: ${id}...`);
   // Simula o atraso da rede
   await new Promise(resolve => setTimeout(resolve, 800)); 
