@@ -63,14 +63,14 @@ const Home = () => {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a href="/produtos">
-                    <button className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
+                    <button className="w-full bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
                       Ver Produtos
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </a>
 
                   <a href="/sobre">
-                    <button className="border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
+                    <button className="w-full border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
                       Conheça Nossa História
                     </button>
                   </a>

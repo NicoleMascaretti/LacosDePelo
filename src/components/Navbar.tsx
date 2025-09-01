@@ -47,10 +47,7 @@ const Navbar = () => {
           {/* Área da direita */}
           <div className="flex items-center space-x-4">
             {/* Busca */}
-            <SearchInput
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <SearchInput />
 
             {/* Ícones da navbar */}
             <div className="flex items-center space-x-6">
