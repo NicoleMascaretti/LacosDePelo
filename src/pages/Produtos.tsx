@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useQuery, gql } from '@apollo/client';
-
-// import { fetchProducts } from "../services/Api";
 import type { ProductType } from "../types/ProductType";
-import ProductCard from "../components/ui/ProductCard";
-import { Search, Filter, Grid, List } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../components/ui/Pagination';
-import Navbar from '../components/Navbar';
-import Footer from '../components/ui/Footer';
-
-import Loading from '../components/ui/Loading';
+import ProductCardMobile from "../components/ui/ProductCardMobile";
+import ProductCardDesktop from "../components/ui/ProductCardDesktop";
+import { Filter, Grid, List } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/Pagination";
+import Navbar from "../components/Navbar";
+import Footer from "../components/ui/Footer";
+import { slugify } from "../services/slug";
+import { useLoading } from "../hooks/useLoading";
+import { fetchProducts } from "../services/mockApi";
+import Loading from "../components/ui/Loading";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import { useQuery, gql } from '@apollo/client';
 
 // Tipos para a resposta da API
 interface ShopifyProductNode {
@@ -57,40 +65,28 @@ const GET_PRODUCTS_QUERY = gql`
 `;
 
 const categories = [
-  'Todos',
-  'Rações e Alimentação', 
-  'Brinquedos',
-  'Higiene e Beleza', 
-  'Acessórios',
-  'Medicamentos',
-  'Casinhas e Transporte'
+  "Todos",
+  "Rações e Alimentação",
+  "Brinquedos",
+  "Higiene e Beleza",
+  "Acessórios",
+  "Medicamentos",
+  "Casinhas e Transporte",
 ];
 
-
-const slugify = (text: string) => {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/&/g, 'e')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
-};
-
 const Produtos = () => {
+  // const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
   // Usamos o hook 'useQuery' da apollo para buscar os dados
   // Ele nos dá 'loading', 'error' e 'data' automaticamente.
   const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY);
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
-  const [searchParams, setSearchParams] = useSearchParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   if (loading) return <Loading />;
   if (error) return <p className="p-4 text-center text-red-500">Erro ao carregar produtos: {error.message}</p>;
-
   // Transformamos os dados da Shopify para o nosso formato `ProductType`
   // Isso garante que o resto do nosso app continue funcionando sem alterações.
   const products: ProductType[] | undefined = data?.products.edges.map((edge: any) => ({
@@ -101,15 +97,18 @@ const Produtos = () => {
     price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
     image: edge.node.images.edges[0]?.node.url || '', // Pega a primeira imagem
     // Campos que não vêm da Shopify ainda, usamos valores padrão:
-    category: 'Shopify', 
+    category: 'Shopify',
     rating: 4.5,
     reviews: 0,
     inStock: true, // Precisaríamos de uma query de inventário para isso
   }));
+  const searchParam = searchParams.get("search") || "";
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const filteredProducts = (products || []).filter(product => {
-    const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredProducts = (products || []).filter((product) => {
+    const matchesCategory =
+      selectedCategory === "Todos" || product.category === selectedCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchParam.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -117,18 +116,18 @@ const Produtos = () => {
   const startIndex = (currentPage - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
 
-  // Efeito para ler a URL e definir a categoria
   useEffect(() => {
-    const categorySlugFromUrl = searchParams.get('categoria');
+    const categorySlugFromUrl = searchParams.get("categoria");
     if (categorySlugFromUrl) {
-      // Encontra o nome original da categoria com base no slug da URL
-      const categoryName = categories.find(c => slugify(c) === categorySlugFromUrl);
+      const categoryName = categories.find((c) => slugify(c) === categorySlugFromUrl);
       if (categoryName) {
         setSelectedCategory(categoryName);
       }
+    } else {
+      setSelectedCategory("Todos");
     }
   }, [searchParams]);
-
+  
   // Função para atualizar a categoria e a URL
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -153,7 +152,8 @@ const Produtos = () => {
             Nossos Produtos
           </h1>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Descubra nossa seleção completa de produtos para o bem-estar e felicidade do seu melhor amigo
+            Descubra nossa seleção completa de produtos para o bem-estar e
+            felicidade do seu melhor amigo
           </p>
         </div>
       </div>
@@ -168,24 +168,7 @@ const Produtos = () => {
                 Filtros
               </h3>
 
-              {/* Search */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Buscar Produto
-                </label>
-                <div className="relative">
-                  <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
-                  <Input
-                    type="text"
-                    placeholder="Digite o nome do produto..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-              </div>
-
-              {/* Categories */}
+              {/* Categorias */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   Categorias
@@ -196,8 +179,8 @@ const Produtos = () => {
                       key={category}
                       onClick={() => handleCategoryChange(category)}
                       className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
-                        ? 'bg-teal-100 text-teal-800 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? "bg-teal-100 text-teal-800 font-medium"
+                        : "text-gray-600 hover:bg-gray-100"
                         }`}
                     >
                       {category}
@@ -215,38 +198,62 @@ const Produtos = () => {
               <div>
                 <p className="text-gray-600">
                   Exibindo {paginatedProducts.length} de {filteredProducts.length} produtos
+                  {searchParam && (
+                    <span>
+                      {" "}
+                      para "<strong>{searchParam}</strong>"
+                    </span>
+                  )}
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className={viewMode === 'grid' ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
+              {isDesktop && (
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("grid")}
+                    className={
+                      viewMode === "grid" ? "bg-gray-900 text-white hover:bg-gray-800" : ""
+                    }
+                  >
+                    <Grid className="h-4 w-4" />
+                  </Button>
 
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className={viewMode === 'list' ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setViewMode("list")}
+                    className={
+                      viewMode === "list" ? "bg-gray-900 text-white hover:bg-gray-800" : ""
+                    }
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Products Grid */}
-            <div className={`grid gap-6 mb-8 ${viewMode === 'grid'
-              ? 'sm:grid-cols-2 lg:grid-cols-3'
-              : 'grid-cols-1'
-              }`}>
-              {paginatedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} viewMode={viewMode} />
-              ))}
+            <div
+              className={`grid gap-6 mb-8 ${isDesktop
+                ? viewMode === "grid"
+                  ? "sm:grid-cols-2 lg:grid-cols-3"
+                  : "grid-cols-1"
+                : "grid-cols-1"
+                }`}
+            >
+              {paginatedProducts.map((product) =>
+                isDesktop ? (
+                  <ProductCardDesktop
+                    key={product.id}
+                    product={product}
+                    viewMode={viewMode}
+                  />
+                ) : (
+                  <ProductCardMobile key={product.id} product={product} />
+                )
+              )}
             </div>
 
             {/* Pagination */}
@@ -260,7 +267,7 @@ const Produtos = () => {
                         e.preventDefault();
                         if (currentPage > 1) setCurrentPage(currentPage - 1);
                       }}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
 
@@ -286,7 +293,7 @@ const Produtos = () => {
                         e.preventDefault();
                         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
                       }}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                     />
                   </PaginationItem>
                 </PaginationContent>
@@ -299,6 +306,6 @@ const Produtos = () => {
       <Footer />
     </div>
   );
-}
+};
 
 export default Produtos;

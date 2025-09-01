@@ -217,7 +217,8 @@ const Contato = () => {
                         <FormControl>
                           <Textarea
                             placeholder="Conte-nos mais sobre sua necessidade..."
-                            className="min-h-[120px]"
+                            className="min-h-[120px] resize-none"
+                            maxLength={500}
                             {...field}
                           />
                         </FormControl>
