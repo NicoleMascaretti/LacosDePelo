@@ -99,8 +99,8 @@ export default function DropdownProdutos() {
       onMouseEnter={handleMouseEnterMenu}
       onMouseLeave={handleMouseLeaveMenu}
     >
-      <button className="flex items-center hover:text-teal-600">
-        Produtos <ChevronDown className="ml-1 h-4 w-4" />
+      <button className="group flex items-center hover:text-teal-600">
+        Produtos <ChevronDown className="ml-1 mt-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
       </button>
 
       {isOpen && (
