@@ -21,6 +21,7 @@ import { slugify } from "../services/slug";
 import Loading from "../components/ui/Loading";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useQuery, gql } from '@apollo/client';
+import SearchInput from "../components/ui/SearchInput";
 
 // Tipos para a resposta da API
 interface ShopifyProductNode {
@@ -87,8 +88,9 @@ const Produtos = () => {
   const productsPerPage = 6;
   const [searchParams, setSearchParams] = useSearchParams();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const categorySlugFromUrl = searchParams.get("categoria");
     if (categorySlugFromUrl) {
       const categoryName = categories.find((c) => slugify(c) === categorySlugFromUrl);
@@ -165,15 +167,76 @@ const Produtos = () => {
       <div className="container px-4 mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          <div className="lg:w-64 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-                <Filter className="h-5 w-5 mr-2 text-teal-600" />
+          {/* Botão Filtros (só mobile) */}
+          {!isDesktop && (
+            <div className="flex justify-between mb-4">
+              <SearchInput />
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700"
+              >
+                <Filter className="h-4 w-4" />
                 Filtros
-              </h3>
+              </button>
+            </div>
+          )}
 
-              {/* Categorias */}
-              <div>
+
+          {/* Sidebar de filtros (só desktop) */}
+          {isDesktop && (
+            <div className="w-64 space-y-6">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                  <Filter className="h-5 w-5 mr-2 text-teal-600" />
+                  Filtros
+                </h3>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Categorias
+                  </label>
+                  <div className="space-y-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => handleCategoryChange(category)}
+                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
+                          ? "bg-teal-100 text-teal-800 font-medium"
+                          : "text-gray-600 hover:bg-gray-100"
+                          }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Drawer de filtros (só mobile) */}
+          {!isDesktop && isFilterOpen && (
+            <div className="fixed inset-0 z-50 flex">
+              {/* Overlay */}
+              <div
+                className="fixed inset-0 bg-black/50"
+                onClick={() => setIsFilterOpen(false)}
+              />
+              {/* Conteúdo */}
+              <div className="relative w-80 max-w-[90vw] bg-white h-full shadow-lg p-6 z-50">
+                <button
+                  onClick={() => setIsFilterOpen(false)}
+                  className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+                  aria-label="Fechar filtros"
+                >
+                  ✕
+                </button>
+
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                  <Filter className="h-5 w-5 mr-2 text-teal-600" />
+                  Filtros
+                </h3>
+
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   Categorias
                 </label>
@@ -181,7 +244,10 @@ const Produtos = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      onClick={() => handleCategoryChange(category)}
+                      onClick={() => {
+                        handleCategoryChange(category);
+                        setIsFilterOpen(false);
+                      }}
                       className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
                         ? "bg-teal-100 text-teal-800 font-medium"
                         : "text-gray-600 hover:bg-gray-100"
@@ -193,7 +259,8 @@ const Produtos = () => {
                 </div>
               </div>
             </div>
-          </div>
+          )}
+
 
           {/* Products Section */}
           <div className="flex-1">
