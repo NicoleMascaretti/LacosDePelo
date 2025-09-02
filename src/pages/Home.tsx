@@ -159,13 +159,12 @@ const Home = () => {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {products?.slice(0, 4).map((p) => (
-            <div key={p.id} className="flex justify-center w-full">
-              {isDesktop ? (
-                <ProductCardDesktop product={p} viewMode="grid" />
-              ) : (
-                <ProductCardMobile product={p} />
-              )}
-            </div>
+            // O wrapper foi removido e a key movida para cá
+            <ProductCardDesktop
+              key={p.id}
+              product={p}
+              viewMode="grid"
+            />
           ))}
         </div>
 

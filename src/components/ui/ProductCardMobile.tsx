@@ -63,7 +63,7 @@ export default function ProductCardMobile({ product }: { product: ProductType })
                            font-semibold flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="h-4 w-4" />
-                {product.inStock ? "ADICIONAR" : "ESGOTADO"}
+                {product.inStock ? "Adicionar" : "Esgotado"}
               </button>
             </div>
           </div>
