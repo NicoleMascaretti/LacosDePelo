@@ -16,8 +16,8 @@ import {
 import Navbar from "../components/Navbar";
 import Footer from "../components/ui/Footer";
 import { slugify } from "../services/slug";
-import { useLoading } from "../hooks/useLoading";
-import { fetchProducts } from "../services/mockApi";
+//import { useLoading } from "../hooks/useLoading";
+//import { fetchProducts } from "../services/mockApi"; 
 import Loading from "../components/ui/Loading";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useQuery, gql } from '@apollo/client';
@@ -28,6 +28,7 @@ interface ShopifyProductNode {
   handle: string;
   title: string;
   description: string;
+  productType: string;
   priceRange: { minVariantPrice: { amount: string; } };
   images: { edges: { node: { url: string; altText: string | null; } }[]; };
 }
@@ -45,6 +46,7 @@ const GET_PRODUCTS_QUERY = gql`
           handle
           title
           description
+          productType
           priceRange {
             minVariantPrice {
               amount
@@ -83,40 +85,10 @@ const Produtos = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
-
   const [searchParams, setSearchParams] = useSearchParams();
-  if (loading) return <Loading />;
-  if (error) return <p className="p-4 text-center text-red-500">Erro ao carregar produtos: {error.message}</p>;
-  // Transformamos os dados da Shopify para o nosso formato `ProductType`
-  // Isso garante que o resto do nosso app continue funcionando sem alterações.
-  const products: ProductType[] | undefined = data?.products.edges.map((edge: any) => ({
-    id: edge.node.id,
-    handle: edge.node.handle,
-    name: edge.node.title,
-    description: edge.node.description,
-    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
-    image: edge.node.images.edges[0]?.node.url || '', // Pega a primeira imagem
-    // Campos que não vêm da Shopify ainda, usamos valores padrão:
-    category: 'Shopify',
-    rating: 4.5,
-    reviews: 0,
-    inStock: true, // Precisaríamos de uma query de inventário para isso
-  }));
-  const searchParam = searchParams.get("search") || "";
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const filteredProducts = (products || []).filter((product) => {
-    const matchesCategory =
-      selectedCategory === "Todos" || product.category === selectedCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchParam.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
-
-  useEffect(() => {
+    useEffect(() => {
     const categorySlugFromUrl = searchParams.get("categoria");
     if (categorySlugFromUrl) {
       const categoryName = categories.find((c) => slugify(c) === categorySlugFromUrl);
@@ -127,7 +99,39 @@ const Produtos = () => {
       setSelectedCategory("Todos");
     }
   }, [searchParams]);
-  
+
+  if (loading) return <Loading />;
+  if (error) return <p className="p-4 text-center text-red-500">Erro ao carregar produtos: {error.message}</p>;
+
+  // Transformamos os dados da Shopify para o nosso formato `ProductType`
+  // Isso garante que o resto do nosso app continue funcionando sem alterações.
+  const allProducts: ProductType[] = data?.products.edges.map((edge: any) => ({
+    id: edge.node.id,
+    handle: edge.node.handle,
+    name: edge.node.title,
+    description: edge.node.description,
+    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
+    image: edge.node.images.edges[0]?.node.url || '', // Pega a primeira imagem
+
+    // Campos que não vêm da Shopify ainda, usamos valores padrão:
+    category: edge.node.productType,
+    rating: 4.5,
+    reviews: 0,
+    inStock: true, // Precisaríamos de uma query de inventário para isso
+  })) || [];
+
+
+  // Lógica de Filtros
+  const filteredProducts = allProducts.filter((product) => {
+    const matchesCategory = selectedCategory === "Todos" || product.category === selectedCategory;
+    return matchesCategory;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+
+
   // Função para atualizar a categoria e a URL
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -198,12 +202,6 @@ const Produtos = () => {
               <div>
                 <p className="text-gray-600">
                   Exibindo {paginatedProducts.length} de {filteredProducts.length} produtos
-                  {searchParam && (
-                    <span>
-                      {" "}
-                      para "<strong>{searchParam}</strong>"
-                    </span>
-                  )}
                 </p>
               </div>
 
@@ -243,16 +241,24 @@ const Produtos = () => {
                 : "grid-cols-1"
                 }`}
             >
-              {paginatedProducts.map((product) =>
-                isDesktop ? (
-                  <ProductCardDesktop
-                    key={product.id}
-                    product={product}
-                    viewMode={viewMode}
-                  />
-                ) : (
-                  <ProductCardMobile key={product.id} product={product} />
+              {paginatedProducts.length > 0 ? (
+                // Se a lista de produtos NÃO estiver vazia, renderize os cards
+                paginatedProducts.map((product) =>
+                  isDesktop ? (
+                    <ProductCardDesktop
+                      key={product.id}
+                      product={product}
+                      viewMode={viewMode}
+                    />
+                  ) : (
+                    <ProductCardMobile key={product.id} product={product} />
+                  )
                 )
+              ) : (
+                <div className="col-span-full text-center py-16">
+                  <p className="text-gray-500 text-lg">Nenhum produto encontrado.</p>
+                  <p className="text-gray-400 mt-2">Tente ajustar os filtros ou o termo de busca.</p>
+                </div>
               )}
             </div>
 

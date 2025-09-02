@@ -39,7 +39,7 @@ export default function ProductCardBase({ product, children }: ProductCardBasePr
   };
 
   return (
-    <Link to={`/produto/${product.id}`}>
+    <Link to={`/produto/${product.handle}`}>
       {children({ isProductFavorite, handleFavoriteToggle, handleAddToCart })}
     </Link>
   );
