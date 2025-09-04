@@ -166,12 +166,12 @@ const [loading, setLoading] = useState(true);
             Nossa equipe está sempre pronta para ajudar você a encontrar o melhor para seu pet.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-teal-600 transition-colors">
+            <a href='https://wa.me/5511995984383?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es.' className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-teal-600 transition-colors">
               Falar no WhatsApp
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-teal-600 transition-colors">
+            </a>
+            <a href='/contato' className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-teal-600 transition-colors">
               Enviar E-mail
-            </button>
+            </a>
           </div>
         </div>
       </section>
