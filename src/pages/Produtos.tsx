@@ -39,8 +39,8 @@ interface GetProductsData {
 }
 
 const GET_PRODUCTS_QUERY = gql`
-  query GetProducts {
-    products(first: 12) {
+  query GetProducts($query: String!) { 
+    products(first: 12, query: $query) { 
       edges {
         node {
           id
@@ -79,9 +79,6 @@ const categories = [
 
 const Produtos = () => {
   // const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
-  // Usamos o hook 'useQuery' da apollo para buscar os dados
-  // Ele nos dá 'loading', 'error' e 'data' automaticamente.
-  const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,6 +86,13 @@ const Produtos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const searchTerm = searchParams.get("search") || "";
+  const shopifySearchQuery = searchTerm ? `title:*${searchTerm}*` : "";
+  // Usamos o hook 'useQuery' da apollo para buscar os dados
+  // Ele nos dá 'loading', 'error' e 'data' automaticamente.
+  const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY, {
+    variables: { query: shopifySearchQuery },
+  });
 
   useEffect(() => {
     const categorySlugFromUrl = searchParams.get("categoria");
@@ -125,7 +129,8 @@ const Produtos = () => {
 
   // Lógica de Filtros
   const filteredProducts = allProducts.filter((product) => {
-    const matchesCategory = selectedCategory === "Todos" || product.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "Todos" || product.category === selectedCategory;
     return matchesCategory;
   });
 
