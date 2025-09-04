@@ -87,7 +87,7 @@ const Home = () => {
               <div className="relative">
                 <div className="relative z-10">
                   <img
-                    src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80"
+                    src="cachorro_sem_marca.jpeg"
                     alt="Cachorro e gato felizes"
                     className="rounded-2xl shadow-2xl w-full"
                   />
