@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
@@ -7,6 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery, gql } from '@apollo/client';
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import { useLoading } from "../hooks/useLoading";
+import Loading from "../components/ui/Loading";
 
 type LoginFormData = {
   email: string;
@@ -23,6 +28,27 @@ type RegisterFormData = {
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Ainda não funciona.
+
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const searchTerm = searchParams.get("search") || "";
+  // const shopifySearchQuery = searchTerm ? `title:*${searchTerm}*` : "";
+  // // Usamos o hook 'useQuery' da apollo para buscar os dados
+  // // Ele nos dá 'loading', 'error' e 'data' automaticamente.
+  // const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY, {
+  //   variables: { query: shopifySearchQuery },
+  // });
+
+  // if (loading) {
+  //   return <Loading />;
+  // } if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen text-red-500 text-xl">
+  //       <p>Erro ao carregar a página: {error.message}</p>
+  //     </div>
+  //   );
+  // }
 
   const {
     register: loginRegister,
