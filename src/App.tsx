@@ -18,6 +18,7 @@ import Contato from "./pages/Contato";
 import Product from "./pages/Product";
 import Erro404 from "./pages/Erro404";
 import Login from "./pages/Login"
+import Orders from "./pages/Orders"
 
 // Componentes fixos
 import Navbar from "./components/Navbar";
@@ -37,6 +38,7 @@ const App = () => {
               <Route path="/sobre" element={<Sobre />} />
               <Route path="/contato" element={<Contato />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/meus-pedidos" element={<Orders />}/>
               <Route path="/produto/:handle" element={<Product />} />
               <Route path="*" element={<Erro404 />} />
             </Routes>
