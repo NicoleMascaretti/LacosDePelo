@@ -1,24 +1,48 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from "../hooks/useCart";
 import Logo from "./ui/Logo";
 import NavLink from "./ui/Navlink";
 import DropdownProdutos from "./ui/DropdownProdutos";
 import SearchInput from "./ui/SearchInput";
-import UserMenu from "./ui/UserMenu";
 import TopBarInfo from "./ui/TopBarInfo";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, User } from "lucide-react";
 import FavoriteList from "./ui/FavoriteList";
 import ShoppingCartWidget from "./ui/ShoppingCartWidget";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthShopify } from "../hooks/useAuthShopify";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { getTotalItems } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (isUserMenuOpen && userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isUserMenuOpen]);
   const { favorites } = useFavorites();
+
+  // Auth
+  const { logout } = useAuthShopify();
+  const isAuthenticated = !!localStorage.getItem("shopify_token");
+
+  const handleLogout = () => {
+    logout();
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <>
@@ -54,8 +78,8 @@ const Navbar = () => {
             {/* Busca desktop */}
             <SearchInput className="hidden md:flex w-full max-w-md" />
 
-            {/* Ícones da navbar */}
-            <div className="flex items-center space-x-6">
+            {/* Ícones */}
+            <div className="flex items-center space-x-6 relative">
               {/* Favoritos */}
               <button
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -88,7 +112,53 @@ const Navbar = () => {
               </button>
 
               {/* Usuário */}
-              <UserMenu />
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Abrir menu do usuário"
+                >
+                  <User className="h-6 w-6 text-gray-600" />
+                </button>
+
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50"
+                    >
+                      {!isAuthenticated ? (
+                        <Link
+                          to="/login"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                          Entrar
+                        </Link>
+                      ) : (
+                        <>
+                          <Link
+                            to="/minha-conta"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Minha Conta
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Sair
+                          </button>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Botão menu mobile */}
               <button

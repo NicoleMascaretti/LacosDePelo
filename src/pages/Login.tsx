@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
@@ -8,10 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useQuery, gql } from '@apollo/client';
-import { useMediaQuery } from "../hooks/useMediaQuery";
-import { useLoading } from "../hooks/useLoading";
-import Loading from "../components/ui/Loading";
 
 type LoginFormData = {
   email: string;
@@ -29,27 +24,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Ainda não funciona.
-
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const searchTerm = searchParams.get("search") || "";
-  // const shopifySearchQuery = searchTerm ? `title:*${searchTerm}*` : "";
-  // // Usamos o hook 'useQuery' da apollo para buscar os dados
-  // // Ele nos dá 'loading', 'error' e 'data' automaticamente.
-  // const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY, {
-  //   variables: { query: shopifySearchQuery },
-  // });
-
-  // if (loading) {
-  //   return <Loading />;
-  // } if (error) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen text-red-500 text-xl">
-  //       <p>Erro ao carregar a página: {error.message}</p>
-  //     </div>
-  //   );
-  // }
-
   const {
     register: loginRegister,
     handleSubmit: handleLoginSubmit,
@@ -60,10 +34,16 @@ const Login = () => {
     register: registerRegister,
     handleSubmit: handleRegisterSubmit,
     watch,
-    formState: { errors: registerErrors }
-  } = useForm<RegisterFormData>();
+    trigger,
+    formState: { errors: registerErrors, isValid }
+  } = useForm<RegisterFormData>({ mode: "onChange" });
 
   const password = watch("password");
+
+  useEffect(() => {
+    // força revalidação do campo de confirmação ao digitar a senha
+    trigger("confirmPassword");
+  }, [password, trigger]);
 
   const onLogin = (data: LoginFormData) => {
     console.log("Login:", data);
@@ -80,7 +60,10 @@ const Login = () => {
       <main className="container mx-auto px-4">
         <div className="max-w-md mx-auto">
           <div className="mb-6">
-            <Link to="/" className="inline-flex items-center text-sm text-gray-600 hover:text-teal-600 transition-colors">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-teal-600 transition-colors"
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar à loja
             </Link>
@@ -103,6 +86,7 @@ const Login = () => {
                   <TabsTrigger value="register">Criar Conta</TabsTrigger>
                 </TabsList>
 
+                {/* --- LOGIN --- */}
                 <TabsContent value="login" className="space-y-4 mt-6">
                   <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-4">
                     <div className="space-y-2">
@@ -170,6 +154,7 @@ const Login = () => {
                   </form>
                 </TabsContent>
 
+                {/* --- REGISTER --- */}
                 <TabsContent value="register" className="space-y-4 mt-6">
                   <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-4">
                     <div className="space-y-2">
@@ -251,8 +236,8 @@ const Login = () => {
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Digite a senha novamente"
                           {...registerRegister("confirmPassword", {
-                            required: "Confirmação de senha é obrigatória",
-                            validate: value => value === password || "Senhas não coincidem"
+                            required: "Confirmação de senha obrigatória",
+                            validate: (value) => value === password || "Senhas não coincidem"
                           })}
                         />
                         <Button
@@ -274,7 +259,7 @@ const Login = () => {
                       )}
                     </div>
 
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full" disabled={!isValid}>
                       Criar conta
                     </Button>
                   </form>
