@@ -6,7 +6,9 @@ import { Label } from "../components/ui/Label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { gql } from "@apollo/client";
+import { shopifyClient } from "../lib/shopifyClient";
 
 type LoginFormData = {
   email: string;
@@ -20,39 +22,144 @@ type RegisterFormData = {
   confirmPassword: string;
 };
 
+// --- Storefront API mutations ---
+const CUSTOMER_ACCESS_TOKEN_CREATE = gql`
+  mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+    customerAccessTokenCreate(input: $input) {
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+      customerUserErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+const CUSTOMER_CREATE = gql`
+  mutation customerCreate($input: CustomerCreateInput!) {
+    customerCreate(input: $input) {
+      customer {
+        id
+        email
+        firstName
+      }
+      customerUserErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
 const Login = () => {
+  const navigate = useNavigate();
+
+  // visibilidade senhas
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // estados de loading/erro
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [registerError, setRegisterError] = useState<string | null>(null);
+
+  // form login
   const {
     register: loginRegister,
     handleSubmit: handleLoginSubmit,
-    formState: { errors: loginErrors }
-  } = useForm<LoginFormData>();
+    formState: { errors: loginErrors },
+  } = useForm<LoginFormData>({ mode: "onSubmit" });
 
+  // form cadastro
   const {
     register: registerRegister,
     handleSubmit: handleRegisterSubmit,
     watch,
     trigger,
-    formState: { errors: registerErrors, isValid }
+    formState: { errors: registerErrors, isValid },
   } = useForm<RegisterFormData>({ mode: "onChange" });
 
   const password = watch("password");
 
   useEffect(() => {
-    // força revalidação do campo de confirmação ao digitar a senha
+    // revalida confirmação ao digitar senha
     trigger("confirmPassword");
   }, [password, trigger]);
 
-  const onLogin = (data: LoginFormData) => {
-    console.log("Login:", data);
-    // Aqui seria onde você faria a autenticação
+  // --- handlers ---
+  const onLogin = async (data: LoginFormData) => {
+    setLoginError(null);
+    setLoginLoading(true);
+    try {
+      const res = await shopifyClient.mutate({
+        mutation: CUSTOMER_ACCESS_TOKEN_CREATE,
+        variables: {
+          input: { email: data.email, password: data.password },
+        },
+      });
+
+      const result = res.data?.customerAccessTokenCreate;
+      const token = result?.customerAccessToken?.accessToken;
+      const errMsg = result?.customerUserErrors?.[0]?.message;
+
+      if (token) {
+        localStorage.setItem("shopify_token", token);
+        navigate("/"); // redireciona após login
+      } else {
+        setLoginError(errMsg || "Não foi possível fazer login. Verifique suas credenciais.");
+      }
+    } catch (err: any) {
+      setLoginError(err?.message || "Erro inesperado ao fazer login.");
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
-  const onRegister = (data: RegisterFormData) => {
-    console.log("Register:", data);
-    // Aqui seria onde você criaria a conta
+  const onRegister = async (data: RegisterFormData) => {
+    setRegisterError(null);
+    setRegisterLoading(true);
+    try {
+      // 1) Criar cliente
+      const created = await shopifyClient.mutate({
+        mutation: CUSTOMER_CREATE,
+        variables: {
+          input: { firstName: data.name, email: data.email, password: data.password },
+        },
+      });
+
+      const createErrors = created.data?.customerCreate?.customerUserErrors;
+      if (createErrors && createErrors.length) {
+        setRegisterError(createErrors.map((e: any) => e.message).join(", "));
+        setRegisterLoading(false);
+        return;
+      }
+
+      // 2) Auto-login
+      const loginRes = await shopifyClient.mutate({
+        mutation: CUSTOMER_ACCESS_TOKEN_CREATE,
+        variables: {
+          input: { email: data.email, password: data.password },
+        },
+      });
+
+      const token = loginRes.data?.customerAccessTokenCreate?.customerAccessToken?.accessToken;
+      const loginErr = loginRes.data?.customerAccessTokenCreate?.customerUserErrors?.[0]?.message;
+
+      if (token) {
+        localStorage.setItem("shopify_token", token);
+        navigate("/"); // redireciona após cadastro + login
+      } else {
+        setRegisterError(loginErr || "Conta criada, mas não foi possível efetuar o login automaticamente.");
+      }
+    } catch (err: any) {
+      setRegisterError(err?.message || "Erro inesperado ao criar conta.");
+    } finally {
+      setRegisterLoading(false);
+    }
   };
 
   return (
@@ -71,12 +178,8 @@ const Login = () => {
 
           <Card className="shadow-lg">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                Minha Conta
-              </CardTitle>
-              <CardDescription>
-                Faça login ou crie sua conta para continuar
-              </CardDescription>
+              <CardTitle className="text-2xl font-bold text-gray-900">Minha Conta</CardTitle>
+              <CardDescription>Faça login ou crie sua conta para continuar</CardDescription>
             </CardHeader>
 
             <CardContent>
@@ -86,7 +189,7 @@ const Login = () => {
                   <TabsTrigger value="register">Criar Conta</TabsTrigger>
                 </TabsList>
 
-                {/* --- LOGIN --- */}
+                {/* LOGIN */}
                 <TabsContent value="login" className="space-y-4 mt-6">
                   <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-4">
                     <div className="space-y-2">
@@ -99,8 +202,8 @@ const Login = () => {
                           required: "Email é obrigatório",
                           pattern: {
                             value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: "Email inválido"
-                          }
+                            message: "Email inválido",
+                          },
                         })}
                       />
                       {loginErrors.email && (
@@ -119,8 +222,8 @@ const Login = () => {
                             required: "Senha é obrigatória",
                             minLength: {
                               value: 6,
-                              message: "Senha deve ter pelo menos 6 caracteres"
-                            }
+                              message: "Senha deve ter pelo menos 6 caracteres",
+                            },
                           })}
                         />
                         <Button
@@ -142,19 +245,22 @@ const Login = () => {
                       )}
                     </div>
 
+                    {/* Erro geral de login */}
+                    {loginError && <p className="text-sm text-red-600">{loginError}</p>}
+
                     <div className="flex items-center justify-between">
                       <Button type="button" variant="link" className="px-0 text-sm text-teal-600">
                         Esqueceu sua senha?
                       </Button>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                      Entrar
+                    <Button type="submit" className="w-full" disabled={loginLoading}>
+                      {loginLoading ? "Entrando..." : "Entrar"}
                     </Button>
                   </form>
                 </TabsContent>
 
-                {/* --- REGISTER --- */}
+                {/* REGISTER */}
                 <TabsContent value="register" className="space-y-4 mt-6">
                   <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-4">
                     <div className="space-y-2">
@@ -166,8 +272,8 @@ const Login = () => {
                           required: "Nome é obrigatório",
                           minLength: {
                             value: 2,
-                            message: "Nome deve ter pelo menos 2 caracteres"
-                          }
+                            message: "Nome deve ter pelo menos 2 caracteres",
+                          },
                         })}
                       />
                       {registerErrors.name && (
@@ -185,8 +291,8 @@ const Login = () => {
                           required: "Email é obrigatório",
                           pattern: {
                             value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: "Email inválido"
-                          }
+                            message: "Email inválido",
+                          },
                         })}
                       />
                       {registerErrors.email && (
@@ -205,8 +311,8 @@ const Login = () => {
                             required: "Senha é obrigatória",
                             minLength: {
                               value: 6,
-                              message: "Senha deve ter pelo menos 6 caracteres"
-                            }
+                              message: "Senha deve ter pelo menos 6 caracteres",
+                            },
                           })}
                         />
                         <Button
@@ -236,8 +342,8 @@ const Login = () => {
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Digite a senha novamente"
                           {...registerRegister("confirmPassword", {
-                            required: "Confirmação de senha obrigatória",
-                            validate: (value) => value === password || "Senhas não coincidem"
+                            required: "Confirmação obrigatória",
+                            validate: (value) => value === password || "Senhas não coincidem",
                           })}
                         />
                         <Button
@@ -259,8 +365,11 @@ const Login = () => {
                       )}
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={!isValid}>
-                      Criar conta
+                    {/* Erro geral de cadastro */}
+                    {registerError && <p className="text-sm text-red-600">{registerError}</p>}
+
+                    <Button type="submit" className="w-full" disabled={registerLoading || !isValid}>
+                      {registerLoading ? "Criando conta..." : "Criar conta"}
                     </Button>
                   </form>
                 </TabsContent>
