@@ -17,8 +17,11 @@ import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
 import Product from "./pages/Product";
 import Erro404 from "./pages/Erro404";
-import Login from "./pages/Login"
-import Orders from "./pages/Orders"
+import Login from "./pages/Login";
+import Orders from "./pages/Orders";
+import TermosDeUso from "./pages/TermosDeUso";
+import PoliticaDePrivacidade from "./pages/PoliticaDePrivacidade";
+import TrocasEDevolucoes from "./pages/TrocasEDevolucoes";
 
 // Componentes fixos
 import Navbar from "./components/Navbar";
@@ -29,7 +32,7 @@ const App = () => {
       <CartProvider>
         <CategoryProvider>
           <BrowserRouter>
-          <Toaster richColors position="top-right" />
+            <Toaster richColors position="top-right" />
 
             {/* Rotas */}
             <Routes>
@@ -38,9 +41,12 @@ const App = () => {
               <Route path="/sobre" element={<Sobre />} />
               <Route path="/contato" element={<Contato />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/meus-pedidos" element={<Orders />}/>
+              <Route path="/meus-pedidos" element={<Orders />} />
               <Route path="/produto/:handle" element={<Product />} />
               <Route path="*" element={<Erro404 />} />
+              <Route path="/termos-de-uso" element={<TermosDeUso />} />
+              <Route path="/politica-de-privacidade" element={<PoliticaDePrivacidade />} />
+              <Route path="/trocas-e-devolucoes" element={<TrocasEDevolucoes />} />
             </Routes>
           </BrowserRouter>
         </CategoryProvider>

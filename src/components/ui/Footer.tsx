@@ -70,7 +70,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-400">São Paulo, São Caetano do Sul</span>
+                <span className="text-gray-400">São Caetano do Sul, São Paulo</span>
               </div>
             </div>
           </div>
@@ -84,13 +84,13 @@ export default function Footer() {
               © 2025 Laços de Pelo. Todos os direitos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
-              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              <Link to="/politica-de-privacidade" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Política de Privacidade
               </Link>
-              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              <Link to="/termos-de-uso" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Termos de Uso
               </Link>
-              <Link to="#" className="text-gray-400 hover:text-teal-400 transition-colors">
+              <Link to="/trocas-e-devolucoes" className="text-gray-400 hover:text-teal-400 transition-colors">
                 Trocas e Devoluções
               </Link>
             </div>

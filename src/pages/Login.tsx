@@ -380,12 +380,12 @@ const Login = () => {
           <div className="mt-8 text-center text-sm text-gray-600">
             <p>Ao criar uma conta, você concorda com nossos</p>
             <div className="space-x-1">
-              <Button variant="link" className="p-0 h-auto text-sm text-teal-600">
-                Termos de Uso
+              <Button asChild variant="link" className="p-0 h-auto text-sm text-teal-600">
+                <Link to="/termos-de-uso">Termos de Uso</Link>
               </Button>
               <span>e</span>
-              <Button variant="link" className="p-0 h-auto text-sm text-teal-600">
-                Política de Privacidade
+              <Button asChild variant="link" className="p-0 h-auto text-sm text-teal-600">
+                <Link to="/politica-de-privacidade">Política de Privacidade</Link>
               </Button>
             </div>
           </div>
