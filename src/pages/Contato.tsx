@@ -240,15 +240,18 @@ const Contato = () => {
 
             {/* Map and Additional Info */}
             <div className="space-y-8">
-              {/* Map Placeholder */}
+              {/* Mapa do Google */}
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div className="h-64 bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="h-12 w-12 text-teal-600 mx-auto mb-4" />
-                    <p className="text-gray-700 font-medium">Mapa em breve</p>
-                    <p className="text-gray-500 text-sm">São Paulo, SP</p>
-                  </div>
-                </div>
+                {/* O iframe colado aqui, com a correção de estilo */}
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7311.649075756016!2d-46.579819403840624!3d-23.610624884330996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5c8d37911675%3A0xdfcec15bdb1e3607!2sCentro%2C%20S%C3%A3o%20Caetano%20do%20Sul%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1757713439709!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="450"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     Nossa Localização
