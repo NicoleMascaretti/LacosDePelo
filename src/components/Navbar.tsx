@@ -141,11 +141,11 @@ const Navbar = () => {
                       ) : (
                         <>
                           <Link
-                            to="/minha-conta"
+                            to="/meus-pedidos"
                             onClick={() => setIsUserMenuOpen(false)}
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
-                            Minha Conta
+                            Meus Pedidos
                           </Link>
                           <button
                             onClick={handleLogout}
