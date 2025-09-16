@@ -1,48 +1,85 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, ShoppingCart, User, LogOut, Package } from "lucide-react";
+
 import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from "../hooks/useCart";
+
 import Logo from "./ui/Logo";
 import NavLink from "./ui/Navlink";
 import DropdownProdutos from "./ui/DropdownProdutos";
 import SearchInput from "./ui/SearchInput";
 import TopBarInfo from "./ui/TopBarInfo";
-import { Heart, ShoppingCart, User } from "lucide-react";
 import FavoriteList from "./ui/FavoriteList";
 import ShoppingCartWidget from "./ui/ShoppingCartWidget";
-import { motion, AnimatePresence } from "framer-motion";
-import { useAuthShopify } from "../hooks/useAuthShopify";
+
+const ACCOUNT_URL = "/account"; // Contas novas da Shopify
 
 const Navbar = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { favorites } = useFavorites();
   const { getTotalItems } = useCart();
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // auth (via backend /api/auth/status)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // dropdown user (desktop) + fechar ao clicar fora
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const returnTo = window.location.pathname + window.location.search;
+
+  const startLogin = () => {
+    window.location.href = `/api/auth/start?returnTo=${encodeURIComponent(returnTo)}`;
+  };
+
+  const doLogout = () => {
+    window.location.href = `/api/auth/logout?returnTo=/`;
+  };
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (isUserMenuOpen && userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setIsUserMenuOpen(false);
+    function onClickOutside(e: MouseEvent) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isUserMenuOpen]);
-  const { favorites } = useFavorites();
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
 
-  // Auth
-  const { logout } = useAuthShopify();
-  const isAuthenticated = !!localStorage.getItem("shopify_token");
+  // fecha dropdown ao mudar rota
+  useEffect(() => {
+    setIsUserDropdownOpen(false);
+  }, [location.pathname, location.search]);
 
-  const handleLogout = () => {
-    logout();
-    setIsUserMenuOpen(false);
-    setIsMobileMenuOpen(false);
-    navigate("/");
-  };
+  // checa status auth
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const r = await fetch("/api/auth/status", { credentials: "include" });
+        const j = await r.json();
+        if (mounted) setIsAuthenticated(Boolean(j?.isAuthenticated));
+      } catch {
+        if (mounted) setIsAuthenticated(false);
+      } finally {
+        if (mounted) setAuthLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [location.pathname, location.search]);
 
   return (
     <>
@@ -78,8 +115,8 @@ const Navbar = () => {
             {/* Busca desktop */}
             <SearchInput className="hidden md:flex w-full max-w-md" />
 
-            {/* Ícones */}
-            <div className="flex items-center space-x-6 relative">
+            {/* Ícones da navbar */}
+            <div className="flex items-center space-x-6">
               {/* Favoritos */}
               <button
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -111,54 +148,61 @@ const Navbar = () => {
                 )}
               </button>
 
-              {/* Usuário */}
-              <div className="relative" ref={userMenuRef}>
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  aria-label="Abrir menu do usuário"
-                >
-                  <User className="h-6 w-6 text-gray-600" />
-                </button>
+              {/* Usuário (desktop) com dropdown */}
+              {!authLoading && (
+                <div className="relative hidden md:block" ref={userDropdownRef}>
+                  <button
+                    onClick={() => setIsUserDropdownOpen((v) => !v)}
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Abrir menu do usuário"
+                    aria-expanded={isUserDropdownOpen}
+                  >
+                    <User className="h-6 w-6 text-gray-700" />
+                  </button>
 
-                <AnimatePresence>
-                  {isUserMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50"
-                    >
+                  {isUserDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-[70] p-2">
                       {!isAuthenticated ? (
-                        <Link
-                          to="/login"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        <button
+                          onClick={() => {
+                            setIsUserDropdownOpen(false);
+                            startLogin();
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
                         >
                           Entrar
-                        </Link>
+                        </button>
                       ) : (
                         <>
-                          <Link
-                            to="/meus-pedidos"
-                            onClick={() => setIsUserMenuOpen(false)}
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          <a
+                            href={ACCOUNT_URL}
+                            className="block px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
+                            onClick={() => setIsUserDropdownOpen(false)}
+                          >
+                            Minha Conta
+                          </a>
+                          <a
+                            href={`${ACCOUNT_URL}/orders`}
+                            className="block px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
+                            onClick={() => setIsUserDropdownOpen(false)}
                           >
                             Meus Pedidos
-                          </Link>
+                          </a>
                           <button
-                            onClick={handleLogout}
-                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            onClick={() => {
+                              setIsUserDropdownOpen(false);
+                              doLogout();
+                            }}
+                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-red-600"
                           >
                             Sair
                           </button>
                         </>
                       )}
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
-              </div>
+                </div>
+              )}
 
               {/* Botão menu mobile */}
               <button
@@ -206,7 +250,7 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Menu mobile fullscreen com animação de slide */}
+      {/* Drawer mobile (fullscreen) com animação de slide */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.aside
@@ -217,7 +261,7 @@ const Navbar = () => {
             transition={{ type: "tween", duration: 0.3 }}
             className="fixed inset-0 bg-white z-[60] flex flex-col px-6 py-6 overflow-y-auto"
           >
-            {/* Header do menu */}
+            {/* Header do drawer */}
             <div className="flex items-center justify-between mb-6">
               <Link
                 to="/"
@@ -248,12 +292,12 @@ const Navbar = () => {
               </button>
             </div>
 
-            {/* Busca */}
+            {/* Busca no mobile */}
             <div className="mb-6">
               <SearchInput className="w-full" />
             </div>
 
-            {/* Navegação */}
+            {/* Links principais */}
             <nav className="flex flex-col gap-6 text-lg font-medium text-gray-700">
               <NavLink
                 to="/"
@@ -284,17 +328,98 @@ const Navbar = () => {
                 Contato
               </NavLink>
             </nav>
+
+            {/* MINHA CONTA (mobile) - antes das ações rápidas */}
+            {!authLoading && (
+              <div className="mt-6 border-t border-gray-200 pt-4">
+                <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-3">
+                  Minha conta
+                </h4>
+
+                {!isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      startLogin();
+                    }}
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg h-12 px-4"
+                  >
+                    Entrar / Criar conta
+                  </button>
+                ) : (
+                  <ul className="space-y-2">
+                    <li>
+                      <a
+                        href={ACCOUNT_URL}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-800"
+                      >
+                        <User className="h-5 w-5 text-gray-600" />
+                        <span>Minha conta</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href={`${ACCOUNT_URL}/orders`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-800"
+                      >
+                        <Package className="h-5 w-5 text-gray-600" />
+                        <span>Meus pedidos</span>
+                      </a>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          doLogout();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-red-600"
+                      >
+                        <LogOut className="h-5 w-5" />
+                        <span>Sair</span>
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {/* Ações rápidas (favoritos / carrinho) */}
+            <div className="mt-6 border-t border-gray-200 pt-4">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => {
+                    setIsFavoritesOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2 rounded-full hover:bg-gray-100"
+                  aria-label="Abrir favoritos"
+                >
+                  <Heart className="h-6 w-6 text-gray-700" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2 rounded-full hover:bg-gray-100"
+                  aria-label="Abrir carrinho"
+                >
+                  <ShoppingCart className="h-6 w-6 text-gray-700" />
+                </button>
+              </div>
+            </div>
           </motion.aside>
         )}
       </AnimatePresence>
 
-      {/* Barra lateral de favoritos */}
+      {/* Sidebars */}
       <FavoriteList
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
       />
-
-      {/* Barra lateral do carrinho */}
       <ShoppingCartWidget
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
