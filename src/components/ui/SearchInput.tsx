@@ -1,21 +1,25 @@
 import { Search, X } from "lucide-react";
-import { useState } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface SearchInputProps {
   placeholder?: string;
-  className?: string; // 🔹 permite passar estilos (ex: hidden md:flex ou flex md:hidden)
+  className?: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function SearchInput({
   placeholder = "Buscar produtos...",
   className = "",
-}: SearchInputProps) {
-  const [value, setValue] = useState("");
+  value,    
+  onChange,
+}: SearchInputProps) { 
+
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (value.trim() === "") {
         if (location.pathname === "/produtos") {
@@ -28,7 +32,10 @@ export default function SearchInput({
   };
 
   const handleClear = () => {
-    setValue("");
+    onChange({
+      target: { value: "" },
+    } as ChangeEvent<HTMLInputElement>);
+
     if (location.pathname === "/produtos") {
       navigate("/produtos");
     }
@@ -41,8 +48,8 @@ export default function SearchInput({
       <Search className="text-gray-500 h-5 w-5 mr-2" />
       <input
         type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={value}         
+        onChange={onChange}   
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className="bg-transparent outline-none flex-1 pr-6"

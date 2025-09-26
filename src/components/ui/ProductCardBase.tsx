@@ -1,4 +1,3 @@
-import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useCart } from "../../hooks/useCart";
 import { useFavorites } from "../../hooks/useFavorites";
 import { toast } from "sonner";

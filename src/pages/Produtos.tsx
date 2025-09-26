@@ -39,8 +39,8 @@ interface GetProductsData {
 }
 
 const GET_PRODUCTS_QUERY = gql`
-  query GetProducts($query: String!) { 
-    products(first: 12, query: $query) { 
+  query GetProducts($query: String!) {
+    products(first: 12, query: $query) {
       edges {
         node {
           id
@@ -48,19 +48,8 @@ const GET_PRODUCTS_QUERY = gql`
           title
           description
           productType
-          priceRange {
-            minVariantPrice {
-              amount
-            }
-          }
-          images(first: 1) {
-            edges {
-              node {
-                url
-                altText
-              }
-            }
-          }
+          priceRange { minVariantPrice { amount } }
+          images(first: 1) { edges { node { url altText } } }
         }
       }
     }
@@ -129,11 +118,9 @@ const Produtos = () => {
 
   // Lógica de Filtros
   const filteredProducts = allProducts.filter((product) => {
-    const matchesCategory =
-      selectedCategory === "Todos" || product.category === selectedCategory;
-    return matchesCategory;
+    if (selectedCategory === "Todos") return true;
+    return product.category === selectedCategory;
   });
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
@@ -175,7 +162,8 @@ const Produtos = () => {
           {/* Botão Filtros (só mobile) */}
           {!isDesktop && (
             <div className="flex justify-between mb-4">
-              <SearchInput />
+              <SearchInput
+              />
               <button
                 onClick={() => setIsFilterOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700"

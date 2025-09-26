@@ -9,7 +9,15 @@ const slugify = (text: string) => {
         .replace(/[^\w\-]+/g, '')       // Remove caracteres inválidos
         .replace(/\-\-+/g, '-');        // Substitui múltiplos - por um único -
 };
-const CardCategoria = ({ img, titulo, sub }) => {
+
+// Definindo os tipos das props
+interface CardCategoriaProps {
+  img: string;
+  titulo: string;
+  sub: string;
+}
+
+const CardCategoria = ({ img, titulo, sub }: CardCategoriaProps) => {
     const navigate = useNavigate();
     const handleCategoryClick = (categoryName: string) => {
         const categorySlug = slugify(categoryName);

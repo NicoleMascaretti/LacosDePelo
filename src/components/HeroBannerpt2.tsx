@@ -1,4 +1,3 @@
-import React from 'react';
 import { Shield, Truck, Heart, Award } from 'lucide-react';
 
 const HeroBannerpt2 = () => {

@@ -7,7 +7,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Textarea } from '../components/ui/TextArea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/Form';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, PawPrint } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Send, PawPrint } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useState, useEffect } from "react";
 

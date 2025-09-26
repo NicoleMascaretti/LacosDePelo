@@ -23,7 +23,7 @@ import type { ProductType } from "../types/ProductType";
 
 const mockProducts: ProductType[] = [
   {
-    id: 1,
+    id: "1",
     name: "Ração Premium para Cães",
     price: 129.9,
     originalPrice: 159.9, // essa informação é opcional por conta do jeito que está no product type
@@ -35,7 +35,7 @@ const mockProducts: ProductType[] = [
     badge: "Mais Vendido",
   },
   {
-    id: 2,
+    id: "2",
     name: "Brinquedo Mordedor",
     price: 39.9,
     originalPrice: 49.9,
@@ -47,7 +47,7 @@ const mockProducts: ProductType[] = [
     badge: "Novo",
   },
   {
-    id: 3,
+    id: "3",
     name: "Coleira Estilosa",
     price: 59.9,
     category: "Acessórios",

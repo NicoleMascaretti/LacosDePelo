@@ -259,13 +259,13 @@ const Product = () => {
           {/* Tabs */}
           <div className="border-t border-gray-200 p-6 lg:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              {product.features?.length > 0 && (
+              {((product.features?.length || 0) > 0) && (
                 <div>
                   <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">
                     Características
                   </h3>
                   <ul className="space-y-2 lg:space-y-3 text-sm lg:text-base">
-                    {product.features.map((feature, i) => (
+                    {product.features?.map((feature, i) => (
                       <li key={i} className="flex items-center text-gray-700">
                         <div className="w-2 h-2 bg-teal-600 rounded-full mr-2 lg:mr-3"></div>
                         {feature}

@@ -9,7 +9,7 @@ import { useLoading } from "../hooks/useLoading";
 import Loading from "../components/ui/Loading";
 
 // novos imports
-import ProductCardMobile from "../components/ui/ProductCardMobile";
+//import ProductCardMobile from "../components/ui/ProductCardMobile";
 import ProductCardDesktop from "../components/ui/ProductCardDesktop";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 

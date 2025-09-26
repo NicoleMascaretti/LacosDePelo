@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { useCart } from "../../hooks/useCart";
 import { Button } from "./Button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./Sheet";
-import type { ProductType } from "../../types/ProductType";
+
 
 interface CartDrawerProps {
   isOpen: boolean;
