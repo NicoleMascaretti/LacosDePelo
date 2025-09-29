@@ -11,11 +11,11 @@ import Loading from "../components/ui/Loading";
 // novos imports
 //import ProductCardMobile from "../components/ui/ProductCardMobile";
 import ProductCardDesktop from "../components/ui/ProductCardDesktop";
-import { useMediaQuery } from "../hooks/useMediaQuery";
+/* import { useMediaQuery } from "../hooks/useMediaQuery"; */
 
 const Home = () => {
   const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+ /*  const isDesktop = useMediaQuery("(min-width: 768px)"); */
 
   if (loading) {
     return <Loading />;

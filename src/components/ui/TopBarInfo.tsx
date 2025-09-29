@@ -1,4 +1,4 @@
-import { Phone, Mail, Truck } from "lucide-react";
+import { Phone, Mail} from "lucide-react";
 
 export default function TopBarInfo() {
   return (

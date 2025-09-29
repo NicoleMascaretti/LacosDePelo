@@ -1,9 +1,9 @@
-import React from "react";
+/* import React from "react"; */
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from 'sonner';
 // Componentes
-import ProductList from "./components/ProductList";
-import ShoppingCartWidget from "./components/ui/ShoppingCartWidget";
+/* import ProductList from "./components/ProductList";
+import ShoppingCartWidget from "./components/ui/ShoppingCartWidget"; */
 
 // Providers
 import { CategoryProvider } from "./contexts/CategoryContext";
@@ -24,7 +24,7 @@ import PoliticaDePrivacidade from "./pages/PoliticaDePrivacidade";
 import TrocasEDevolucoes from "./pages/TrocasEDevolucoes";
 
 // Componentes fixos
-import Navbar from "./components/Navbar";
+/* import Navbar from "./components/Navbar"; */
 
 const App = () => {
   return (
