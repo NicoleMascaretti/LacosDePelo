@@ -30,7 +30,7 @@ export default function DropdownProdutos() {
   const submenuData: { [key: string]: { id: number; nome: string }[] } = {
     "Rações e Alimentação": [
       { id: 1, nome: "Ração Seca" },
-      { id: 2, nome: "Ração Umida" },
+      { id: 2, nome: "Ração Úmida" },
       { id: 3, nome: "Ração Natural" },
       { id: 4, nome: "Ração Medicamentosa" },
     ],
@@ -50,7 +50,6 @@ export default function DropdownProdutos() {
       { id: 1, nome: "Comedouros" },
       { id: 2, nome: "Bebedouros" },
       { id: 3, nome: "Porta rações" },
-      { id: 4, nome: "Mamadeiras" },
     ],
     Medicamentos: [
       { id: 1, nome: "Vermífugos" },
