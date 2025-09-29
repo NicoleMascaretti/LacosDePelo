@@ -36,12 +36,17 @@ const Navbar = () => {
 
   const returnTo = window.location.pathname + window.location.search;
 
+  const API_BASE =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:5173"
+      : "https://lacosdepelo.vercel.app"; // coloque o domínio real do backend
+
   const startLogin = () => {
-    window.location.href = `/api/auth/start?returnTo=${encodeURIComponent(returnTo)}`;
+    window.location.href = `${API_BASE}/api/auth/start?returnTo=${encodeURIComponent(returnTo)}`;
   };
 
   const doLogout = () => {
-    window.location.href = `/api/auth/logout?returnTo=/`;
+    window.location.href = `${API_BASE}/api/auth/logout?returnTo=/`;
   };
 
   useEffect(() => {
