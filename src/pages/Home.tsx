@@ -114,32 +114,32 @@ const Home = () => {
         <div className="container px-4 mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 sm:gap-2 md:gap-8 lg:gap-10 mt-10">
             <CardCategoria
-              img={"public/racao.jpg"}
+              img={"/racao.jpg"}
               titulo={"Rações e Alimentação"}
               sub={"Rações premium e Snacks para seu pet"}
             />
             <CardCategoria
-              img={"public/brinquedos.jpg"}
+              img={"/brinquedos.jpg"}
               titulo={"Brinquedos"}
               sub={"Brinquedos diversos para cachorros e gatos"}
             />
             <CardCategoria
-              img={"public/banho.avif"}
+              img={"/banho.avif"}
               titulo={"Higiene e Beleza"}
               sub={"Produtos para banho e cuidados pessoais"}
             />
             <CardCategoria
-              img={"public/acessorios.jpg"}
+              img={"/acessorios.jpg"}
               titulo={"Acessórios"}
               sub={"Acessórios estilosos e funcionais"}
             />
             <CardCategoria
-              img={"public/medicamentos.avif"}
+              img={"/medicamentos.avif"}
               titulo={"Medicamentos"}
               sub={"Medicamentos e suplementos para pets"}
             />
             <CardCategoria
-              img={"public/casinhas.jpg"}
+              img={"/casinhas.jpg"}
               titulo={"Casinhas e Transporte"}
               sub={"Casinhas confortáveis e transporte"}
             />
