@@ -3,19 +3,53 @@ import { ArrowRight } from "lucide-react";
 import Footer from "../components/ui/Footer";
 import HeroBannerpt2 from "../components/HeroBannerpt2";
 import CardCategoria from "../components/ui/CardCategoria";
-import { fetchProducts } from "../services/mockApi";
+/* import { fetchProducts } from "../services/mockApi"; */
 import type { ProductType } from "../types/ProductType";
-import { useLoading } from "../hooks/useLoading";
+/* import { useLoading } from "../hooks/useLoading"; */
 import Loading from "../components/ui/Loading";
 
 // novos imports
 //import ProductCardMobile from "../components/ui/ProductCardMobile";
 import ProductCardDesktop from "../components/ui/ProductCardDesktop";
 /* import { useMediaQuery } from "../hooks/useMediaQuery"; */
+// Imports da Apollo
+import { useQuery, gql } from '@apollo/client';
+
+interface ShopifyProductNode {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  productType: string;
+  priceRange: { minVariantPrice: { amount: string; } };
+  images: { edges: { node: { url: string; altText: string | null; } }[]; };
+}
+
+interface GetProductsData {
+  products: { edges: { node: ShopifyProductNode; }[]; };
+}
+
+const GET_PRODUCTS_QUERY = gql`
+  query GetProducts {
+    products(first: 4, sortKey: CREATED_AT, reverse: true) { 
+      edges {
+        node {
+          id
+          handle
+          title
+          description
+          productType
+          priceRange { minVariantPrice { amount } }
+          images(first: 1) { edges { node { url altText } } }
+        }
+      }
+    }
+  }
+`;
+
 
 const Home = () => {
-  const { data: products, loading, error } = useLoading<ProductType[]>(fetchProducts);
- /*  const isDesktop = useMediaQuery("(min-width: 768px)"); */
+  const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY);
 
   if (loading) {
     return <Loading />;
@@ -28,6 +62,19 @@ const Home = () => {
       </div>
     );
   }
+
+  const products: ProductType[] = data?.products.edges.map((edge: any) => ({
+    id: edge.node.id,
+    handle: edge.node.handle,
+    name: edge.node.title,
+    description: edge.node.description,
+    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
+    image: edge.node.images.edges[0]?.node.url || '',
+    category: edge.node.productType,
+    rating: 4.5,
+    reviews: 0,
+    inStock: true,
+  })) || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
@@ -158,14 +205,19 @@ const Home = () => {
           e preços especiais
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {products?.slice(0, 4).map((p) => (
-            // O wrapper foi removido e a key movida para cá
-            <ProductCardDesktop
-              key={p.id}
-              product={p}
-              viewMode="grid"
-            />
-          ))}
+          {products.length > 0 ? (
+            products.map((p) => (
+              <ProductCardDesktop
+                key={p.id}
+                product={p}
+                viewMode="grid"
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500">Nenhum produto em destaque no momento.</p>
+            </div>
+          )}
         </div>
 
         <div className="text-center mt-12">
