@@ -77,7 +77,6 @@ const Produtos = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const searchTerm = searchParams.get("search") || "";
   const shopifySearchQuery = searchTerm ? `title:*${searchTerm}*` : "";
-  const [mobileSearch, setMobileSearch] = useState(searchTerm);
   // Usamos o hook 'useQuery' da apollo para buscar os dados
   // Ele nos dá 'loading', 'error' e 'data' automaticamente.
   const { loading, error, data } = useQuery<GetProductsData>(GET_PRODUCTS_QUERY, {
@@ -160,38 +159,20 @@ const Produtos = () => {
       <div className="container px-4 mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          {/* Toolbar mobile: busca + filtros */}
+          {/* Botão Filtros (só mobile) */}
           {!isDesktop && (
-            <div
-              className="
-      mb-4
-      pl-[max(env(safe-area-inset-left),1rem)]
-      pr-[max(env(safe-area-inset-right),1rem)]
-    "
-            >
-              <div className="flex items-stretch gap-3">
-                <div className="flex-1 min-w-0">
-                  <SearchInput
-                    className="w-full"
-                    value={mobileSearch}
-                    onChange={(e) => setMobileSearch(e.target.value)}
-                  />
-                </div>
-
-                <button
-                  onClick={() => setIsFilterOpen(true)}
-                  className="shrink-0 whitespace-nowrap px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 text-sm"
-                  aria-label="Abrir filtros"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
-                    Filtros
-                  </span>
-                </button>
-              </div>
+            <div className="flex justify-between mb-4">
+              <SearchInput
+              />
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700"
+              >
+                <Filter className="h-4 w-4" />
+                Filtros
+              </button>
             </div>
           )}
-
 
 
           {/* Sidebar de filtros (só desktop) */}
