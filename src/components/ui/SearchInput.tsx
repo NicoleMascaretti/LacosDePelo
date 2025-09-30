@@ -25,7 +25,6 @@ export default function SearchInput({
   const isControlled = typeof value === "string" && typeof onChange === "function";
   const [internalValue, setInternalValue] = useState<string>(value ?? "");
 
-  // Se virar controlado, mantenha o interno em sincronia
   useEffect(() => {
     if (isControlled) {
       setInternalValue(value as string);
@@ -65,15 +64,26 @@ export default function SearchInput({
   };
 
   return (
-    <div className={`flex items-center bg-gray-100 rounded-full px-4 py-2 relative ${className}`}>
-      <Search className="text-gray-500 h-5 w-5 mr-2" />
+    <div
+      className={`
+        flex items-center bg-gray-100 rounded-full relative
+        min-w-0
+        h-10 md:h-11
+        px-3 md:px-4
+        ${className}
+      `}
+    >
+      <Search className="text-gray-500 h-4 w-4 md:h-5 md:w-5 mr-2" />
       <input
         type="text"
         value={currentValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="bg-transparent outline-none flex-1 pr-6"
+        className="
+          bg-transparent outline-none flex-1 pr-6 min-w-0
+          text-sm md:text-base
+        "
       />
 
       {!!currentValue && (
@@ -81,8 +91,9 @@ export default function SearchInput({
           type="button"
           onClick={handleClear}
           className="absolute right-3 text-gray-400 hover:text-gray-600"
+          aria-label="Limpar busca"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
         </button>
       )}
     </div>
