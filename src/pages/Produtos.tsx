@@ -22,6 +22,7 @@ import Loading from "../components/ui/Loading";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { useQuery, gql } from '@apollo/client';
 import SearchInput from "../components/ui/SearchInput";
+import { AnimatePresence, motion } from "framer-motion";
 
 // Tipos para a resposta da API
 interface ShopifyProductNode {
@@ -207,52 +208,69 @@ const Produtos = () => {
             </div>
           )}
 
-          {/* Drawer de filtros (só mobile) */}
-          {!isDesktop && isFilterOpen && (
-            <div className="fixed inset-0 z-50 flex">
-              {/* Overlay */}
-              <div
-                className="fixed inset-0 bg-black/50"
-                onClick={() => setIsFilterOpen(false)}
-              />
-              {/* Conteúdo */}
-              <div className="relative w-80 max-w-[90vw] bg-white h-full shadow-lg p-6 z-50">
-                <button
+          {/* Drawer de filtros (só mobile) – com slide suave */}
+          <AnimatePresence>
+            {!isDesktop && isFilterOpen && (
+              <>
+                {/* Overlay com fade */}
+                <motion.div
+                  className="fixed inset-0 z-40 bg-black/50"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
                   onClick={() => setIsFilterOpen(false)}
-                  className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
-                  aria-label="Fechar filtros"
+                />
+
+                {/* Painel com slide da direita */}
+                <motion.aside
+                  className="fixed right-0 top-0 bottom-0 z-50 w-[85vw] max-w-sm bg-white shadow-xl"
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "tween", duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  ✕
-                </button>
-
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
-                  <Filter className="h-5 w-5 mr-2 text-teal-600" />
-                  Filtros
-                </h3>
-
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Categorias
-                </label>
-                <div className="space-y-2">
-                  {categories.map((category) => (
+                  <div className="relative h-full p-6 overflow-y-auto">
                     <button
-                      key={category}
-                      onClick={() => {
-                        handleCategoryChange(category);
-                        setIsFilterOpen(false);
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
-                        ? "bg-teal-100 text-teal-800 font-medium"
-                        : "text-gray-600 hover:bg-gray-100"
-                        }`}
+                      onClick={() => setIsFilterOpen(false)}
+                      className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+                      aria-label="Fechar filtros"
                     >
-                      {category}
+                      ✕
                     </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+
+                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                      <Filter className="h-5 w-5 mr-2 text-teal-600" />
+                      Filtros
+                    </h3>
+
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Categorias
+                    </label>
+                    <div className="space-y-2">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            handleCategoryChange(category);
+                            setIsFilterOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
+                              ? "bg-teal-100 text-teal-800 font-medium"
+                              : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>
+
+
 
 
           {/* Products Section */}
