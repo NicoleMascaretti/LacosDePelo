@@ -92,7 +92,7 @@ export default function ProductCardDesktop({
                 </h3>
 
                 {/* Avaliação */}
-                <div className="flex items-center mb-3">
+{/*                 <div className="flex items-center mb-3">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -107,7 +107,7 @@ export default function ProductCardDesktop({
                   <span className="text-sm text-gray-600 ml-2">
                     {product.rating} ({product.reviews})
                   </span>
-                </div>
+                </div> */}
               </div>
 
               {/* LADO DA DIREITA */}

@@ -117,22 +117,6 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 text-sm">
                 {product.name}
               </h3>
-              <div className="flex items-center mb-2">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-3.5 w-3.5 ${i < Math.floor(product.rating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                        }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-gray-600 ml-1">
-                  {product.rating} ({product.reviews})
-                </span>
-              </div>
             </div>
 
             {/* LADO DIREITO */}

@@ -28,7 +28,7 @@ export default function ProductCardMobile({ product }: { product: ProductType })
           {/* Infos */}
           <div className="flex flex-col justify-between flex-grow p-3">
             {/* Nome + Avaliação */}
-            <div>
+{/*             <div>
               <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">
                 {product.name}
               </h3>
@@ -42,7 +42,7 @@ export default function ProductCardMobile({ product }: { product: ProductType })
                 ))}
                 <span>({product.reviews})</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Preço + Botão */}
             <div className="flex flex-col gap-2">
