@@ -1,5 +1,6 @@
 import ProductCardBase from "./ProductCardBase";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+/* import { Heart, ShoppingCart, Star } from "lucide-react"; */
+import { Heart, ShoppingCart } from "lucide-react";
 import type { ProductType } from "../../types/ProductType";
 
 export default function ProductCardMobile({ product }: { product: ProductType }) {
