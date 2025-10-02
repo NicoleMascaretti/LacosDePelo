@@ -114,7 +114,7 @@ const Contato = () => {
         <div className="container px-4 mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {contactInfo.map((info, index) => (
-              <div key={index} className="bg-gray-50 p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
+              <div key={index} className="bg-gray-50 p-6 rounded-xl text-center shadow-lg">
                 <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <info.icon className="h-8 w-8 text-teal-600" />
                 </div>

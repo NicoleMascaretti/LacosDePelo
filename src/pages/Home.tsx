@@ -118,7 +118,7 @@ const Home = () => {
 
                 <div className="grid grid-cols-3 gap-8 pt-8">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-teal-600">100+</div>
+                    <div className="text-3xl font-bold text-teal-600">120+</div>
                     <div className="text-gray-600">Produtos</div>
                   </div>
                   <div className="text-center">
