@@ -55,7 +55,7 @@ export default function Login() {
                 </Button>
 
                 <div className="text-center text-sm text-gray-600">
-                  Ao continuar, você concorda com nossos{" "}
+                  Ao continuar você concorda com nossos{" "}
                   <Link to="/termos-de-uso" className="text-teal-600 hover:underline">Termos</Link> e{" "}
                   <Link to="/politica-de-privacidade" className="text-teal-600 hover:underline">Privacidade</Link>.
                 </div>
