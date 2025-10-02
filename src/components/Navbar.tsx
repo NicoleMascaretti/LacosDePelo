@@ -347,16 +347,6 @@ const Navbar = () => {
                 ) : (
                   <ul className="space-y-2">
                     <li>
-                      <a
-                        href={ACCOUNT_URL}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-800"
-                      >
-                        <User className="h-5 w-5 text-gray-600" />
-                        <span>Minha conta</span>
-                      </a>
-                    </li>
-                    <li>
                       <Link
                         to="/meus-pedidos"
                         onClick={() => setIsMobileMenuOpen(false)}
