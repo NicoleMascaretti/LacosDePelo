@@ -14,6 +14,7 @@ import ProductCardDesktop from "../components/ui/ProductCardDesktop";
 /* import { useMediaQuery } from "../hooks/useMediaQuery"; */
 // Imports da Apollo
 import { useQuery, gql } from '@apollo/client';
+import { Link } from "react-router-dom";
 
 interface ShopifyProductNode {
   id: string;
@@ -101,18 +102,18 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <a href="/produtos">
+                  <Link to="/produtos" className="w-full">
                     <button className="w-full bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center justify-center group">
                       Ver Produtos
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </button>
-                  </a>
+                  </Link>
 
-                  <a href="/sobre">
+                  <Link to="/sobre" className="w-full">
                     <button className="w-full border-2 border-orange-400 text-orange-500 hover:bg-orange-400 hover:text-white px-8 py-4 rounded-full font-semibold transition-colors">
                       Conheça Nossa História
                     </button>
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="grid grid-cols-3 gap-8 pt-8">
@@ -221,11 +222,11 @@ const Home = () => {
         </div>
 
         <div className="text-center mt-12">
-          <a href="/produtos">
+          <Link to="/produtos">
             <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-full font-semibold transition-colors">
               Ver Todos os Produtos
             </button>
-          </a>
+          </Link>
         </div>
       </section>
 
