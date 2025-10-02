@@ -15,7 +15,7 @@ const Erro404 = () => {
                 <h1 className="text-9xl font-bold text-teal-600">Erro 404</h1>
 
                 {/* Mensagem do erro */}
-                <p className="text-3xl text-gray-900 font-bold">Página não encontrada</p>
+                <p className="text-3xl text-gray-900 font-bold">Página não encontrada.</p>
 
                 {/* Botão de redirecionamento */}
                 <div className="mt-4 p-2">
