@@ -10,7 +10,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // troca por tokens
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: CONFIG.clientId,
@@ -32,10 +31,13 @@ export default async function handler(req, res) {
   }
 
   const tokens = await r.json();
+  // tokens: { id_token, access_token, expires_in, ... }
 
-  // guarde o id_token/access_token como preferir; aqui, cookie httpOnly simplificado
-  setCookie(res, "session", tokens.id_token, { maxAge: 60 * 60 }); // 1h
-  // limpe cookies temporários
+  // Guarde ID token (se quiser) e — importante — o ACCESS TOKEN
+  setCookie(res, "session", tokens.id_token ?? "", { maxAge: 60 * 60 });
+  setCookie(res, "session_access", tokens.access_token ?? "", { maxAge: 60 * 60 });
+
+  // Limpa temporários
   setCookie(res, "oidc_state", "", { maxAge: 0 });
   setCookie(res, "oidc_verifier", "", { maxAge: 0 });
 

@@ -1,213 +1,141 @@
-import { Package, Truck, CheckCircle, Clock, MapPin } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-/* import { Button } from '../components/ui/Button'; */
-import Navbar from '../components/Navbar';
-import Loading from '../components/ui/Loading';
-import { gql, useQuery } from '@apollo/client';
+import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/ui/Footer";
 
-interface OrderLineItemEdge {
-  node: {
-    title: string;
-    quantity: number;
-    variant: {
-      price: {
-        amount: string;
-      };
-    };
-  };
-}
+type Money = { amount: string; currencyCode: string };
+type LineItem = { title: string; quantity: number };
 
-interface ShopifyOrder {
+type Order = {
   id: string;
-  orderNumber: number;
+  name?: string | null;
+  number?: number | null;
   processedAt: string;
-  financialStatus: string;
-  fulfillmentStatus: string;
-  totalPrice: {
-    amount: string;
-    currencyCode: string;
-  };
-  shippingAddress: {
-    address1: string;
-    city: string;
-    provinceCode: string;
-    zip: string;
-  } | null;
-  lineItems: {
-    edges: OrderLineItemEdge[];
-  };
-}
-
-// 1. DEFINIMOS A CONSULTA GRAPHQL PARA BUSCAR PEDIDOS
-//    Ela espera uma variável '$customerAccessToken' para identificar o cliente.
-const GET_CUSTOMER_ORDERS_QUERY = gql`
-  query GetCustomerOrders($customerAccessToken: String!) {
-    customer(customerAccessToken: $customerAccessToken) {
-      orders(first: 10, sortKey: PROCESSED_AT, reverse: true) {
-        edges {
-          node {
-            id
-            orderNumber
-            processedAt
-            financialStatus
-            fulfillmentStatus
-            totalPrice {
-              amount
-              currencyCode
-            }
-            shippingAddress {
-              address1
-              city
-              provinceCode
-              zip
-            }
-            lineItems(first: 5) {
-              edges {
-                node {
-                  title
-                  quantity
-                  variant {
-                    price {
-                      amount
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-// Função auxiliar para mapear o status da Shopify
-const getStatusInfo = (financial: string, fulfillment: string) => {
-  if (fulfillment === 'FULFILLED') {
-    return { label: 'Entregue', color: 'bg-green-500', icon: CheckCircle };
-  }
-  if (fulfillment === 'IN_PROGRESS' || fulfillment === 'PARTIALLY_FULFILLED') {
-    return { label: 'Em Trânsito', color: 'bg-blue-500', icon: Truck };
-  }
-  if (financial === 'PAID') {
-    return { label: 'Processando', color: 'bg-yellow-500', icon: Clock };
-  }
-  return { label: 'Pendente', color: 'bg-gray-500', icon: Package };
+  financialStatus?: string | null;
+  fulfillmentStatus?: string | null;
+  statusUrl?: string | null;
+  totalPriceSet?: { shopMoney: Money };
+  lineItems?: { nodes: LineItem[] };
 };
 
+export default function Orders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
 
-const Orders = () => {
-  const customerAccessToken = localStorage.getItem("shopify_token");
-  const { loading, error, data } = useQuery(GET_CUSTOMER_ORDERS_QUERY, {
-    variables: { customerAccessToken },
-    skip: !customerAccessToken,
-  });
-
-  // 4. TRATAMOS OS ESTADOS DE CARREGAMENTO E ERRO
-  if (loading) return <Loading message="Buscando seus pedidos..." />;
-
-  // Se não estiver logado ou der erro
-  if (!customerAccessToken || error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Acesso Negado</h1>
-          <p className="text-gray-600">
-            {error ? error.message : "Você precisa fazer login para ver seus pedidos."}
-          </p>
-        </main>
-      </div>
-    );
-  }
-
-  const orders = data?.customer?.orders.edges || [];
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const r = await fetch("/api/customer/orders", { credentials: "include" });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j?.error || "Erro ao carregar pedidos");
+        if (mounted) setOrders(j.orders || []);
+      } catch (e: any) {
+        if (mounted) setErr(e.message || "Erro inesperado");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Meus Pedidos</h1>
-          <p className="text-gray-600">Acompanhe o status das suas compras</p>
-        </div>
+        <h1 className="text-2xl font-bold mb-6">Meus pedidos</h1>
 
-        <div className="space-y-6">
-          {/* 6. ADICIONAMOS A VERIFICAÇÃO PARA O CASO DE NÃO HAVER PEDIDOS */}
-          {orders.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Você ainda não fez nenhum pedido.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            orders.map(({ node: order }: { node: ShopifyOrder }) => {
-              const statusInfo = getStatusInfo(order.financialStatus, order.fulfillmentStatus);
-              const StatusIcon = statusInfo.icon;
+        {/* Estados de feedback */}
+        {loading && (
+          <div className="bg-white rounded-xl shadow-sm p-6 border">
+            <p className="text-gray-600">Carregando seus pedidos…</p>
+          </div>
+        )}
 
-              return (
-                <Card key={order.id} className="overflow-hidden">
-                  <CardHeader className="bg-white border-b">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div>
-                        <CardTitle className="text-lg">Pedido #{order.orderNumber}</CardTitle>
-                        <p className="text-sm text-gray-600 mt-1">
-                          Realizado em {new Date(order.processedAt).toLocaleDateString('pt-BR')}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <Badge variant="secondary" className={`${statusInfo.color} text-white`}>
-                          <StatusIcon className="h-3 w-3 mr-1" />
-                          {statusInfo.label}
-                        </Badge>
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-gray-900">
-                            {order.totalPrice.amount} {order.totalPrice.currencyCode}
-                          </p>
-                        </div>
-                      </div>
+        {err && (
+          <div className="bg-white rounded-xl shadow-sm p-6 border">
+            <p className="text-red-600">Não foi possível carregar seus pedidos.</p>
+            <p className="text-gray-600 mt-1 text-sm">{err}</p>
+          </div>
+        )}
+
+        {!loading && !err && orders.length === 0 && (
+          <div className="bg-white rounded-xl shadow-sm p-6 border">
+            <p className="text-gray-700">Você ainda não possui pedidos.</p>
+          </div>
+        )}
+
+        {/* Lista de pedidos */}
+        <div className="space-y-4">
+          {orders.map((o) => {
+            const total = o.totalPriceSet?.shopMoney;
+            const title = o.name || (o.number ? `Pedido #${o.number}` : "Pedido");
+            return (
+              <div key={o.id} className="bg-white rounded-xl p-4 shadow-sm border">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div>
+                    <p className="font-semibold text-gray-900">{title}</p>
+                    <p className="text-sm text-gray-600">
+                      Realizado em {new Date(o.processedAt).toLocaleDateString()}
+                    </p>
+                    <div className="flex items-center gap-3 mt-2 text-sm text-gray-600">
+                      {o.financialStatus && (
+                        <span className="inline-flex items-center px-2 py-1 rounded bg-gray-100">
+                          Pagamento: {o.financialStatus}
+                        </span>
+                      )}
+                      {o.fulfillmentStatus && (
+                        <span className="inline-flex items-center px-2 py-1 rounded bg-gray-100">
+                          Entrega: {o.fulfillmentStatus}
+                        </span>
+                      )}
                     </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-3">Itens do Pedido</h3>
-                        <div className="space-y-3">
-                          {order.lineItems.edges.map((itemEdge, index) => (
-                            <div key={index} className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-900">{itemEdge.node.title}</p>
-                                <p className="text-xs text-gray-600">Quantidade: {itemEdge.node.quantity}</p>
-                              </div>
-                              <p className="text-sm font-medium text-gray-900 ml-4">
-                                R$ {parseFloat(itemEdge.node.variant.price.amount).toFixed(2).replace('.', ',')}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-3">Entrega</h3>
-                        <div className="flex items-start gap-2">
-                          <MapPin className="h-4 w-4 text-gray-400 mt-0.5" />
-                          <p className="text-sm text-gray-600">
-                            {order.shippingAddress?.address1}, {order.shippingAddress?.city} - {order.shippingAddress?.provinceCode}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
+                  </div>
+
+                  <div className="text-right">
+                    {total && (
+                      <p className="text-lg font-semibold text-gray-900">
+                        {Number(total.amount).toLocaleString(undefined, {
+                          style: "currency",
+                          currency: total.currencyCode || "BRL",
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Itens do pedido */}
+                {o.lineItems?.nodes?.length ? (
+                  <ul className="mt-4 text-sm text-gray-800 list-disc pl-5 space-y-1">
+                    {o.lineItems.nodes.map((li, idx) => (
+                      <li key={idx} className="leading-5">
+                        {li.title} × {li.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {/* Acompanhar pedido */}
+                {o.statusUrl && (
+                  <a
+                    className="inline-block mt-4 text-teal-600 hover:underline font-medium"
+                    href={o.statusUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Acompanhar pedido
+                  </a>
+                )}
+              </div>
+            );
+          })}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
-};
-
-
-export default Orders;
+}
