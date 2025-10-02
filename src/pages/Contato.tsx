@@ -244,7 +244,7 @@ const Contato = () => {
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 {/* O iframe colado aqui, com a correção de estilo */}
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7311.649075756016!2d-46.579819403840624!3d-23.610624884330996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5c8d37911675%3A0xdfcec15bdb1e3607!2sCentro%2C%20S%C3%A3o%20Caetano%20do%20Sul%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1757713439709!5m2!1spt-BR!2sbr"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.2486411624036!2d-46.554234199999996!3d-23.631265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5d2a6d7e51af%3A0xb7c2950f785437c!2sR.%20Teff%C3%A9%2C%20455%20-%20Santa%20Maria%2C%20S%C3%A3o%20Caetano%20do%20Sul%20-%20SP%2C%2009560-140!5e0!3m2!1spt-BR!2sbr!4v1759364914878!5m2!1spt-BR!2sbr"
                   width="100%"
                   height="450"
                   style={{ border: 0 }}
