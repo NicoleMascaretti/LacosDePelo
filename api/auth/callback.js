@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  // 1) Troca código -> OIDC tokens
-  const body = new URLSearchParams({
+  // 1) code -> OIDC tokens
+  const oidcBody = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: CONFIG.clientId,
     redirect_uri: `${CONFIG.appUrl}/api/auth/callback`,
@@ -19,57 +19,94 @@ export default async function handler(req, res) {
     code_verifier: cookies.oidc_verifier,
   });
 
-  const r = await fetch(CONFIG.tokenUrl, {
+  const oidcResp = await fetch(CONFIG.tokenUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
+    body: oidcBody,
   });
 
-  if (!r.ok) {
-    const text = await r.text();
-    res.status(500).send(`Token exchange failed: ${text}`);
+  const oidcText = await oidcResp.text();
+  if (!oidcResp.ok) {
+    res
+      .status(500)
+      .send(`Token exchange (authorization_code) failed:\n\n${oidcText}`);
     return;
   }
 
-  const tokens = await r.json();
-  const idToken = tokens.id_token;
+  let oidcJson;
+  try {
+    oidcJson = JSON.parse(oidcText);
+  } catch {
+    res
+      .status(500)
+      .send(`Invalid JSON from token endpoint (authorization_code):\n\n${oidcText}`);
+    return;
+  }
+
+  const idToken = oidcJson.id_token;
   if (!idToken) {
-    res.status(500).send("Missing id_token from token response.");
+    res.status(500).send(`No id_token in response:\n\n${JSON.stringify(oidcJson, null, 2)}`);
     return;
   }
 
-  // 2) Troca OIDC id_token -> Customer API access token (prefixo shcat_)
-  const exBody = new URLSearchParams({
+  // 2) id_token -> Customer API access token (shcat_...)
+  // Tentativa A: no MESMO tokenUrl, com grant_type token-exchange e audience=customer_api
+  const exchangeParams = new URLSearchParams({
     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+    client_id: CONFIG.clientId,
     subject_token: idToken,
     subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
-    // opcional: "scope": "customer_read_orders"  (se precisar restringir)
+    audience: "customer_api",
   });
 
-  const ex = await fetch(CONFIG.customerTokenUrl, {
+  let exResp = await fetch(CONFIG.tokenUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: exBody,
+    body: exchangeParams,
   });
 
-  if (!ex.ok) {
-    const text = await ex.text();
-    res.status(500).send(`Customer token exchange failed: ${text}`);
+  let exText = await exResp.text();
+
+  // Tentativa B (fallback): se falhar e houver customerTokenUrl configurado
+  if (!exResp.ok && CONFIG.customerTokenUrl) {
+    exResp = await fetch(CONFIG.customerTokenUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: exchangeParams,
+    });
+    exText = await exResp.text();
+  }
+
+  if (!exResp.ok) {
+    res
+      .status(500)
+      .send(`Customer token exchange failed:\n\n${exText}`);
     return;
   }
 
-  const customerTokenJson = await ex.json();
-  const customerAccessToken = customerTokenJson.access_token;
+  let exJson;
+  try {
+    exJson = JSON.parse(exText);
+  } catch {
+    res
+      .status(500)
+      .send(`Invalid JSON from customer token exchange:\n\n${exText}`);
+    return;
+  }
+
+  const customerAccessToken = exJson.access_token;
   if (!customerAccessToken || !customerAccessToken.startsWith("shcat_")) {
-    res.status(500).send("Invalid customer access token returned.");
+    res
+      .status(500)
+      .send(`Customer token missing/invalid:\n\n${JSON.stringify(exJson, null, 2)}`);
     return;
   }
 
-  // 3) Guarda tokens em cookies httpOnly
-  setCookie(res, "session", idToken, { maxAge: 60 * 60 }); // OIDC (se quiser manter)
-  setCookie(res, "customer_token", customerAccessToken, { maxAge: 60 * 60 }); // **ESSENCIAL**
+  // 3) Guarda em cookies httpOnly
+  setCookie(res, "session", idToken, { maxAge: 60 * 60 });         // opcional
+  setCookie(res, "customer_token", customerAccessToken, { maxAge: 60 * 60 }); // ESSENCIAL
 
-  // limpa cookies temporários
+  // limpa temporários
   setCookie(res, "oidc_state", "", { maxAge: 0 });
   setCookie(res, "oidc_verifier", "", { maxAge: 0 });
 
