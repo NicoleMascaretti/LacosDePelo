@@ -284,7 +284,7 @@ const Contato = () => {
               </div>
 
               {/* FAQ Quick Links */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg">
+{/*               <div className="bg-white p-6 rounded-2xl shadow-lg">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   Dúvidas Frequentes
                 </h3>
@@ -302,7 +302,7 @@ const Contato = () => {
                     → Formas de pagamento
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
