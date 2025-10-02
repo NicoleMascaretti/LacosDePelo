@@ -168,15 +168,13 @@ const Navbar = () => {
                   {isUserDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-[70] p-2">
                       {!isAuthenticated ? (
-                        <button
-                          onClick={() => {
-                            setIsUserDropdownOpen(false);
-                            startLogin();
-                          }}
-                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
+                        <Link
+                          to="/login"
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
                         >
-                          Entrar
-                        </button>
+                          Entrar / Criar conta
+                        </Link>
                       ) : (
                         <>
                           <a
@@ -342,15 +340,13 @@ const Navbar = () => {
                 </h4>
 
                 {!isAuthenticated ? (
-                  <button
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      startLogin();
-                    }}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg h-12 px-4"
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg h-12 px-4 flex items-center justify-center"
                   >
                     Entrar / Criar conta
-                  </button>
+                  </Link>
                 ) : (
                   <ul className="space-y-2">
                     <li>
