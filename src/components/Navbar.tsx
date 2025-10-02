@@ -41,10 +41,10 @@ const Navbar = () => {
   //     ? "http://localhost:5173"
   //     : "https://lacosdepelo.vercel.app"; // coloque o domínio real do backend
 
-  const startLogin = () => {
+/*   const startLogin = () => {
     window.location.href = `/api/auth/start?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
   };
-
+ */
   const doLogout = () => {
     window.location.href = `/api/auth/logout?returnTo=/`;
   };
