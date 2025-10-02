@@ -179,20 +179,13 @@ const Navbar = () => {
                         </button>
                       ) : (
                         <>
-                          <a
-                            href={ACCOUNT_URL}
-                            className="block px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
-                            onClick={() => setIsUserDropdownOpen(false)}
-                          >
-                            Minha Conta
-                          </a>
-                          <a
-                            href={`${ACCOUNT_URL}/orders`}
+                          <Link
+                            to="/meus-pedidos"
                             className="block px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
                             onClick={() => setIsUserDropdownOpen(false)}
                           >
                             Meus Pedidos
-                          </a>
+                          </Link>
                           <button
                             onClick={() => {
                               setIsUserDropdownOpen(false);
@@ -364,14 +357,14 @@ const Navbar = () => {
                       </a>
                     </li>
                     <li>
-                      <a
-                        href={`${ACCOUNT_URL}/orders`}
+                      <Link
+                        to="/meus-pedidos"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-800"
                       >
                         <Package className="h-5 w-5 text-gray-600" />
                         <span>Meus pedidos</span>
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <button
