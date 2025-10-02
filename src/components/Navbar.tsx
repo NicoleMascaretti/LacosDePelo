@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, ShoppingCart, User, LogOut, Package } from "lucide-react";
+import { Heart, ShoppingCart, User, LogOut, Package, ChevronRight } from "lucide-react";
 
 import { useFavorites } from "../hooks/useFavorites";
 import { useCart } from "../hooks/useCart";
@@ -14,7 +14,7 @@ import TopBarInfo from "./ui/TopBarInfo";
 import FavoriteList from "./ui/FavoriteList";
 import ShoppingCartWidget from "./ui/ShoppingCartWidget";
 
-const ACCOUNT_URL = "/account"; // Contas novas da Shopify
+// const ACCOUNT_URL = "/account"; // Contas novas da Shopify
 
 const Navbar = () => {
   const location = useLocation();
@@ -340,9 +340,14 @@ const Navbar = () => {
                       setIsMobileMenuOpen(false);
                       startLogin();
                     }}
-                    className="w-full bg-teal-600 ..."
+                    aria-label="Acessar minha conta"
+                    className="w-full flex items-center justify-between gap-3 rounded-xl bg-teal-600 text-white px-4 py-3 shadow-md hover:bg-teal-700 active:bg-teal-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
-                    Entrar / Criar conta
+                    <span className="flex items-center gap-3">
+                      <User className="h-5 w-5 opacity-90" />
+                      <span className="text-base font-semibold">Acessar minha conta</span>
+                    </span>
+                    <ChevronRight className="h-5 w-5 opacity-90" />
                   </button>
                 ) : (
                   <ul className="space-y-2">
