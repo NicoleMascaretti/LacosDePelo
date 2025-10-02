@@ -41,10 +41,10 @@ const Navbar = () => {
   //     ? "http://localhost:5173"
   //     : "https://lacosdepelo.vercel.app"; // coloque o domínio real do backend
 
-/*   const startLogin = () => {
+  const startLogin = () => {
     window.location.href = `/api/auth/start?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
   };
- */
+
   const doLogout = () => {
     window.location.href = `/api/auth/logout?returnTo=/`;
   };
@@ -168,13 +168,15 @@ const Navbar = () => {
                   {isUserDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-[70] p-2">
                       {!isAuthenticated ? (
-                        <Link
-                          to="/login"
-                          onClick={() => setIsUserDropdownOpen(false)}
-                          className="block w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
+                        <button
+                          onClick={() => {
+                            setIsUserDropdownOpen(false);
+                            startLogin();
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
                         >
-                          Entrar / Criar conta
-                        </Link>
+                          Entrar
+                        </button>
                       ) : (
                         <>
                           <a
@@ -340,13 +342,15 @@ const Navbar = () => {
                 </h4>
 
                 {!isAuthenticated ? (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg h-12 px-4 flex items-center justify-center"
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      startLogin();
+                    }}
+                    className="w-full bg-teal-600 ..."
                   >
                     Entrar / Criar conta
-                  </Link>
+                  </button>
                 ) : (
                   <ul className="space-y-2">
                     <li>
