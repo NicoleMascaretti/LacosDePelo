@@ -1,23 +1,24 @@
-import { CONFIG } from "../_lib/config.js";
-import { parseCookies } from "../_lib/cookies.js";
-
+// api/customer/orders.js
 export default async function handler(req, res) {
   try {
-    const cookies = parseCookies(req);
-    const accessToken = cookies.session_access;
-
-    if (!accessToken) {
-      res.status(401).json({ error: "Not authenticated" });
-      return;
+    // O cookie "session" foi definido no seu /api/auth/callback como o ID Token (JWT)
+    const idToken = req.cookies?.session;
+    if (!idToken) {
+      return res.status(401).json({ error: "Not authenticated" });
     }
 
-    // GraphQL para Customer Account API (contas novas)
+    // URL da Customer Account API (pegue o número do seu “store id” que aparece nos endpoints do app headless)
+    // Exemplo do seu print: .../authentication/58148683873/...
+    // Versão pode ser 2024-07 ou a mais recente disponível nas suas configs
+    const customerApiUrl = process.env.CUSTOMER_API_GRAPHQL_URL;
+    // ex.: https://shopify.com/58148683873/account/customer/api/2024-07/graphql.json
+
     const query = `
-      query Orders {
+      query CustomerOrders($first: Int = 20) {
         customer {
           id
           email
-          orders(first: 20, reverse: true) {
+          orders(first: $first, reverse: true) {
             nodes {
               id
               name
@@ -41,28 +42,27 @@ export default async function handler(req, res) {
       }
     `;
 
-    const resp = await fetch(CONFIG.customerApiUrl, {
+    const r = await fetch(customerApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // O access_token do fluxo OIDC
-        "Authorization": `Bearer ${accessToken}`,
-        // dom da loja para Customer Account API
-        "Shopify-Shop-Domain": CONFIG.shopDomain, // ex: lacosdepelo.myshopify.com
+        // AQUI é onde a Customer Account API autentica: bearer com o ID token (JWT)
+        Authorization: `Bearer ${idToken}`,
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, variables: { first: 20 } }),
     });
 
-    const data = await resp.json();
-
-    if (!resp.ok || data.errors) {
-      res.status(500).json({ error: "Customer API error", detail: data.errors ?? data });
-      return;
+    const json = await r.json();
+    if (!r.ok || json.errors) {
+      return res.status(500).json({
+        error: "Customer API error",
+        details: json.errors || json,
+      });
     }
 
-    const orders = data?.data?.customer?.orders?.nodes ?? [];
-    res.status(200).json({ orders });
+    const orders = json?.data?.customer?.orders?.nodes || [];
+    return res.status(200).json({ orders });
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    return res.status(500).json({ error: e.message || "Unexpected error" });
   }
 }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import Footer from "../components/ui/Footer";
 
 type Money = { amount: string; currencyCode: string };
 type LineItem = { title: string; quantity: number };
@@ -134,8 +133,6 @@ export default function Orders() {
           })}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
