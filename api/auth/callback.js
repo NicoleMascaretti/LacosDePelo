@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     return;
   }
 
+  // 1) Troca código -> OIDC tokens
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: CONFIG.clientId,
@@ -31,13 +32,44 @@ export default async function handler(req, res) {
   }
 
   const tokens = await r.json();
-  // tokens: { id_token, access_token, expires_in, ... }
+  const idToken = tokens.id_token;
+  if (!idToken) {
+    res.status(500).send("Missing id_token from token response.");
+    return;
+  }
 
-  // Guarde ID token (se quiser) e — importante — o ACCESS TOKEN
-  setCookie(res, "session", tokens.id_token ?? "", { maxAge: 60 * 60 });
-  setCookie(res, "session_access", tokens.access_token ?? "", { maxAge: 60 * 60 });
+  // 2) Troca OIDC id_token -> Customer API access token (prefixo shcat_)
+  const exBody = new URLSearchParams({
+    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+    subject_token: idToken,
+    subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
+    // opcional: "scope": "customer_read_orders"  (se precisar restringir)
+  });
 
-  // Limpa temporários
+  const ex = await fetch(CONFIG.customerTokenUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: exBody,
+  });
+
+  if (!ex.ok) {
+    const text = await ex.text();
+    res.status(500).send(`Customer token exchange failed: ${text}`);
+    return;
+  }
+
+  const customerTokenJson = await ex.json();
+  const customerAccessToken = customerTokenJson.access_token;
+  if (!customerAccessToken || !customerAccessToken.startsWith("shcat_")) {
+    res.status(500).send("Invalid customer access token returned.");
+    return;
+  }
+
+  // 3) Guarda tokens em cookies httpOnly
+  setCookie(res, "session", idToken, { maxAge: 60 * 60 }); // OIDC (se quiser manter)
+  setCookie(res, "customer_token", customerAccessToken, { maxAge: 60 * 60 }); // **ESSENCIAL**
+
+  // limpa cookies temporários
   setCookie(res, "oidc_state", "", { maxAge: 0 });
   setCookie(res, "oidc_verifier", "", { maxAge: 0 });
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import Footer from "../components/ui/Footer";
 
 type MoneyV2 = { amount: string; currencyCode: string };
 type OrderNode = {
@@ -155,8 +154,6 @@ export default function Orders() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }
