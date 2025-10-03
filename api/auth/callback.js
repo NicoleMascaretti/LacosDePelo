@@ -113,6 +113,20 @@ export default async function handler(req, res) {
   const returnTo = cookies.oidc_return || "/";
   setCookie(res, "oidc_return", "", { maxAge: 0 });
 
-  res.status(302).setHeader("Location", returnTo);
-  res.end();
+  res.status(200).setHeader("Content-Type", "text/html; charset=utf-8");
+  res.end(`
+    <!doctype html>
+    <meta charset="utf-8">
+    <title>Redirecionando…</title>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=${returnTo.replace(/"/g, "")}">
+    </noscript>
+    <script>
+      try {
+        window.location.replace(${JSON.stringify(returnTo)});
+      } catch (e) {
+        window.location.href = ${JSON.stringify(returnTo)};
+      }
+    </script>
+  `);
 }

@@ -8,7 +8,7 @@ export function setCookie(res, name, value, opts = {}) {
   const str = cookie.serialize(name, value, {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
     ...opts,
   });
