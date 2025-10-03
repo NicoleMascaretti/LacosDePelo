@@ -1,16 +1,38 @@
+// /api/auth/callback.js
 import { CONFIG } from "../_lib/config.js";
 import { parseCookies, setCookie } from "../_lib/cookies.js";
 
+function htmlDebug(title, obj) {
+  return `<!doctype html>
+<html><head><meta charset="utf-8"><title>${title}</title>
+<style>body{font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;padding:24px;max-width:900px;margin:0 auto;}pre{background:#f6f8fa;padding:16px;border-radius:8px;overflow:auto}</style>
+</head><body>
+<h1>${title}</h1>
+<pre>${obj}</pre>
+<p style="margin-top:24px">Verifique também suas variáveis no Vercel:
+<strong>APP_URL:</strong> ${CONFIG.appUrl}<br/>
+<strong>TOKEN URL:</strong> ${CONFIG.tokenUrl}<br/>
+<strong>AUTHORIZE URL:</strong> ${CONFIG.authorizeUrl}<br/>
+<strong>CLIENT_ID:</strong> ${CONFIG.clientId}
+</p>
+</body></html>`;
+}
+
 export default async function handler(req, res) {
-  const { code, state } = req.query || {};
+  const { code, state, debug } = req.query || {};
   const cookies = parseCookies(req);
 
   if (!code || !state || state !== cookies.oidc_state || !cookies.oidc_verifier) {
-    res.status(400).send("Invalid OAuth response.");
+    const msg = `Invalid OAuth response. code=${!!code}, state_ok=${state === cookies.oidc_state}, has_verifier=${!!cookies.oidc_verifier}`;
+    if (debug) {
+      res.status(400).send(htmlDebug("OAuth callback inválido", msg));
+    } else {
+      res.status(400).send(msg);
+    }
     return;
   }
 
-  // 1) code -> OIDC tokens
+  // 1) trocar code -> id_token
   const oidcBody = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: CONFIG.clientId,
@@ -24,33 +46,31 @@ export default async function handler(req, res) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: oidcBody,
   });
-
   const oidcText = await oidcResp.text();
+
   if (!oidcResp.ok) {
-    res
-      .status(500)
-      .send(`Token exchange (authorization_code) failed:\n\n${oidcText}`);
-    return;
+    const dump = `status=${oidcResp.status}\ncontent-type=${oidcResp.headers.get("content-type")}\n\n${oidcText}`;
+    return debug
+      ? res.status(500).send(htmlDebug("Falha ao trocar authorization_code por id_token", dump))
+      : res.status(500).send(`Token exchange (authorization_code) failed:\n\n${dump}`);
   }
 
   let oidcJson;
-  try {
-    oidcJson = JSON.parse(oidcText);
-  } catch {
-    res
-      .status(500)
-      .send(`Invalid JSON from token endpoint (authorization_code):\n\n${oidcText}`);
-    return;
+  try { oidcJson = JSON.parse(oidcText); }
+  catch {
+    const dump = `Esperava JSON do token endpoint (authorization_code)\n\n${oidcText}`;
+    return debug ? res.status(500).send(htmlDebug("JSON inválido no token endpoint", dump))
+      : res.status(500).send(dump);
   }
 
   const idToken = oidcJson.id_token;
   if (!idToken) {
-    res.status(500).send(`No id_token in response:\n\n${JSON.stringify(oidcJson, null, 2)}`);
-    return;
+    const dump = JSON.stringify(oidcJson, null, 2);
+    return debug ? res.status(500).send(htmlDebug("Resposta sem id_token", dump))
+      : res.status(500).send(`No id_token in response:\n\n${dump}`);
   }
 
-  // 2) id_token -> Customer API access token (shcat_...)
-  // Tentativa A: no MESMO tokenUrl, com grant_type token-exchange e audience=customer_api
+  // 2) trocar id_token -> customer access token (shcat_)
   const exchangeParams = new URLSearchParams({
     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
     client_id: CONFIG.clientId,
@@ -64,10 +84,9 @@ export default async function handler(req, res) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: exchangeParams,
   });
-
   let exText = await exResp.text();
 
-  // Tentativa B (fallback): se falhar e houver customerTokenUrl configurado
+  // opcional fallback se você configurou um CUSTOMER_TOKEN_URL diferente
   if (!exResp.ok && CONFIG.customerTokenUrl) {
     exResp = await fetch(CONFIG.customerTokenUrl, {
       method: "POST",
@@ -78,55 +97,36 @@ export default async function handler(req, res) {
   }
 
   if (!exResp.ok) {
-    res
-      .status(500)
-      .send(`Customer token exchange failed:\n\n${exText}`);
-    return;
+    const dump = `url_usada=${CONFIG.tokenUrl}\nstatus=${exResp.status}\ncontent-type=${exResp.headers.get("content-type")}\nbody_inicio=${exText.slice(0, 800)}`;
+    return debug ? res.status(500).send(htmlDebug("Customer token exchange failed", dump))
+      : res.status(500).send(`Customer token exchange failed:\n\n${dump}`);
   }
 
   let exJson;
-  try {
-    exJson = JSON.parse(exText);
-  } catch {
-    res
-      .status(500)
-      .send(`Invalid JSON from customer token exchange:\n\n${exText}`);
-    return;
+  try { exJson = JSON.parse(exText); }
+  catch {
+    const dump = `Esperava JSON no customer token exchange\n\n${exText.slice(0, 1200)}`;
+    return debug ? res.status(500).send(htmlDebug("JSON inválido no customer token exchange", dump))
+      : res.status(500).send(dump);
   }
 
   const customerAccessToken = exJson.access_token;
   if (!customerAccessToken || !customerAccessToken.startsWith("shcat_")) {
-    res
-      .status(500)
-      .send(`Customer token missing/invalid:\n\n${JSON.stringify(exJson, null, 2)}`);
-    return;
+    const dump = JSON.stringify(exJson, null, 2);
+    return debug ? res.status(500).send(htmlDebug("Customer token ausente/ inválido", dump))
+      : res.status(500).send(`Customer token missing/invalid:\n\n${dump}`);
   }
 
-  // 3) Guarda em cookies httpOnly
-  setCookie(res, "session", idToken, { maxAge: 60 * 60 });         // opcional
-  setCookie(res, "customer_token", customerAccessToken, { maxAge: 60 * 60 }); // ESSENCIAL
+  // 3) cookies de sessão
+  setCookie(res, "session", idToken, { maxAge: 60 * 60 });
+  setCookie(res, "customer_token", customerAccessToken, { maxAge: 60 * 60 });
 
-  // limpa temporários
   setCookie(res, "oidc_state", "", { maxAge: 0 });
   setCookie(res, "oidc_verifier", "", { maxAge: 0 });
 
   const returnTo = cookies.oidc_return || "/";
   setCookie(res, "oidc_return", "", { maxAge: 0 });
 
-  res.status(200).setHeader("Content-Type", "text/html; charset=utf-8");
-  res.end(`
-    <!doctype html>
-    <meta charset="utf-8">
-    <title>Redirecionando…</title>
-    <noscript>
-      <meta http-equiv="refresh" content="0;url=${returnTo.replace(/"/g, "")}">
-    </noscript>
-    <script>
-      try {
-        window.location.replace(${JSON.stringify(returnTo)});
-      } catch (e) {
-        window.location.href = ${JSON.stringify(returnTo)};
-      }
-    </script>
-  `);
+  res.status(302).setHeader("Location", returnTo);
+  res.end();
 }
