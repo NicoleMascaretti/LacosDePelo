@@ -70,52 +70,89 @@ export default async function handler(req, res) {
       : res.status(500).send(`No id_token in response:\n\n${dump}`);
   }
 
-  // 2) trocar id_token -> customer access token (shcat_)
-  const exchangeParams = new URLSearchParams({
-    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+  // 2) id_token -> customer access token (shcat_...)
+  // Parâmetros base
+  const baseExchange = {
     client_id: CONFIG.clientId,
     subject_token: idToken,
     subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
     audience: "customer_api",
+    // muita instância exige este parâmetro explícito:
+    requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+  };
+
+  // Tentativa A: URN completo (especificação RFC)
+  let exParams = new URLSearchParams({
+    ...baseExchange,
+    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
   });
 
   let exResp = await fetch(CONFIG.tokenUrl, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: exchangeParams,
+    body: exParams,
   });
+
   let exText = await exResp.text();
 
-  // opcional fallback se você configurou um CUSTOMER_TOKEN_URL diferente
+  // Se der 400 com unsupported_grant_type, tenta forma curta + (opcional) endpoint alternativo
+  if (
+    !exResp.ok &&
+    /unsupported_grant_type/i.test(exText || "")
+  ) {
+    // Tentativa B: grant_type curto "token-exchange"
+    exParams = new URLSearchParams({
+      ...baseExchange,
+      grant_type: "token-exchange",
+    });
+
+    exResp = await fetch(CONFIG.tokenUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: exParams,
+    });
+
+    exText = await exResp.text();
+  }
+
+  // (Opcional) Se ainda falhar e você tiver configurado CUSTOMER_TOKEN_URL, tenta nele também.
   if (!exResp.ok && CONFIG.customerTokenUrl) {
     exResp = await fetch(CONFIG.customerTokenUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: exchangeParams,
+      body: exParams,
     });
     exText = await exResp.text();
   }
 
   if (!exResp.ok) {
-    const dump = `url_usada=${CONFIG.tokenUrl}\nstatus=${exResp.status}\ncontent-type=${exResp.headers.get("content-type")}\nbody_inicio=${exText.slice(0, 800)}`;
-    return debug ? res.status(500).send(htmlDebug("Customer token exchange failed", dump))
+    const dump = `url_usada=${CONFIG.tokenUrl}
+status=${exResp.status}
+content-type=${exResp.headers.get("content-type")}
+body_inicio=${(exText || "").slice(0, 800)}`;
+    return req.query?.debug
+      ? res.status(500).send(htmlDebug("Customer token exchange failed", dump))
       : res.status(500).send(`Customer token exchange failed:\n\n${dump}`);
   }
 
   let exJson;
-  try { exJson = JSON.parse(exText); }
-  catch {
-    const dump = `Esperava JSON no customer token exchange\n\n${exText.slice(0, 1200)}`;
-    return debug ? res.status(500).send(htmlDebug("JSON inválido no customer token exchange", dump))
+  try {
+    exJson = JSON.parse(exText);
+  } catch {
+    const dump = `Esperava JSON no customer token exchange\n\n${(exText || "").slice(0, 1200)}`;
+    return req.query?.debug
+      ? res.status(500).send(htmlDebug("JSON inválido no customer token exchange", dump))
       : res.status(500).send(dump);
   }
 
   const customerAccessToken = exJson.access_token;
   if (!customerAccessToken || !customerAccessToken.startsWith("shcat_")) {
     const dump = JSON.stringify(exJson, null, 2);
-    return debug ? res.status(500).send(htmlDebug("Customer token ausente/ inválido", dump))
+    return req.query?.debug
+      ? res.status(500).send(htmlDebug("Customer token ausente/inválido", dump))
       : res.status(500).send(`Customer token missing/invalid:\n\n${dump}`);
   }
+
 
   // 3) cookies de sessão
   setCookie(res, "session", idToken, { maxAge: 60 * 60 });
