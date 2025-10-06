@@ -5,13 +5,13 @@ export default async function handler(req, res) {
   try {
     const cookies = parseCookies(req);
     const cat = cookies.customer_token;
-
     if (!cat || !cat.startsWith("shcat_")) {
       res.status(401).json({ error: "Not authenticated", details: "Missing shcat_ token" });
       return;
     }
-
+    
     const endpoint = CONFIG.customerApiUrl; 
+    console.log(endpoint)
 
     const query = `
       query Orders {
