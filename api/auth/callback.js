@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     client_id: CONFIG.clientId,
     subject_token: idToken,
     subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
-    audience: "customer_api",
+    audience: "customer_accounts",
     // muita instância exige este parâmetro explícito:
     requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
   };
