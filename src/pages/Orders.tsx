@@ -8,22 +8,24 @@ type OrderNode = {
   processedAt?: string;
   financialStatus?: string | null;
   fulfillmentStatus?: string | null;
-  totalPrice?: MoneyV2 | null;
+  totalPrice?: MoneyV2 | null; // <-- combina com o que o backend retorna
 };
 
 type OrdersResponseOk = {
   data?: {
     customer?: {
-      orders?: {
-        nodes?: OrderNode[];
-      };
+      email?: string | null;
+      orders?: { nodes?: OrderNode[] };
     };
   };
 };
 
 type OrdersResponseErr = {
   error?: string;
-  details?: unknown; // pode ser JSON da Shopify ou HTML (nonJson)
+  details?: unknown; // pode ser JSON da Shopify ou HTML (nonJson/snippet)
+  endpointTried?: string;
+  status?: number;
+  bodySnippet?: string;
 };
 
 export default function Orders() {
@@ -35,34 +37,11 @@ export default function Orders() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/customer/graphql", {
-          method: "POST",
+        // ✅ chama o endpoint que criamos no backend
+        const res = await fetch("/api/customer/orders", {
+          method: "GET",
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            query: `
-            query Orders($first: Int!) {
-              customer {
-                orders(first: $first) {
-                  nodes {
-                    id
-                    name
-                    processedAt
-                    financialStatus
-                    fulfillmentStatus
-                    totalPriceSet {
-                      shopMoney {
-                        amount
-                        currencyCode
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          `,
-            variables: { first: 20 },
-          }),
+          headers: { Accept: "application/json" },
         });
 
         const text = await res.text();
@@ -71,7 +50,7 @@ export default function Orders() {
         try {
           json = JSON.parse(text);
         } catch {
-          json = { error: "Non-JSON response", details: text.slice(0, 800) };
+          json = { error: "Non-JSON response", details: text.slice(0, 1000) };
         }
 
         if (!res.ok) {
@@ -101,7 +80,6 @@ export default function Orders() {
       mounted = false;
     };
   }, []);
-
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -133,7 +111,7 @@ export default function Orders() {
                 }
                 className="px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700"
               >
-                Fazer login novamente
+                Entrar novamente
               </button>
             </div>
           </div>
@@ -142,7 +120,9 @@ export default function Orders() {
         {/* Empty state */}
         {!loading && !error && orders.length === 0 && (
           <div className="p-6 bg-white rounded-xl shadow-sm">
-            <p className="text-gray-600">Você ainda não possui pedidos.</p>
+            <p className="text-gray-600">
+              Você ainda não possui pedidos.
+            </p>
           </div>
         )}
 
