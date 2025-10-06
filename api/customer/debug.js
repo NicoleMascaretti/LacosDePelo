@@ -3,10 +3,10 @@ import { parseCookies } from "../_lib/cookies.js";
 
 export default async function handler(req, res) {
   try {
-    // 1) Descobre o endpoint a partir do domínio da loja
     const shopDomain = process.env.SHOP_DOMAIN; // ex: lacosdepelo.myshopify.com
     const wellKnownUrl = `https://${shopDomain}/.well-known/customer-account-api`;
 
+    // 1) Descobre o endpoint
     const d = await fetch(wellKnownUrl);
     const dText = await d.text();
     let discovered;
@@ -19,24 +19,46 @@ export default async function handler(req, res) {
         body: dText.slice(0, 800),
       });
     }
-
     const endpoint = discovered?.graphql_api;
-    if (!endpoint) {
-      return res.status(500).json({
-        error: "No graphql_api in discovery",
+
+    // 2) Pega shcat_ dos cookies
+    const { customer_token: cat } = parseCookies(req);
+    if (!cat || !cat.startsWith("shcat_")) {
+      return res.status(401).json({
+        error: "No shcat_ token (login first)",
         discovered,
+        endpoint,
       });
     }
 
-    // 2) Faz um OPTIONS só para checar status sem precisar de token
-    const ping = await fetch(endpoint, { method: "OPTIONS" });
+    // 3) Faz um POST real
+    const query = `query { customer { id } }`;
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${cat}`,
+      },
+      body: JSON.stringify({ query }),
+    });
 
-    return res.status(200).json({
-      wellKnownUrl,
-      discovered,
+    const text = await resp.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch {
+      return res.status(500).json({
+        error: "Non-JSON from Customer API",
+        endpoint,
+        status: resp.status,
+        body: text.slice(0, 1200),
+      });
+    }
+
+    return res.status(resp.ok ? 200 : 500).json({
+      ok: resp.ok,
+      status: resp.status,
       endpoint,
-      optionsStatus: ping.status,
-      optionsOk: ping.ok,
+      json,
     });
   } catch (e) {
     return res.status(500).json({ error: "Unexpected", details: String(e) });
