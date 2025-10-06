@@ -1,66 +1,50 @@
-// /api/customer/debug.js
-import { parseCookies } from "../_lib/cookies.js";
+import { CONFIG } from "../_lib/config.js";
 
 export default async function handler(req, res) {
+  const envRaw = process.env.SHOPIFY_CUSTOMER_API_URL || "(vazio)";
+  const endpoint = CONFIG.customerApiUrl || "(CONFIG.customerApiUrl vazio)";
+
+  // testa OPTIONS e POST vazio no endpoint que o código está usando
+  const results = {};
   try {
-    const shopDomain = process.env.SHOP_DOMAIN; // ex: lacosdepelo.myshopify.com
-    const wellKnownUrl = `https://${shopDomain}/.well-known/customer-account-api`;
-
-    // 1) Descobre o endpoint
-    const d = await fetch(wellKnownUrl);
-    const dText = await d.text();
-    let discovered;
-    try {
-      discovered = JSON.parse(dText);
-    } catch {
-      return res.status(500).json({
-        error: "Discovery not JSON",
-        wellKnownUrl,
-        body: dText.slice(0, 800),
-      });
-    }
-    const endpoint = discovered?.graphql_api;
-
-    // 2) Pega shcat_ dos cookies
-    const { customer_token: cat } = parseCookies(req);
-    if (!cat || !cat.startsWith("shcat_")) {
-      return res.status(401).json({
-        error: "No shcat_ token (login first)",
-        discovered,
-        endpoint,
-      });
-    }
-
-    // 3) Faz um POST real
-    const query = `query { customer { id } }`;
-    const resp = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${cat}`,
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    const text = await resp.text();
-    let json;
-    try { json = JSON.parse(text); }
-    catch {
-      return res.status(500).json({
-        error: "Non-JSON from Customer API",
-        endpoint,
-        status: resp.status,
-        body: text.slice(0, 1200),
-      });
-    }
-
-    return res.status(resp.ok ? 200 : 500).json({
-      ok: resp.ok,
-      status: resp.status,
-      endpoint,
-      json,
-    });
+    const r1 = await fetch(endpoint, { method: "OPTIONS" });
+    results.options = { status: r1.status, ok: r1.ok };
   } catch (e) {
-    return res.status(500).json({ error: "Unexpected", details: String(e) });
+    results.options = { error: String(e) };
   }
+  try {
+    const r2 = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: "{__typename}" }),
+    });
+    const text = await r2.text();
+    results.post = { status: r2.status, ok: r2.ok, snippet: text.slice(0, 200) };
+  } catch (e) {
+    results.post = { error: String(e) };
+  }
+
+  // Também testa explicitamente a URL versionada e a não versionada
+  const versioned = "https://lacosdepelo.myshopify.com/customer/api/2025-07/graphql.json";
+  const unversioned = "https://lacosdepelo.myshopify.com/customer/api/graphql";
+
+  async function probe(url) {
+    try {
+      const r = await fetch(url, { method: "OPTIONS" });
+      return { url, status: r.status, ok: r.ok };
+    } catch (e) {
+      return { url, error: String(e) };
+    }
+  }
+
+  const probeVersioned = await probe(versioned);
+  const probeUnversioned = await probe(unversioned);
+
+  res.status(200).json({
+    envRaw,
+    endpointFromCONFIG: endpoint,
+    probeVersioned,
+    probeUnversioned,
+    results,
+  });
 }
