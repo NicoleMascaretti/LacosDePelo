@@ -35,10 +35,34 @@ export default function Orders() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/customer/orders", {
-          method: "GET",
+        const res = await fetch("/api/customer/graphql", {
+          method: "POST",
           credentials: "include",
-          headers: { "Accept": "application/json" },
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: `
+            query Orders($first: Int!) {
+              customer {
+                orders(first: $first) {
+                  nodes {
+                    id
+                    name
+                    processedAt
+                    financialStatus
+                    fulfillmentStatus
+                    totalPriceSet {
+                      shopMoney {
+                        amount
+                        currencyCode
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          `,
+            variables: { first: 20 },
+          }),
         });
 
         const text = await res.text();
@@ -47,7 +71,6 @@ export default function Orders() {
         try {
           json = JSON.parse(text);
         } catch {
-          // quando a Shopify devolve HTML (ex.: redirect para login), o endpoint envia em details.nonJson
           json = { error: "Non-JSON response", details: text.slice(0, 800) };
         }
 
@@ -78,6 +101,7 @@ export default function Orders() {
       mounted = false;
     };
   }, []);
+
 
   return (
     <div className="min-h-screen bg-gray-50">
