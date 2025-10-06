@@ -9,27 +9,28 @@ export default async function handler(req, res) {
       res.status(401).json({ error: "Not authenticated", details: "Missing shcat_ token" });
       return;
     }
-    
-    const endpoint = CONFIG.customerApiUrl; 
+
+    const endpoint = CONFIG.customerApiUrl;
     console.log(endpoint)
 
     const query = `
-      query Orders {
-        customer {
+  query Orders {
+    customer {
+      id
+      email
+      orders(first: 50, sortKey: PROCESSED_AT, reverse: true) {
+        nodes {
           id
-          orders(first: 50, sortKey: PROCESSED_AT, reverse: true) {
-            nodes {
-              id
-              name
-              processedAt
-              financialStatus
-              fulfillmentStatus
-              totalPrice { amount currencyCode }
-            }
-          }
+          name
+          processedAt
+          financialStatus
+          fulfillmentStatus
+          totalPrice { amount currencyCode }
         }
       }
-    `;
+    }
+  }
+`;
 
     const resp = await fetch(endpoint, {
       method: "POST",
