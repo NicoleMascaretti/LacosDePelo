@@ -3,7 +3,7 @@ import { setCookie } from "../_lib/cookies.js";
 import { createPkce, randomString } from "../_lib/pkce.js";
 
 export default async function handler(req, res) {
-  const { returnTo = "/" } = req.query || {};
+  const { returnTo = "/", debug } = req.query || {};
   const { codeVerifier, codeChallenge } = createPkce();
   const state = randomString(16);
 
@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   setCookie(res, "oidc_state", state, { maxAge: 300 });
   setCookie(res, "oidc_verifier", codeVerifier, { maxAge: 300 });
   setCookie(res, "oidc_return", returnTo, { maxAge: 300 });
+  // se você chamar /api/auth/start?debug=1, o callback entra em modo debug
+  if (debug === "1") setCookie(res, "oidc_debug", "1", { maxAge: 300 });
 
   const params = new URLSearchParams({
     client_id: CONFIG.clientId,

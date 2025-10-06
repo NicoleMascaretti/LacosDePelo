@@ -180,7 +180,7 @@ const Navbar = () => {
                       ) : (
                         <>
                           <Link
-                            to="/meus-pedidos"
+                            to="/orders"
                             className="block px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
                             onClick={() => setIsUserDropdownOpen(false)}
                           >
@@ -353,7 +353,7 @@ const Navbar = () => {
                   <ul className="space-y-2">
                     <li>
                       <Link
-                        to="/meus-pedidos"
+                        to="/orders"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-gray-800"
                       >

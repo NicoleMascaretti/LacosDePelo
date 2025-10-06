@@ -19,8 +19,12 @@ function htmlDebug(title, obj) {
 }
 
 export default async function handler(req, res) {
-  const { code, state, debug } = req.query || {};
+  const { code, state } = req.query || {};
   const cookies = parseCookies(req);
+  const debug = cookies.oidc_debug === "1" || req.query?.debug === "1";
+
+  // evita replays acidentais por cache
+  res.setHeader("Cache-Control", "no-store");
 
   if (!code || !state || state !== cookies.oidc_state || !cookies.oidc_verifier) {
     const msg = `Invalid OAuth response. code=${!!code}, state_ok=${state === cookies.oidc_state}, has_verifier=${!!cookies.oidc_verifier}`;
@@ -160,7 +164,7 @@ body_inicio=${(exText || "").slice(0, 800)}`;
 
   setCookie(res, "oidc_state", "", { maxAge: 0 });
   setCookie(res, "oidc_verifier", "", { maxAge: 0 });
-
+  setCookie(res, "oidc_debug", "", { maxAge: 0 });
   const returnTo = cookies.oidc_return || "/";
   setCookie(res, "oidc_return", "", { maxAge: 0 });
 
