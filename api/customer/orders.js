@@ -11,11 +11,13 @@ export default async function handler(req, res) {
       return;
     }
 
+    const endpoint = CONFIG.customerApiUrl; 
+
     const query = `
       query Orders {
         customer {
           id
-          orders(first: 20, reverse: true) {
+          orders(first: 50, sortKey: PROCESSED_AT, reverse: true) {
             nodes {
               id
               name
@@ -29,7 +31,7 @@ export default async function handler(req, res) {
       }
     `;
 
-    const resp = await fetch(CONFIG.customerApiUrl, {
+    const resp = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,10 +42,9 @@ export default async function handler(req, res) {
 
     const text = await resp.text();
     let json;
-    try {
-      json = JSON.parse(text);
-    } catch {
-      res.status(500).json({ error: "Customer API error", details: text.slice(0, 1200) });
+    try { json = JSON.parse(text); }
+    catch {
+      res.status(500).json({ error: "Customer API error", details: { nonJson: text.slice(0, 1200) } });
       return;
     }
 
