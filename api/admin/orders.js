@@ -1,4 +1,3 @@
-// /api/admin/orders.js
 import { parseCookies } from "../_lib/cookies.js";
 import { CONFIG } from "../_lib/config.js";
 
