@@ -34,18 +34,14 @@ export default function ProductCardBase({ product, children }: ProductCardBasePr
     e.preventDefault();
     e.stopPropagation();
 
-    // Verifique se o produto tem variantId antes de adicionar
-    if (!(product as any).variantId) {
-      console.warn("⚠️ Produto sem variantId:", product.name);
-    }
-
-    addToCart({
-      ...product,
-      variantId: (product as any).variantId, // garante que o campo vai junto
+    addToCart(product, {
+      variantId: (product as any).variantId, // ✅ garante que vai junto
+      price: product.price,                   // opcional: reforça o preço
     });
 
     toast.success(`${product.name} adicionado ao carrinho!`);
   };
+
 
 
   return (

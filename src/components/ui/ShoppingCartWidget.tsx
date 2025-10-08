@@ -20,18 +20,15 @@ const ShoppingCartWidget: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 
     // 🔎 Log para diagnosticar o que realmente está no carrinho
     console.group("Checkout – itens no carrinho");
-    console.table(
-      items.map((i) => ({
-        name: i.name,
-        id: i.id,
-        variantId: (i as any).variantId,
-        qty: i.quantity,
-        hasVariantId:
-          typeof (i as any).variantId === "string" &&
-          (i as any).variantId.trim().length > 0 &&
-          (i as any).variantId.startsWith("gid://"),
-      }))
-    );
+    console.table(items.map(i => ({
+      name: i.name,
+      id: i.id,
+      variantId: (i as any).variantId,
+      qty: i.quantity,
+      hasVariantId:
+        typeof (i as any).variantId === "string" &&
+        (i as any).variantId.startsWith("gid://shopify/ProductVariant/")
+    })));
     console.groupEnd();
 
     // Checagem mais rígida: precisa ser string, não vazia, e parecer um GID

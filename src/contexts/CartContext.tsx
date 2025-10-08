@@ -44,21 +44,25 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addToCart = (product: ProductType, opts?: AddToCartOptions) => {
-    const { variantId, price } = opts || {};
+    // usa o variantId de opts OU o que veio no produto
+    const variantIdFinal = opts?.variantId ?? (product as any).variantId;
+    const priceFinal = typeof opts?.price === "number" ? opts!.price : product.price;
 
     console.log("🛒 Adicionando ao carrinho:", {
-      nome: product.name,
-      variantId: (product as any).variantId,
+      name: product.name,
+      productId: product.id,
+      variantIdFromProduct: (product as any).variantId,
+      variantIdFromOpts: opts?.variantId,
+      variantIdFinal,
     });
 
     setItems((prev) => {
-      // se veio variantId, diferenciamos por (productId + variantId).
-      // se não, mantemos o mesmo comportamento antigo (apenas por productId).
+      // se tem variantId, diferenciamos por (productId + variantId)
+      // se não tem, comportamento legado (só productId)
       const idx = prev.findIndex(
         (it) =>
           it.id === product.id &&
-          // se veio variantId, precisa bater; se não veio, aceita qualquer (compatibilidade)
-          (variantId ? it.variantId === variantId : true)
+          (variantIdFinal ? it.variantId === variantIdFinal : true)
       );
 
       if (idx >= 0) {
@@ -71,9 +75,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         ...prev,
         {
           ...product,
-          // se quiser usar o preço da variante, passe em opts.price
-          price: typeof price === "number" ? price : product.price,
-          variantId,
+          price: priceFinal,
+          variantId: variantIdFinal,   // ✅ salva o variantId de fato
           quantity: 1,
         },
       ];
