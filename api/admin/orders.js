@@ -63,7 +63,7 @@ export default async function handler(req, res) {
               name
               createdAt
               displayFinancialStatus
-              fulfillmentStatus
+              displayFulfillmentStatus
               totalPriceSet { shopMoney { amount currencyCode } }
               customer { id email }
             }
@@ -99,12 +99,12 @@ export default async function handler(req, res) {
       name: node.name,
       processedAt: node.createdAt,
       financialStatus: node.displayFinancialStatus,
-      fulfillmentStatus: node.fulfillmentStatus,
+      fulfillmentStatus: node.displayFulfillmentStatus,
       totalPrice: node.totalPriceSet?.shopMoney
         ? {
-            amount: node.totalPriceSet.shopMoney.amount,
-            currencyCode: node.totalPriceSet.shopMoney.currencyCode,
-          }
+          amount: node.totalPriceSet.shopMoney.amount,
+          currencyCode: node.totalPriceSet.shopMoney.currencyCode,
+        }
         : null,
     }));
 
