@@ -18,15 +18,51 @@ const ShoppingCartWidget: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const handleCheckout = async () => {
     if (!items.length) return;
 
-    // Verifica se todos os itens possuem variantId (necessário para o checkout da Shopify)
-    const missingVariant = items.find((i) => !(i as any).variantId);
-    if (missingVariant) {
-      // toast?.error?.("Alguns itens não possuem variantId da Shopify. Verifique o catálogo.");
-      alert("Alguns itens não possuem variantId da Shopify. Verifique o catálogo.");
+    // 🔎 Log para diagnosticar o que realmente está no carrinho
+    console.group("Checkout – itens no carrinho");
+    console.table(
+      items.map((i) => ({
+        name: i.name,
+        id: i.id,
+        variantId: (i as any).variantId,
+        qty: i.quantity,
+        hasVariantId:
+          typeof (i as any).variantId === "string" &&
+          (i as any).variantId.trim().length > 0 &&
+          (i as any).variantId.startsWith("gid://"),
+      }))
+    );
+    console.groupEnd();
+
+    // Checagem mais rígida: precisa ser string, não vazia, e parecer um GID
+    const invalid = items.filter(
+      (i) =>
+        typeof (i as any).variantId !== "string" ||
+        !(i as any).variantId.trim() ||
+        !(i as any).variantId.startsWith("gid://")
+    );
+
+    if (invalid.length) {
+      const names = invalid.map((i) => i.name).join(", ");
+      alert(
+        `Alguns itens estão sem variantId válido e serão ignorados no checkout:\n\n- ${names}\n\nDica: remova e adicione novamente esses itens à sacola.`
+      );
+    }
+
+    // Prossegue apenas com itens válidos
+    const valid = items.filter(
+      (i) =>
+        typeof (i as any).variantId === "string" &&
+        (i as any).variantId.trim().length > 0 &&
+        (i as any).variantId.startsWith("gid://")
+    );
+
+    if (!valid.length) {
+      alert("Nenhum item válido para checkout. Remova e adicione novamente os produtos.");
       return;
     }
 
-    const lines = items.map((i) => ({
+    const lines = valid.map((i) => ({
       merchandiseId: (i as any).variantId as string, // GID da variante
       quantity: i.quantity,
     }));
@@ -51,15 +87,14 @@ const ShoppingCartWidget: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         throw new Error(data.error || "Checkout URL não retornada pelo servidor.");
       }
 
-      // Redireciona para o checkout da Shopify
       window.location.href = data.checkoutUrl;
     } catch (err: any) {
-      // toast?.error?.(err?.message || "Erro ao iniciar checkout.");
       alert(err?.message || "Erro ao iniciar checkout.");
     } finally {
       setIsCheckingOut(false);
     }
   };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
