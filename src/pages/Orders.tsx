@@ -184,7 +184,7 @@ export default function Orders() {
               setLoading(true);
               setRefreshKey((k) => k + 1);
             }}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white text-gray-700 hover:bg-gray-50 self-start sm:self-auto"
             title="Atualizar"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
