@@ -49,13 +49,21 @@ const GET_PRODUCTS_QUERY = gql`
           title
           description
           productType
-          priceRange { minVariantPrice { amount } }
           images(first: 1) { edges { node { url altText } } }
+          variants(first: 1) {
+            nodes {
+              id
+              price { amount }
+            }
+          }
+          # opcional (fallback):
+          priceRange { minVariantPrice { amount } }
         }
       }
     }
   }
 `;
+
 
 const categories = [
   "Todos",
@@ -101,20 +109,29 @@ const Produtos = () => {
 
   // Transformamos os dados da Shopify para o nosso formato `ProductType`
   // Isso garante que o resto do nosso app continue funcionando sem alterações.
-  const allProducts: ProductType[] = data?.products.edges.map((edge: any) => ({
-    id: edge.node.id,
-    handle: edge.node.handle,
-    name: edge.node.title,
-    description: edge.node.description,
-    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
-    image: edge.node.images.edges[0]?.node.url || '', // Pega a primeira imagem
+  const allProducts: ProductType[] = data?.products.edges.map(({ node }: any) => {
+    const firstVariant = node.variants?.nodes?.[0];
+    const variantId = firstVariant?.id || undefined;
+    const variantPrice = firstVariant?.price?.amount
+      ? parseFloat(firstVariant.price.amount)
+      : undefined;
 
-    // Campos que não vêm da Shopify ainda, usamos valores padrão:
-    category: edge.node.productType,
-    rating: 4.5,
-    reviews: 0,
-    inStock: true, // Precisaríamos de uma query de inventário para isso
-  })) || [];
+    return {
+      id: node.id,
+      handle: node.handle,
+      name: node.title,
+      description: node.description,
+      image: node.images?.edges?.[0]?.node?.url || "",
+      category: node.productType,
+      // use preço da variante se existir; senão, caia no minVariantPrice
+      price: variantPrice ?? parseFloat(node.priceRange.minVariantPrice.amount),
+      // novo campo para o carrinho/checkout:
+      variantId,
+      rating: 4.5,
+      reviews: 0,
+      inStock: true,
+    };
+  }) || [];
 
 
   // Lógica de Filtros
@@ -256,8 +273,8 @@ const Produtos = () => {
                             setIsFilterOpen(false);
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedCategory === category
-                              ? "bg-teal-100 text-teal-800 font-medium"
-                              : "text-gray-600 hover:bg-gray-100"
+                            ? "bg-teal-100 text-teal-800 font-medium"
+                            : "text-gray-600 hover:bg-gray-100"
                             }`}
                         >
                           {category}

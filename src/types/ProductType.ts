@@ -23,7 +23,7 @@ export interface ProductType {
   image: string;
   inStock: boolean;
   badge?: string | null;
-
+  variantId?: string;
   // Campos adicionais para a página de detalhes
   description?: string;
   features?: string[];

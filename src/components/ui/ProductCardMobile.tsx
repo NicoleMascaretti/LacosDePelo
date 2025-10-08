@@ -4,6 +4,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import type { ProductType } from "../../types/ProductType";
 
 export default function ProductCardMobile({ product }: { product: ProductType }) {
+  const canAddToCart = Boolean(product.variantId);
   return (
     <ProductCardBase product={product}>
       {({ isProductFavorite, handleFavoriteToggle, handleAddToCart }) => (
@@ -29,7 +30,7 @@ export default function ProductCardMobile({ product }: { product: ProductType })
           {/* Infos */}
           <div className="flex flex-col justify-between flex-grow p-3">
             {/* Nome + Avaliação */}
-{/*             <div>
+            {/*             <div>
               <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">
                 {product.name}
               </h3>
@@ -58,13 +59,13 @@ export default function ProductCardMobile({ product }: { product: ProductType })
 
               <button
                 onClick={handleAddToCart}
-                disabled={!product.inStock}
+                disabled={!product.inStock || !canAddToCart}
                 className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 
                            text-white w-full py-3 rounded-md text-sm sm:text-base 
                            font-semibold flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="h-4 w-4" />
-                {product.inStock ? "Adicionar" : "Esgotado"}
+                {canAddToCart ? "Adicionar ao Carrinho" : (product.inStock ? "Indisponível" : "Produto Esgotado")}
               </button>
             </div>
           </div>

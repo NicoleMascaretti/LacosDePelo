@@ -10,6 +10,7 @@ export default function ProductCardDesktop({
   product: ProductType;
   viewMode: "grid" | "list";
 }) {
+  const canAddToCart = Boolean(product.variantId);
   return (
     <ProductCardBase product={product}>
       {({ isProductFavorite, handleFavoriteToggle, handleAddToCart }) => (
@@ -138,14 +139,15 @@ export default function ProductCardDesktop({
                 {/* Botão Adicionar */}
                 <button
                   onClick={handleAddToCart}
-                  disabled={!product.inStock}
+                  disabled={!product.inStock || !canAddToCart}
+                  title={!product.variantId ? "Indisponível no momento" : undefined}
                   className={`bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center group ${viewMode === "list"
                     ? "px-6 whitespace-nowrap"
                     : "w-full mt-auto"
                     }`}
                 >
                   <ShoppingCart className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
-                  {product.inStock ? "Adicionar ao Carrinho" : "Produto Esgotado"}
+                  {canAddToCart ? "Adicionar ao Carrinho" : (product.inStock ? "Indisponível" : "Produto Esgotado")}
                 </button>
               </div>
             </div>

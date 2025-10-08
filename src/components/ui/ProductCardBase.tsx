@@ -33,6 +33,10 @@ export default function ProductCardBase({ product, children }: ProductCardBasePr
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!product.variantId) {
+      toast.error("Seleção do produto indisponível no momento.");
+      return;
+    }
     addToCart(product);
     toast.success(`${product.name} adicionado ao carrinho!`);
   };
