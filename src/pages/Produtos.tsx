@@ -133,6 +133,15 @@ const Produtos = () => {
     };
   }) || [];
 
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      console.groupCollapsed("🧩 Produtos carregados da Shopify");
+      allProducts.forEach((p) => {
+        console.log(`• ${p.name} → variantId:`, p.variantId || "❌ sem variantId");
+      });
+      console.groupEnd();
+    }
+  }, [allProducts]);
 
   // Lógica de Filtros
   const filteredProducts = allProducts.filter((product) => {
@@ -158,6 +167,7 @@ const Produtos = () => {
     setSearchParams(searchParams);
   };
 
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
