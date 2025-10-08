@@ -65,7 +65,6 @@ export default async function handler(req, res) {
               displayFinancialStatus
               displayFulfillmentStatus
               totalPriceSet { shopMoney { amount currencyCode } }
-              customer { id email }
             }
           }
         }
