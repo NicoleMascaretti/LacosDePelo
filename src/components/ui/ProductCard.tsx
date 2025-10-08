@@ -32,7 +32,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     e.stopPropagation();
     e.preventDefault();
     addToCart(product);
-    toast.success(`${product.name} adicionado ao carrinho!`);
+    toast.success(`${product.name} adicionado carrinho!`);
   };
 
   return (
