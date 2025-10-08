@@ -38,7 +38,7 @@ export default function Orders() {
     (async () => {
       try {
         // ✅ chama o endpoint que criamos no backend
-        const res = await fetch("/api/admin/orders?me=1", {
+        const res = await fetch("/api/admin/orders?email=gustavo.versolatto@gmail.com", {
           method: "GET",
           credentials: "include",
           headers: { Accept: "application/json" },

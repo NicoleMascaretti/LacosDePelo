@@ -1,61 +1,56 @@
+// /api/admin/orders.js
 import { parseCookies } from "../_lib/cookies.js";
 import { CONFIG } from "../_lib/config.js";
 
-const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;  // token do app Admin
-const ADMIN_GRAPHQL = "https://lacosdepelo.myshopify.com/admin/api/2025-10/graphql.json"
+// Recomendado: use variáveis de ambiente, nada hardcoded
+const STORE = process.env.SHOP_DOMAIN
+const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN; // token do app Admin (Admin API access token)
+const API_VERSION = "2025-10"
+const ADMIN_GRAPHQL = `https://${STORE}/admin/api/${API_VERSION}/graphql.json`;
 
-// Tentamos obter o e-mail do cliente logado via Customer Account API (shcat_…)
-// Só para sabermos "quem é" e filtrar pedidos desse cliente na Admin API.
-async function getLoggedCustomerEmail(req) {
+/** Decodifica um JWT (id_token) sem verificar assinatura – só para ler o payload */
+function decodeJwtPayload(token) {
   try {
-    const cookies = parseCookies(req);
-    const cat = cookies.customer_token;
-    if (!cat || !cat.startsWith("shcat_")) return null;
-
-    // IMPORTANTE: aqui use exatamente o endpoint VERSIONADO que já funcionou no seu debug
-    const url = CONFIG.customerApiUrl; // ex: https://<store>/customer/api/2025-07/graphql.json
-    const q = `query { customer { email } }`;
-
-    const r = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cat}`,
-      },
-      body: JSON.stringify({ query: q }),
-    });
-
-    const t = await r.text();
-    const j = JSON.parse(t);
-    return j?.data?.customer?.email || null;
+    const [, payload] = token.split(".");
+    const json = Buffer.from(payload.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
+    return JSON.parse(json);
   } catch {
     return null;
   }
 }
 
+/** Tenta descobrir o e-mail do cliente logado sem depender da Customer API */
+function getEmailFromIdToken(req) {
+  const cookies = parseCookies(req);
+  const idToken = cookies.session; // você já define esse cookie em /api/auth/callback
+  if (!idToken) return null;
+
+  const payload = decodeJwtPayload(idToken);
+  // Shopify coloca o e-mail no claim "email"
+  return payload?.email || null;
+}
+
 export default async function handler(req, res) {
   try {
-    // Você pode filtrar pedidos de 3 formas:
-    // 1) /api/admin/orders?me=1      -> usa o e-mail do cliente logado (via shcat_)
-    // 2) /api/admin/orders?email=... -> filtra por e-mail
-    // 3) /api/admin/orders?customerId=gid://shopify/Customer/123456
     const { email, customerId, me, first = "20" } = req.query;
 
+    // Monta o filtro da Admin API
     let queryFilter = "";
     if (me === "1" && !email && !customerId) {
-      const em = await getLoggedCustomerEmail(req);
-      if (!em) {
+      const emailFromIdToken = getEmailFromIdToken(req);
+      if (!emailFromIdToken) {
         return res
           .status(401)
-          .json({ error: "Not authenticated", details: "No customer email (shcat_)" });
+          .json({ error: "Not authenticated", details: "Missing email in id_token (session cookie)" });
       }
-      queryFilter = `email:${JSON.stringify(em)}`;
+      // filtro por e-mail na Admin API
+      queryFilter = `email:${JSON.stringify(emailFromIdToken)}`;
     } else if (email) {
       queryFilter = `email:${JSON.stringify(email)}`;
     } else if (customerId) {
       queryFilter = `customer_id:${JSON.stringify(customerId)}`;
     } else {
-      // sem filtro: retorna os últimos pedidos da loja
+      // Sem filtro -> últimos pedidos da loja
       queryFilter = ``;
     }
 
@@ -97,7 +92,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Admin API error", details: json.errors || json });
     }
 
-    // Normaliza para o mesmo shape esperado no seu front (Orders.tsx)
+    // Normaliza para o shape que seu Orders.tsx já espera
     const edges = json?.data?.orders?.edges || [];
     const nodes = edges.map(({ node }) => ({
       id: node.id,
