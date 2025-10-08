@@ -2,15 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
-/** ==== Tipagens (inalteradas no shape principal) ==== */
+/** ==== Tipagens ==== */
 type MoneyV2 = { amount: string; currencyCode: string };
+type OrderItem = { title: string; quantity: number };
+
 type OrderNode = {
   id: string;
   name: string;
   processedAt?: string;
   financialStatus?: string | null;
   fulfillmentStatus?: string | null;
-  totalPrice?: MoneyV2 | null; // backend já normaliza para este formato
+  totalPrice?: MoneyV2 | null;
+  /** novo (opcional): preenchido se o backend já estiver com a query de lineItems */
+  items?: OrderItem[];
 };
 
 type OrdersResponseOk = {
@@ -24,13 +28,13 @@ type OrdersResponseOk = {
 
 type OrdersResponseErr = {
   error?: string;
-  details?: unknown; // pode ser JSON da Shopify ou HTML (nonJson/snippet)
+  details?: unknown;
   endpointTried?: string;
   status?: number;
   bodySnippet?: string;
 };
 
-/** ==== Helpers puramente visuais ==== */
+/** ==== Helpers visuais ==== */
 const brDate = (iso?: string) => {
   if (!iso) return "Data indisponível";
   try {
@@ -58,7 +62,6 @@ const money = (m?: MoneyV2 | null) => {
   }
 };
 
-// Cores leves para status
 const chipClass = {
   success:
     "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 px-2.5 py-0.5 rounded-full text-xs font-medium",
@@ -91,25 +94,25 @@ function PaymentChip({ status }: { status?: string | null }) {
   return <span className={chipClass.muted}>{status ?? "—"}</span>;
 }
 
-// Skeleton card para loading
 function OrderSkeleton() {
   return (
     <div className="bg-white rounded-xl shadow-sm p-5 animate-pulse">
       <div className="h-4 w-32 bg-gray-200 rounded mb-3" />
-      <div className="h-3 w-44 bg-gray-200 rounded mb-2" />
-      <div className="h-3 w-52 bg-gray-200 rounded mb-4" />
+      <div className="h-3 w-72 bg-gray-200 rounded mb-2" />
+      <div className="h-3 w-40 bg-gray-200 rounded mb-4" />
       <div className="h-6 w-24 bg-gray-200 rounded ml-auto" />
     </div>
   );
 }
 
+/** ==== Página ==== */
 export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<OrderNode[]>([]);
   const [error, setError] = useState<OrdersResponseErr | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0); // para "Atualizar" sem mexer no backend
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const total = useMemo(() => (orders?.length ?? 0), [orders]);
+  const total = useMemo(() => orders?.length ?? 0, [orders]);
 
   useEffect(() => {
     let mounted = true;
@@ -176,28 +179,20 @@ export default function Orders() {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setLoading(true);
-                setRefreshKey((k) => k + 1);
-              }}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
-              title="Atualizar"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M21 12a9 9 0 1 1-3-6.7" />
-                <path d="M21 3v7h-7" />
-              </svg>
-              Atualizar
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              setLoading(true);
+              setRefreshKey((k) => k + 1);
+            }}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
+            title="Atualizar"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 12a9 9 0 1 1-3-6.7" />
+              <path d="M21 3v7h-7" />
+            </svg>
+            Atualizar
+          </button>
         </div>
 
         {/* Loading */}
@@ -208,7 +203,7 @@ export default function Orders() {
           </div>
         )}
 
-        {/* Error (mostra details) */}
+        {/* Error */}
         {!loading && error && (
           <div className="p-6 bg-white rounded-xl shadow-sm border">
             <p className="text-red-600 font-semibold mb-3">
@@ -260,35 +255,52 @@ export default function Orders() {
         {/* Orders list */}
         {!loading && !error && orders.length > 0 && (
           <div className="space-y-4">
-            {orders.map((o) => (
-              <div
-                key={o.id}
-                className="bg-white rounded-xl shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-              >
-                <div className="space-y-1">
-                  <h3 className="font-semibold text-gray-900">{o.name}</h3>
-                  <p className="text-sm text-gray-600">{brDate(o.processedAt)}</p>
+            {orders.map((o) => {
+              const items = o.items ?? []; // compat: pode não existir
+              const first = items[0];
+              const extra = Math.max(0, items.reduce((n, it) => n + (it.quantity || 0), 0) - (first?.quantity || 0));
 
-                  <div className="flex flex-wrap items-center gap-2 pt-1">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-gray-500">Entrega:</span>
-                      <FulfillmentChip status={o.fulfillmentStatus} />
-                    </div>
+              return (
+                <div
+                  key={o.id}
+                  className="bg-white rounded-xl shadow-sm p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                >
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-gray-900">{o.name}</h3>
+                    {/* 👉 Nome do produto (humaniza) */}
+                    {first ? (
+                      <p className="text-sm text-gray-800">
+                        {first.title}
+                        {extra > 0 && (
+                          <span className="text-gray-500"> {`  •  +${extra} item${extra > 1 ? "s" : ""}`}</span>
+                        )}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-500">Produtos do pedido</p>
+                    )}
+                    <p className="text-sm text-gray-600">{brDate(o.processedAt)}</p>
 
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-gray-500">Pagamento:</span>
-                      <PaymentChip status={o.financialStatus} />
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-500">Entrega:</span>
+                        <FulfillmentChip status={o.fulfillmentStatus} />
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        <span className="text-xs text-gray-500">Pagamento:</span>
+                        <PaymentChip status={o.financialStatus} />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="text-right">
-                  <p className="text-lg font-semibold text-emerald-600">
-                    {money(o.totalPrice)}
-                  </p>
+                  <div className="text-right">
+                    <p className="text-lg font-semibold text-emerald-600">
+                      {money(o.totalPrice)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

@@ -64,6 +64,14 @@ export default async function handler(req, res) {
               displayFinancialStatus
               displayFulfillmentStatus
               totalPriceSet { shopMoney { amount currencyCode } }
+              lineItems(first: 3) {
+                edges {
+                  node {
+                    title
+                    quantity
+                  }
+                }
+              }
             }
           }
         }
@@ -104,6 +112,11 @@ export default async function handler(req, res) {
           currencyCode: node.totalPriceSet.shopMoney.currencyCode,
         }
         : null,
+      items:
+        node.lineItems?.edges?.map((e) => ({
+          title: e?.node?.title || "",
+          quantity: e?.node?.quantity ?? 0,
+        })) ?? [],
     }));
 
     return res.status(200).json({ data: { customer: { orders: { nodes } } } });
