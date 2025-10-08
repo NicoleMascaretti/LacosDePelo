@@ -7,7 +7,6 @@ import type { ProductType } from "../types/ProductType";
 export interface CartItem extends ProductType {
   quantity: number;
   /** GID da variante da Shopify (ex.: gid://shopify/ProductVariant/123456789) */
-  variantId?: string;
 }
 
 interface AddToCartOptions {
@@ -51,7 +50,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       nome: product.name,
       variantId: (product as any).variantId,
     });
-    
+
     setItems((prev) => {
       // se veio variantId, diferenciamos por (productId + variantId).
       // se não, mantemos o mesmo comportamento antigo (apenas por productId).
