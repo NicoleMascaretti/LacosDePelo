@@ -47,6 +47,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const addToCart = (product: ProductType, opts?: AddToCartOptions) => {
     const { variantId, price } = opts || {};
 
+    console.log("🛒 Adicionando ao carrinho:", {
+      nome: product.name,
+      variantId: (product as any).variantId,
+    });
+    
     setItems((prev) => {
       // se veio variantId, diferenciamos por (productId + variantId).
       // se não, mantemos o mesmo comportamento antigo (apenas por productId).
