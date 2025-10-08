@@ -38,11 +38,12 @@ export default function Orders() {
     (async () => {
       try {
         // ✅ chama o endpoint que criamos no backend
-        const res = await fetch("/api/customer/orders", {
+        const res = await fetch("/api/admin/orders?me=1", {
           method: "GET",
           credentials: "include",
           headers: { Accept: "application/json" },
         });
+
 
         const text = await res.text();
         let json: OrdersResponseOk | OrdersResponseErr;
