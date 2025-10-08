@@ -104,6 +104,23 @@ const Produtos = () => {
     }
   }, [searchParams]);
 
+useEffect(() => {
+  if (!data) return;
+
+  try {
+    const edges = (data.products?.edges ?? []);
+    console.groupCollapsed("🧩 Produtos carregados da Shopify");
+    edges.forEach(({ node }: any) => {
+      const variantId = node?.variants?.nodes?.[0]?.id;
+      console.log(`• ${node?.title ?? "(sem título)"} → variantId:`, variantId || "❌ sem variantId");
+    });
+    console.groupEnd();
+  } catch (err) {
+    console.warn("Falha no log de debug dos produtos:", err);
+  }
+}, [data]);
+
+
   if (loading) return <Loading />;
   if (error) return <p className="p-4 text-center text-red-500">Erro ao carregar produtos: {error.message}</p>;
 
@@ -132,16 +149,6 @@ const Produtos = () => {
       inStock: true,
     };
   }) || [];
-
-  useEffect(() => {
-    if (allProducts.length > 0) {
-      console.groupCollapsed("🧩 Produtos carregados da Shopify");
-      allProducts.forEach((p) => {
-        console.log(`• ${p.name} → variantId:`, p.variantId || "❌ sem variantId");
-      });
-      console.groupEnd();
-    }
-  }, [allProducts]);
 
   // Lógica de Filtros
   const filteredProducts = allProducts.filter((product) => {
