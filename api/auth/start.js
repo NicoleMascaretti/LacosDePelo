@@ -4,7 +4,7 @@ import { createPkce, randomString } from "../_lib/pkce.js";
 import { discoverOidc } from "../_lib/discovery.js";
 
 export default async function handler(req, res) {
-  const { returnTo = "/" } = req.query || {};
+  const { returnTo = "/", force } = req.query || {};
   const { codeVerifier, codeChallenge } = createPkce();
   const state = randomString(16);
   const nonce = randomString(16);
@@ -30,6 +30,12 @@ export default async function handler(req, res) {
     nonce,
   });
 
-  res.writeHead(302, { Location: `${authorizeEndpoint}?${params}` });
+  // Se vier ?force=1 (ou 'true'), força o provedor a mostrar a tela de login
+  if (force === "1" || force === "true") {
+    params.set("prompt", "login");
+    params.set("max_age", "0");
+  }
+
+  res.writeHead(302, { Location: `${authorizeEndpoint}?${params.toString()}` });
   res.end();
 }

@@ -34,19 +34,15 @@ const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // const returnTo = window.location.pathname + window.location.search;
-
-  // const API_BASE =
-  //   import.meta.env.MODE === "development"
-  //     ? "http://localhost:5173"
-  //     : "https://lacosdepelo.vercel.app"; // coloque o domínio real do backend
-
   const startLogin = () => {
-    window.location.href = `/api/auth/start?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+    const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+    // força a tela de login no provedor
+    window.location.href = `/api/auth/start?force=1&returnTo=${returnTo}`;
   };
 
   const doLogout = () => {
-    window.location.href = `/api/auth/logout?returnTo=/`;
+    // solicita logout no provedor também
+    window.location.href = `/api/auth/logout?upstream=1&returnTo=/`;
   };
 
   useEffect(() => {

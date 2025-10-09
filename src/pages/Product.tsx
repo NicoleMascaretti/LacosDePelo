@@ -213,7 +213,7 @@ const Product = () => {
               <div className="grid grid-cols-3 gap-4 py-6 border-t border-gray-200">
                 <div className="text-center">
                   <Truck className="h-6 w-6 lg:h-8 lg:w-8 text-teal-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Frete Grátis</p>
+                  <p className="text-sm text-gray-600">Frete Seguro</p>
                 </div>
                 <div className="text-center">
                   <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-teal-600 mx-auto mb-2" />
