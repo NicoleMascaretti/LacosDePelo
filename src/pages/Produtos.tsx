@@ -56,6 +56,10 @@ const GET_PRODUCTS_QUERY = gql`
               price { amount }
             }
           }
+          metafield(namespace: "custom", key: "category") {
+            value
+            type
+          }
           # opcional (fallback):
           priceRange { minVariantPrice { amount } }
         }
@@ -133,16 +137,18 @@ const Produtos = () => {
       ? parseFloat(firstVariant.price.amount)
       : undefined;
 
+    let category = node.metafield?.value || "";
+
     return {
       id: node.id,
       handle: node.handle,
       name: node.title,
       description: node.description,
       image: node.images?.edges?.[0]?.node?.url || "",
-      category: node.productType,
       // use preço da variante se existir; senão, caia no minVariantPrice
       price: variantPrice ?? parseFloat(node.priceRange.minVariantPrice.amount),
       // novo campo para o carrinho/checkout:
+      category,
       variantId,
       rating: 4.5,
       reviews: 0,
