@@ -20,7 +20,7 @@ function extractCategory(meta?: { value?: string; type?: string } | null) {
     try {
       const arr = JSON.parse(raw);
       if (Array.isArray(arr) && arr.length) return String(arr[0]).trim();
-    } catch {}
+    } catch { }
   }
 
   return raw.replace(/^"(.*)"$/, "$1").trim();
@@ -34,22 +34,21 @@ const GET_PRODUCT_BY_HANDLE_QUERY = gql`
       title
       description
       productType
+      availableForSale
       images(first: 1) {
         edges { node { url altText } }
       }
-      # preço/variant para checkout
       variants(first: 1) {
         nodes {
           id
+          availableForSale
           price { amount }
         }
       }
-      # categoria vinda de metafield
       metafield(namespace: "custom", key: "category") {
         value
         type
       }
-      # fallback de preço
       priceRange { minVariantPrice { amount } }
     }
   }
@@ -61,8 +60,9 @@ interface ShopifyProduct {
   title: string;
   description: string;
   productType: string;
+  availableForSale?: boolean;
   images: { edges: { node: { url: string; altText: string | null } }[] };
-  variants?: { nodes?: { id: string; price?: { amount: string } }[] };
+  variants?: { nodes?: { id: string; availableForSale?: boolean; price?: { amount: string } }[] };
   metafield?: { value?: string; type?: string } | null;
   priceRange: { minVariantPrice: { amount: string } };
 }
@@ -105,6 +105,13 @@ const Product = () => {
   const variantPrice = firstVariant?.price?.amount
     ? parseFloat(firstVariant.price.amount)
     : undefined;
+  const inStock =
+    (typeof firstVariant?.availableForSale === "boolean"
+      ? firstVariant.availableForSale
+      : undefined) ??
+    (typeof data.product.availableForSale === "boolean"
+      ? data.product.availableForSale
+      : true);
 
   const categoryText =
     extractCategory(data.product.metafield) ||
@@ -122,7 +129,7 @@ const Product = () => {
     variantId, // <- importante para o carrinho/checkout
     rating: 4.8,
     reviews: 70,
-    inStock: true,
+    inStock,
     features: [],
     specifications: {},
   };
