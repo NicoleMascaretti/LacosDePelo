@@ -30,11 +30,11 @@ export default function ProductCardMobile({ product }: { product: ProductType })
           {/* Infos */}
           <div className="flex flex-col justify-between flex-grow p-3">
             {/* Nome + Avaliação */}
-            {/*             <div>
+            <div>
               <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">
                 {product.name}
               </h3>
-              <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
+              {/* <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
@@ -43,8 +43,8 @@ export default function ProductCardMobile({ product }: { product: ProductType })
                   />
                 ))}
                 <span>({product.reviews})</span>
-              </div>
-            </div> */}
+              </div> */}
+            </div>
 
             {/* Preço + Botão */}
             <div className="flex flex-col gap-2">
