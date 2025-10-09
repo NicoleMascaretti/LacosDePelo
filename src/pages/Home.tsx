@@ -22,8 +22,9 @@ interface ShopifyProductNode {
   title: string;
   description: string;
   productType: string;
-  priceRange: { minVariantPrice: { amount: string; } };
-  images: { edges: { node: { url: string; altText: string | null; } }[]; };
+  images: { edges: { node: { url: string; altText: string | null } }[] };
+  variants: { nodes: { id: string; price: { amount: string } }[] };
+  priceRange: { minVariantPrice: { amount: string } };
 }
 
 interface GetProductsData {
@@ -31,8 +32,8 @@ interface GetProductsData {
 }
 
 const GET_PRODUCTS_QUERY = gql`
-  query GetProducts($query: String!) {
-    products(first: 12, query: $query) {
+  query GetProducts {
+    products(first: 4, sortKey: CREATED_AT, reverse: true) {
       edges {
         node {
           id
@@ -47,7 +48,6 @@ const GET_PRODUCTS_QUERY = gql`
               price { amount }
             }
           }
-          # opcional (fallback):
           priceRange { minVariantPrice { amount } }
         }
       }
@@ -71,18 +71,28 @@ const Home = () => {
     );
   }
 
-  const products: ProductType[] = data?.products.edges.map((edge: any) => ({
-    id: edge.node.id,
-    handle: edge.node.handle,
-    name: edge.node.title,
-    description: edge.node.description,
-    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
-    image: edge.node.images.edges[0]?.node.url || '',
-    category: edge.node.productType,
-    rating: 4.5,
-    reviews: 0,
-    inStock: true,
-  })) || [];
+  const products: ProductType[] =
+    data?.products.edges.map(({ node }) => {
+      const firstVariant = node.variants?.nodes?.[0];
+      const variantId = firstVariant?.id; // gid://shopify/ProductVariant/...
+      const variantPrice = firstVariant?.price?.amount
+        ? parseFloat(firstVariant.price.amount)
+        : undefined;
+
+      return {
+        id: node.id,
+        handle: node.handle,
+        name: node.title,
+        description: node.description,
+        image: node.images?.edges?.[0]?.node?.url || "",
+        category: node.productType,
+        price: variantPrice ?? parseFloat(node.priceRange.minVariantPrice.amount),
+        variantId,
+        rating: 4.5,
+        reviews: 0,
+        inStock: true,
+      };
+    }) || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
