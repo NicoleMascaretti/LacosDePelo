@@ -9,7 +9,7 @@ const [loading, setLoading] = useState(true);
 
   // esse pedaço é só pra simular carregamento
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 

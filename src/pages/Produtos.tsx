@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import type { ProductType } from "../types/ProductType";
 import ProductCardMobile from "../components/ui/ProductCardMobile";
 import ProductCardDesktop from "../components/ui/ProductCardDesktop";
-import { Filter, Grid, List } from "lucide-react";
+import { Filter, Grid, List, X } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import {
   Pagination,
@@ -104,21 +104,21 @@ const Produtos = () => {
     }
   }, [searchParams]);
 
-useEffect(() => {
-  if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-  try {
-    const edges = (data.products?.edges ?? []);
-    console.groupCollapsed("🧩 Produtos carregados da Shopify");
-    edges.forEach(({ node }: any) => {
-      const variantId = node?.variants?.nodes?.[0]?.id;
-      console.log(`• ${node?.title ?? "(sem título)"} → variantId:`, variantId || "❌ sem variantId");
-    });
-    console.groupEnd();
-  } catch (err) {
-    console.warn("Falha no log de debug dos produtos:", err);
-  }
-}, [data]);
+    try {
+      const edges = (data.products?.edges ?? []);
+      console.groupCollapsed("🧩 Produtos carregados da Shopify");
+      edges.forEach(({ node }: any) => {
+        const variantId = node?.variants?.nodes?.[0]?.id;
+        console.log(`• ${node?.title ?? "(sem título)"} → variantId:`, variantId || "❌ sem variantId");
+      });
+      console.groupEnd();
+    } catch (err) {
+      console.warn("Falha no log de debug dos produtos:", err);
+    }
+  }, [data]);
 
 
   if (loading) return <Loading />;
@@ -158,6 +158,25 @@ useEffect(() => {
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+  // ---- STATUS DA BUSCA/CATEGORIA + AÇÕES DE LIMPAR ----
+  const hasSearch = !!searchTerm.trim();
+  const hasCategory = selectedCategory !== "Todos";
+
+  // exibidos nesta página vs total filtrado
+  const displayed = paginatedProducts.length;
+  const totalFiltered = filteredProducts.length;
+
+  // limpar somente a busca
+  const clearSearch = () => {
+    searchParams.delete("search");
+    setSearchParams(searchParams);
+    setCurrentPage(1);
+  };
+
+  // limpar categoria (volta para "Todos")
+  const clearCategory = () => {
+    handleCategoryChange("Todos");
+  };
 
 
   // Função para atualizar a categoria e a URL
@@ -174,7 +193,7 @@ useEffect(() => {
     setSearchParams(searchParams);
   };
 
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -310,22 +329,73 @@ useEffect(() => {
           {/* Products Section */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <div>
-                <p className="text-gray-600">
-                  Exibindo {paginatedProducts.length} de {filteredProducts.length} produtos
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+              {/* Linha de status */}
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col gap-2"
+              >
+                <p className="text-gray-600 text-sm">
+                  Exibindo <span className="font-semibold">{displayed}</span> de{" "}
+                  <span className="font-semibold">{totalFiltered}</span> produtos
+                  {hasSearch && (
+                    <>
+                      {" "}para <span className="font-semibold">&ldquo;{searchTerm}&rdquo;</span>
+                    </>
+                  )}
+                  {hasCategory && (
+                    <>
+                      {" "}em <span className="font-semibold">{selectedCategory}</span>
+                    </>
+                  )}
                 </p>
-              </div>
 
+                {/* Chips de filtros ativos */}
+                <div className="flex flex-wrap gap-2">
+                  <AnimatePresence>
+                    {hasSearch && (
+                      <motion.button
+                        key="chip-search"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        onClick={clearSearch}
+                        className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs text-gray-700 hover:bg-gray-100"
+                        title="Limpar busca"
+                      >
+                        <span className="truncate max-w-[160px]">“{searchTerm}”</span>
+                        <X className="h-3.5 w-3.5" />
+                      </motion.button>
+                    )}
+
+                    {hasCategory && (
+                      <motion.button
+                        key="chip-cat"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        onClick={clearCategory}
+                        className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs text-gray-700 hover:bg-gray-100"
+                        title="Limpar categoria"
+                      >
+                        {selectedCategory}
+                        <X className="h-3.5 w-3.5" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+
+              {/* Botões de layout (desktop) */}
               {isDesktop && (
                 <div className="flex items-center space-x-2">
                   <Button
                     variant={viewMode === "grid" ? "default" : "outline"}
                     size="sm"
                     onClick={() => setViewMode("grid")}
-                    className={
-                      viewMode === "grid" ? "bg-gray-900 text-white hover:bg-gray-800" : ""
-                    }
+                    className={viewMode === "grid" ? "bg-gray-900 text-white hover:bg-gray-800" : ""}
+                    title="Grade"
                   >
                     <Grid className="h-4 w-4" />
                   </Button>
@@ -334,15 +404,15 @@ useEffect(() => {
                     variant={viewMode === "list" ? "default" : "outline"}
                     size="sm"
                     onClick={() => setViewMode("list")}
-                    className={
-                      viewMode === "list" ? "bg-gray-900 text-white hover:bg-gray-800" : ""
-                    }
+                    className={viewMode === "list" ? "bg-gray-900 text-white hover:bg-gray-800" : ""}
+                    title="Lista"
                   >
                     <List className="h-4 w-4" />
                   </Button>
                 </div>
               )}
             </div>
+
 
             {/* Products Grid */}
             <div
