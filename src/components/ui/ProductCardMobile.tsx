@@ -19,6 +19,16 @@ export default function ProductCardMobile({ product }: { product: ProductType })
               alt={product.name}
               className="w-full h-full object-cover rounded-md"
             />
+
+            {/* Overlay Esgotado (igual ao desktop) */}
+            {!product.inStock && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-md">
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  Esgotado
+                </span>
+              </div>
+            )}
+
             <button
               onClick={handleFavoriteToggle}
               className="absolute top-1 right-1 bg-white/90 p-1.5 rounded-full shadow"
@@ -40,7 +50,6 @@ export default function ProductCardMobile({ product }: { product: ProductType })
                 {displayName}
               </h3>
 
-              {/* Categoria (opcional) */}
               {category && (
                 <span
                   className="inline-block text-[11px] text-teal-700 bg-teal-50 rounded px-2 py-0.5 mb-1 truncate max-w-full"
@@ -65,6 +74,7 @@ export default function ProductCardMobile({ product }: { product: ProductType })
               <button
                 onClick={handleAddToCart}
                 disabled={!product.inStock || !canAddToCart}
+                title={!product.inStock ? "Produto esgotado" : !canAddToCart ? "Indisponível no momento" : undefined}
                 className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 
                            text-white w-full py-3 rounded-md text-sm sm:text-base 
                            font-semibold flex items-center justify-center gap-2"
