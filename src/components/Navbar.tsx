@@ -43,6 +43,7 @@ const Navbar = () => {
   const doLogout = () => {
     // solicita logout no provedor também
     window.location.href = `/api/auth/logout?upstream=1&returnTo=/`;
+    setTimeout(() => window.location.reload(), 300);
   };
 
   useEffect(() => {
