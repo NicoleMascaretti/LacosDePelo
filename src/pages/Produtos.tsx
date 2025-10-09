@@ -24,6 +24,24 @@ import { useQuery, gql } from '@apollo/client';
 import SearchInput from "../components/ui/SearchInput";
 import { AnimatePresence, motion } from "framer-motion";
 
+// Extrai um texto de categoria a partir do metafield da Shopify.
+// Trata tanto list/JSON quanto string simples.
+function extractCategory(meta?: { value?: string; type?: string }) {
+  const raw = (meta?.value || "").trim();
+  if (!raw) return "";
+
+  // Se vier como lista (metafield do tipo list_*), o value é JSON
+  if (meta?.type?.startsWith("list") || (raw.startsWith("[") && raw.endsWith("]"))) {
+    try {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length) return String(arr[0]).trim();
+    } catch { }
+  }
+
+  // Remove aspas se for string com aspas
+  return raw.replace(/^"(.*)"$/, "$1").trim();
+}
+
 // Tipos para a resposta da API
 interface ShopifyProductNode {
   id: string;
@@ -137,7 +155,7 @@ const Produtos = () => {
       ? parseFloat(firstVariant.price.amount)
       : undefined;
 
-    let category = node.metafield?.value || "";
+    const category = extractCategory(node.metafield) || "";
 
     return {
       id: node.id,
