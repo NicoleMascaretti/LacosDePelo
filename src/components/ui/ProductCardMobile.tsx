@@ -6,6 +6,8 @@ import type { ProductType } from "../../types/ProductType";
 export default function ProductCardMobile({ product }: { product: ProductType }) {
   const displayName = (product.name?.trim() || product.handle) as string;
   const canAddToCart = Boolean(product.variantId);
+  const category = (product.category || "").trim();
+
   return (
     <ProductCardBase product={product}>
       {({ isProductFavorite, handleFavoriteToggle, handleAddToCart }) => (
@@ -22,29 +24,31 @@ export default function ProductCardMobile({ product }: { product: ProductType })
               className="absolute top-1 right-1 bg-white/90 p-1.5 rounded-full shadow"
             >
               <Heart
-                className={`h-4 w-4 ${isProductFavorite ? "text-red-500 fill-current" : "text-gray-600"
-                  }`}
+                className={`h-4 w-4 ${isProductFavorite ? "text-red-500 fill-current" : "text-gray-600"}`}
               />
             </button>
           </div>
 
           {/* Infos */}
           <div className="flex flex-col justify-between flex-grow p-3 min-w-0">
-            {/* Nome + Avaliação */}
+            {/* Nome + Categoria */}
             <div className="min-w-0">
-              <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 break-words mb-1" title={displayName}>
+              <h3
+                className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 break-words mb-1"
+                title={displayName}
+              >
                 {displayName}
               </h3>
-              {/* <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-3.5 w-3.5 ${i < product.rating ? "text-yellow-400 fill-current" : "text-gray-300"
-                      }`}
-                  />
-                ))}
-                <span>({product.reviews})</span>
-              </div> */}
+
+              {/* Categoria (opcional) */}
+              {category && (
+                <span
+                  className="inline-block text-[11px] text-teal-700 bg-teal-50 rounded px-2 py-0.5 mb-1 truncate max-w-full"
+                  title={category}
+                >
+                  {category}
+                </span>
+              )}
             </div>
 
             {/* Preço + Botão */}
