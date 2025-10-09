@@ -68,7 +68,7 @@ const Navbar = () => {
     let mounted = true;
     (async () => {
       try {
-        const r = await fetch("/api/auth/status", { credentials: "include" });
+        const r = await fetch(`/api/auth/status?_=${Date.now()}`, { credentials: "include", cache: "no-store" });
         const j = await r.json();
         if (mounted) setIsAuthenticated(Boolean(j?.isAuthenticated));
       } catch {

@@ -3,12 +3,20 @@ import { CONFIG } from "../_lib/config.js";
 import { parseCookies } from "../_lib/cookies.js";
 import { discoverOidc } from "../_lib/discovery.js";
 
+function pushSetCookie(res, cookie) {
+  const prev = res.getHeader("Set-Cookie");
+  if (!prev) {
+    res.setHeader("Set-Cookie", [cookie]);
+  } else {
+    res.setHeader("Set-Cookie", Array.isArray(prev) ? [...prev, cookie] : [prev, cookie]);
+  }
+}
+
 function clear(res, name) {
-  // apaga cookie em todos os paths
-  res.setHeader("Set-Cookie", [
-    `${name}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`,
-    `${name}=; Path=/api; Max-Age=0; HttpOnly; SameSite=Lax`,
-  ]);
+  // Path raiz
+  pushSetCookie(res, `${name}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`);
+  // Path /api (se algum cookie foi setado lá)
+  pushSetCookie(res, `${name}=; Path=/api; Max-Age=0; HttpOnly; SameSite=Lax`);
 }
 
 function isLikelyJwt(token) {
