@@ -33,7 +33,7 @@ interface GetProductsData {
 
 const GET_PRODUCTS_QUERY = gql`
   query GetProducts {
-    products(first: 4, sortKey: CREATED_AT, reverse: true) {
+    products(first: 4, sortKey: CREATED_AT, reverse: true, query: "available_for_sale:true") {
       edges {
         node {
           id
@@ -42,9 +42,12 @@ const GET_PRODUCTS_QUERY = gql`
           description
           productType
           images(first: 1) { edges { node { url altText } } }
+          availableForSale
           variants(first: 1) {
             nodes {
               id
+              availableForSale
+              quantityAvailable
               price { amount }
             }
           }
@@ -54,6 +57,7 @@ const GET_PRODUCTS_QUERY = gql`
     }
   }
 `;
+
 
 
 const Home = () => {
@@ -72,12 +76,20 @@ const Home = () => {
   }
 
   const products: ProductType[] =
-    data?.products.edges.map(({ node }) => {
+    data?.products.edges.map(({ node }: any) => {
       const firstVariant = node.variants?.nodes?.[0];
-      const variantId = firstVariant?.id; // gid://shopify/ProductVariant/...
+      const variantId = firstVariant?.id;
       const variantPrice = firstVariant?.price?.amount
         ? parseFloat(firstVariant.price.amount)
         : undefined;
+
+      const variantAvailable = firstVariant?.availableForSale ?? false;
+      const quantity = typeof firstVariant?.quantityAvailable === "number"
+        ? firstVariant.quantityAvailable
+        : 0;
+
+      const inStock =
+        (variantAvailable && quantity > 0) || node.availableForSale === true;
 
       return {
         id: node.id,
@@ -90,7 +102,7 @@ const Home = () => {
         variantId,
         rating: 4.5,
         reviews: 0,
-        inStock: true,
+        inStock,
       };
     }) || [];
 
@@ -213,7 +225,7 @@ const Home = () => {
       </div>
 
       {/* Produtos em Destaque */}
-      <section className="container px-4 mx-auto mt-24 mb-12 ">
+      <section className="container px-4 mx-auto mt-24 mb-12">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-8">
           Produtos em Destaque
         </h2>
@@ -222,18 +234,24 @@ const Home = () => {
           <br />
           e preços especiais
         </p>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {products.length > 0 ? (
-            products.map((p) => (
-              <ProductCardDesktop
-                key={p.id}
-                product={p}
-                viewMode="grid"
-              />
-            ))
+            products
+              // ✅ filtra produtos com estoque
+              .filter((p) => p.inStock && p.variantId)
+              .map((p) => (
+                <ProductCardDesktop
+                  key={p.id}
+                  product={p}
+                  viewMode="grid"
+                />
+              ))
           ) : (
             <div className="col-span-full text-center py-8">
-              <p className="text-gray-500">Nenhum produto em destaque no momento.</p>
+              <p className="text-gray-500">
+                Nenhum produto em destaque no momento.
+              </p>
             </div>
           )}
         </div>
@@ -246,6 +264,7 @@ const Home = () => {
           </Link>
         </div>
       </section>
+
 
       {/* HeroBanner2 */}
       <HeroBannerpt2 />
