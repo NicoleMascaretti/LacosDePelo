@@ -61,7 +61,9 @@ export default function ProductCardDesktop({
             {/* Favorito */}
             <button
               onClick={handleFavoriteToggle}
-              className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+              // disabled={!product.inStock}
+              title={!product.inStock ? "Produto esgotado" : undefined}
+              className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Heart
                 className={`h-5 w-5 hover:text-red-500 transition-colors ${isProductFavorite ? "text-red-500 fill-current" : "text-gray-600"

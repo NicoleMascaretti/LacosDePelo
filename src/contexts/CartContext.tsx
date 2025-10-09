@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import type { ProductType } from "../types/ProductType";
+import { toast } from 'sonner';
 
 // type VariantAwareId = { productId: string; variantId?: string };
 
@@ -44,6 +45,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addToCart = (product: ProductType, opts?: AddToCartOptions) => {
+    if (product && product.inStock === false) {
+      console.warn("Tentativa de adicionar produto esgotado ao carrinho:", product?.name || product?.id);
+      toast.error("Tentativa de adicionar produto esgotado ao carrinho")
+      return; // bloqueia silenciosamente (ou dispare um toast aqui se preferir)
+    }
     // usa o variantId de opts OU o que veio no produto
     const variantIdFinal = opts?.variantId ?? (product as any).variantId;
     const priceFinal = typeof opts?.price === "number" ? opts!.price : product.price;

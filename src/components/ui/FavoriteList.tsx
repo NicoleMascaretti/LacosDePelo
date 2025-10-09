@@ -21,18 +21,41 @@ interface FavoriteListProps {
 const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
   const { favorites, removeFromFavorites, clearAllFavorites } = useFavorites();
   const { addToCart } = useCart();
-  // Função para adicionar um único item ao carrinho
+
+  // Adicionar único item ao carrinho
   const handleAddToCart = (product: ProductType) => {
-    addToCart(product); // Lógica do seu context do carrinho
+    if (!product.inStock) {
+      toast.error("Este produto está esgotado e não pode ser adicionado ao carrinho.");
+      return;
+    }
+    if (!product.variantId) {
+      toast.error("Produto indisponível no momento.");
+      return;
+    }
+    addToCart(product);
     toast.success(`${product.name} adicionado ao carrinho!`);
   };
-  // Função para adicionar todos os favoritos ao carrinho
+
+  // Adicionar todos os favoritos ao carrinho
   const handleAddAllToCart = () => {
     if (favorites.length === 0) return;
 
-    favorites.forEach(product => addToCart(product));
-    toast.success(`${favorites.length} produto(s) adicionado(s) ao carrinho!`);
-    onClose(); // Fecha a barra lateral para uma melhor UX
+    const disponíveis = favorites.filter(p => p.inStock && p.variantId);
+    const indisponíveis = favorites.filter(p => !p.inStock);
+
+    if (disponíveis.length === 0) {
+      toast.error("Nenhum produto disponível para adicionar ao carrinho.");
+      return;
+    }
+
+    disponíveis.forEach(product => addToCart(product));
+    toast.success(`${disponíveis.length} produto(s) adicionado(s) ao carrinho!`);
+
+    if (indisponíveis.length > 0) {
+      toast.warning(`${indisponíveis.length} produto(s) estavam esgotados e foram ignorados.`);
+    }
+
+    onClose(); // Fecha a barra lateral
   };
 
   return (
@@ -44,8 +67,8 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
             Meus Favoritos
           </SheetTitle>
           <SheetDescription>
-            {favorites.length === 0 
-              ? "Você ainda não tem produtos favoritos" 
+            {favorites.length === 0
+              ? "Você ainda não tem produtos favoritos"
               : `${favorites.length} produto${favorites.length > 1 ? 's' : ''} favorito${favorites.length > 1 ? 's' : ''}`
             }
           </SheetDescription>
@@ -63,19 +86,28 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
           ) : (
             <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
               {favorites.map((product: ProductType) => (
-                <div key={product.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div
+                  key={product.id}
+                  className={`flex items-center gap-4 p-4 border rounded-lg ${!product.inStock ? "opacity-70 bg-gray-50" : ""
+                    }`}
+                >
                   <img
                     src={product.image}
                     alt={product.name}
                     className="w-16 h-16 object-cover rounded-md"
                   />
-                  
+
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-sm text-gray-900 truncate">
+                    <h3 className="font-medium text-sm text-gray-900 truncate flex items-center gap-2">
                       {product.name}
+                      {!product.inStock && (
+                        <span className="ml-1 text-[11px] px-2 py-0.5 bg-red-100 text-red-600 rounded-full">
+                          Esgotado
+                        </span>
+                      )}
                     </h3>
                     <p className="text-xs text-gray-500 mb-2">{product.category}</p>
-                    
+
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-teal-600">
                         R$ {product.price.toFixed(2)}
@@ -91,14 +123,22 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
                   <div className="flex flex-col gap-2">
                     <Button
                       size="sm"
-                      className="bg-teal-600 hover:bg-teal-700 text-white"
+                      className="bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleAddToCart(product)}
+                      disabled={!product.inStock || !product.variantId}
+                      title={
+                        !product.inStock
+                          ? "Produto esgotado"
+                          : !product.variantId
+                            ? "Indisponível no momento"
+                            : "Adicionar ao carrinho"
+                      }
                     >
                       <ShoppingCart className="h-4 w-4" />
                     </Button>
-                    
+
                     <Button
-                      size="sm" 
+                      size="sm"
                       variant="outline"
                       onClick={() => removeFromFavorites(product.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
@@ -114,16 +154,22 @@ const FavoriteList: React.FC<FavoriteListProps> = ({ isOpen, onClose }) => {
 
         {favorites.length > 0 && (
           <div className="mt-6 space-y-3">
-            <Button 
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+            <Button
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleAddAllToCart}
+              disabled={favorites.every(p => !p.inStock || !p.variantId)}
+              title={
+                favorites.every(p => !p.inStock)
+                  ? "Nenhum produto disponível"
+                  : undefined
+              }
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Adicionar Todos ao Carrinho
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               className="w-full"
               onClick={clearAllFavorites}
             >

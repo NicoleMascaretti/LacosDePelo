@@ -190,7 +190,7 @@ const Product = () => {
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button
                   size="lg"
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white h-12 lg:h-14 text-base lg:text-lg font-semibold"
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white h-12 lg:h-14 text-base lg:text-lg font-semibold disabled:bg-gray-400"
                   onClick={() =>
                     addToCart(product, {
                       variantId: product.variantId,         // <- passa o GID da variante
@@ -207,8 +207,10 @@ const Product = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="h-12 lg:h-14 border-2 w-full sm:w-auto"
                   onClick={handleFavoriteClick}
+                  // disabled={!product.inStock}
+                  title={!product.inStock ? "Produto esgotado" : undefined}
+                  className="h-12 lg:h-14 border-2 w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Heart
                     className={`h-5 w-5 ${isFavorite(product.id) ? 'text-red-500 fill-current' : 'text-gray-600'}`}

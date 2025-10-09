@@ -21,6 +21,10 @@ export default function ProductCardBase({ product, children }: ProductCardBasePr
   const handleFavoriteToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // if (!product.inStock) {
+    //   toast.error("Produto esgotado não pode ser favoritado.");
+    //   return;
+    // }
     if (isProductFavorite) {
       removeFromFavorites(product.id);
       toast.error(`${product.name} removido dos favoritos.`);
