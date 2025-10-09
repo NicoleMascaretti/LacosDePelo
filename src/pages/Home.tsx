@@ -133,15 +133,15 @@ const Home = () => {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-3 gap-8 pt-8">
+                <div className="flex justify-center items-center gap-10 md:gap-60 pt-8">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-teal-600">120+</div>
                     <div className="text-gray-600">Produtos</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-orange-500">24h</div>
-                    <div className="text-gray-600">Entrega</div>
-                  </div>
+                  {/* <div className="text-center">
+                    <div className="text-3xl font-bold text-orange-500">Logística</div>
+                    <div className="text-gray-600">Eficiente</div>
+                  </div> */}
                   <div className="text-center">
                     <div className="text-3xl font-bold text-emerald-600">100%</div>
                     <div className="text-gray-600">Garantia</div>
