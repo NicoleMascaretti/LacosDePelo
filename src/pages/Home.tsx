@@ -31,8 +31,8 @@ interface GetProductsData {
 }
 
 const GET_PRODUCTS_QUERY = gql`
-  query GetProducts {
-    products(first: 4, sortKey: CREATED_AT, reverse: true) { 
+  query GetProducts($query: String!) {
+    products(first: 12, query: $query) {
       edges {
         node {
           id
@@ -40,8 +40,15 @@ const GET_PRODUCTS_QUERY = gql`
           title
           description
           productType
-          priceRange { minVariantPrice { amount } }
           images(first: 1) { edges { node { url altText } } }
+          variants(first: 1) {
+            nodes {
+              id
+              price { amount }
+            }
+          }
+          # opcional (fallback):
+          priceRange { minVariantPrice { amount } }
         }
       }
     }
