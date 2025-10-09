@@ -71,6 +71,7 @@ const GET_PRODUCTS_QUERY = gql`
           variants(first: 1) {
             nodes {
               id
+              availableForSale
               price { amount }
             }
           }
@@ -156,6 +157,13 @@ const Produtos = () => {
       : undefined;
 
     const category = extractCategory(node.metafield) || "";
+    const inStock =
+      (typeof firstVariant?.availableForSale === "boolean"
+        ? firstVariant.availableForSale
+        : undefined) ??
+      (typeof node.availableForSale === "boolean"
+        ? node.availableForSale
+        : true);
 
     return {
       id: node.id,
@@ -170,7 +178,7 @@ const Produtos = () => {
       variantId,
       rating: 4.5,
       reviews: 0,
-      inStock: true,
+      inStock,
     };
   }) || [];
 
