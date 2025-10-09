@@ -7,9 +7,8 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Textarea } from '../components/ui/TextArea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/Form';
-import { Phone, Mail, MapPin, MessageCircle, Send, PawPrint } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Send } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
-import { useState, useEffect } from "react";
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -23,13 +22,6 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 const Contato = () => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-
-  // esse pedaço é só pra simular carregamento
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -77,21 +69,6 @@ const Contato = () => {
     //   description: 'Sábado: 9h às 15h'
     // }
   ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin text-teal-500">
-            <PawPrint size={80} />
-          </div>
-          <p className="text-xl font-semibold text-gray-700 animate-pulse">
-            Carregando...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

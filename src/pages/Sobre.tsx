@@ -1,17 +1,9 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
 import HeroBannerpt2 from '../components/HeroBannerpt2';
-import { Shield, Heart, Truck, Award, Users, Star, PawPrint } from 'lucide-react';
-import { useState, useEffect } from "react";
+import { Shield, Heart, Truck, Award, Users, Star } from 'lucide-react';
 
 const Sobre = () => {
-const [loading, setLoading] = useState(true);
-
-  // esse pedaço é só pra simular carregamento
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const stats = [
     { icon: Users, label: 'Priorizamos sua Satisfação' },
@@ -38,21 +30,6 @@ const [loading, setLoading] = useState(true);
       description: 'Logística eficiente para que seu pet não fique sem seus produtos favoritos.'
     }
   ];
-
-    if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-orange-50 to-teal-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin text-teal-500">
-            <PawPrint size={80} />
-          </div>
-          <p className="text-xl font-semibold text-gray-700 animate-pulse">
-            Carregando...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
