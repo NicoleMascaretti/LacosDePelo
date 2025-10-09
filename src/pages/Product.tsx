@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { Star, Heart, ShoppingCart, ArrowLeft, Truck, Shield, Clock } from 'lucide-react';
+import { Heart, ShoppingCart, ArrowLeft, Truck, Shield, Clock } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
@@ -178,7 +178,7 @@ const Product = () => {
               </h1>
 
               {/* Avaliações */}
-              <div className="flex items-center mb-4 lg:mb-6">
+              {/* <div className="flex items-center mb-4 lg:mb-6">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -193,7 +193,7 @@ const Product = () => {
                 <span className="text-sm lg:text-base text-gray-600 ml-2 lg:ml-3">
                   {product.rating} ({product.reviews} avaliações)
                 </span>
-              </div>
+              </div> */}
 
               {/* Preço */}
               <div className="flex items-center mb-4 lg:mb-6">

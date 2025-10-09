@@ -4,6 +4,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import type { ProductType } from "../../types/ProductType";
 
 export default function ProductCardMobile({ product }: { product: ProductType }) {
+  const displayName = (product.name?.trim() || product.handle) as string;
   const canAddToCart = Boolean(product.variantId);
   return (
     <ProductCardBase product={product}>
@@ -28,11 +29,11 @@ export default function ProductCardMobile({ product }: { product: ProductType })
           </div>
 
           {/* Infos */}
-          <div className="flex flex-col justify-between flex-grow p-3">
+          <div className="flex flex-col justify-between flex-grow p-3 min-w-0">
             {/* Nome + Avaliação */}
-            <div>
-              <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1">
-                {product.name}
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 break-words mb-1" title={displayName}>
+                {displayName}
               </h3>
               {/* <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
                 {[...Array(5)].map((_, i) => (
