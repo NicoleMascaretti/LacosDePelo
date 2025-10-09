@@ -41,13 +41,12 @@ const GET_PRODUCTS_QUERY = gql`
           title
           description
           productType
-          images(first: 1) { edges { node { url altText } } }
           availableForSale
+          images(first: 1) { edges { node { url altText } } }
           variants(first: 1) {
             nodes {
               id
               availableForSale
-              quantityAvailable
               price { amount }
             }
           }
@@ -57,6 +56,7 @@ const GET_PRODUCTS_QUERY = gql`
     }
   }
 `;
+
 
 
 
@@ -83,13 +83,9 @@ const Home = () => {
         ? parseFloat(firstVariant.price.amount)
         : undefined;
 
-      const variantAvailable = firstVariant?.availableForSale ?? false;
-      const quantity = typeof firstVariant?.quantityAvailable === "number"
-        ? firstVariant.quantityAvailable
-        : 0;
-
       const inStock =
-        (variantAvailable && quantity > 0) || node.availableForSale === true;
+        (firstVariant?.availableForSale === true) ||
+        (node.availableForSale === true);
 
       return {
         id: node.id,
@@ -105,6 +101,7 @@ const Home = () => {
         inStock,
       };
     }) || [];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-teal-50 to-orange-50">
