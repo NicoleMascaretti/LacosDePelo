@@ -43,7 +43,6 @@ const Navbar = () => {
   const doLogout = () => {
     // solicita logout no provedor também
     window.location.href = `/api/auth/logout?upstream=1&returnTo=/`;
-    setTimeout(() => window.location.reload(), 300);
   };
 
   useEffect(() => {
@@ -67,7 +66,8 @@ const Navbar = () => {
   // checa status auth
   useEffect(() => {
     let mounted = true;
-    (async () => {
+
+    async function check() {
       try {
         const r = await fetch(`/api/auth/status?_=${Date.now()}`, { credentials: "include", cache: "no-store" });
         const j = await r.json();
@@ -77,9 +77,16 @@ const Navbar = () => {
       } finally {
         if (mounted) setAuthLoading(false);
       }
-    })();
+    }
+
+    check();
+    // revalida ao focar a janela
+    const onFocus = () => check();
+    window.addEventListener("focus", onFocus);
+
     return () => {
       mounted = false;
+      window.removeEventListener("focus", onFocus);
     };
   }, [location.pathname, location.search]);
 
